@@ -1,0 +1,22 @@
+{
+  "name": "mernly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-client": "cd client && npm run install",
+    "install-server": "cd server && npm run install",
+    "build-client": "cd client && npm run build",
+    "build-server": "cd server && npm run build",
+    "client": "npm run dev --prefix client",
+    "server": "npm run server --prefix server",
+    "compile-server": "npm run dev --prefix server",
+    "dev": "concurrently --kill-others-on-fail \"npm run compile-server\" \"npm run server\" \"npm run client \" "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.4.0"
+  }
+}
