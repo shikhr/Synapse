@@ -3,11 +3,15 @@ import dotenv from 'dotenv';
 import connectDB from './database/connectDB.js';
 dotenv.config();
 
+import errorHandlerMiddleware from './middleware/error-handler.js';
+
 const app = express();
 
 app.get('/', (req, res) => {
   res.send('MERNLY API');
 });
+
+app.use(errorHandlerMiddleware);
 
 const PORT = process.env.PORT || 5000;
 
