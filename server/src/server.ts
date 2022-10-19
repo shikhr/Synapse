@@ -5,6 +5,7 @@ import connectDB from './database/connectDB.js';
 import cors from 'cors';
 import 'express-async-errors';
 import errorHandlerMiddleware from './middleware/error-handler.js';
+import AuthRouter from './routes/authRoutes.js';
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.send('MERNLY API');
 });
+
+app.use('/api/v1/auth', AuthRouter);
 
 app.use(errorHandlerMiddleware);
 
