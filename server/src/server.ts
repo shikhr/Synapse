@@ -1,11 +1,16 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import connectDB from './database/connectDB.js';
 dotenv.config();
-
+import connectDB from './database/connectDB.js';
+import cors from 'cors';
+import 'express-async-errors';
 import errorHandlerMiddleware from './middleware/error-handler.js';
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.send('MERNLY API');
