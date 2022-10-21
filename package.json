@@ -18,8 +18,5 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^7.4.0"
-  },
-  "dependencies": {
-    "http-status-codes": "^2.2.0"
   }
 }
