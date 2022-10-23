@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BadRequestError } from '../errors/errors.js';
+import { BadRequestError, UnauthenticatedError } from '../errors/errors.js';
 import { StatusCodes } from 'http-status-codes';
 import User from '../models/User.js';
 
@@ -29,7 +29,37 @@ const signup = async (req: Request, res: Response) => {
 };
 
 const signin = async (req: Request, res: Response) => {
-  res.send('sigin');
+  const { identity, password } = req.body;
+  if (!identity || !password) {
+    throw new BadRequestError('Please provide all the values');
+  }
+
+  const user = await User.findOne({
+    $or: [{ email: identity }, { username: identity }],
+  });
+  if (!user) {
+    throw new UnauthenticatedError('Credentials are invalid');
+  }
+  if (!user.password) {
+    throw new UnauthenticatedError('Credentials are invalid');
+  }
+
+  const isValidPassword = await user.comparePassword(password);
+  if (!isValidPassword) {
+    throw new UnauthenticatedError('Credentials are invalid');
+  }
+
+  const accessToken = user.createAccessToken();
+  const refreshToken = user.createRefreshToken();
+
+  user.refreshTokens.push(refreshToken);
+  await user.save();
+
+  res.status(StatusCodes.OK).send({
+    user,
+    accessToken,
+    refreshToken,
+  });
 };
 
 const refresh = async (req: Request, res: Response) => {
