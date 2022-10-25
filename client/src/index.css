@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn-float:focus-within ~ label,
+  .btn-float:not(:placeholder-shown) ~ label {
+    @apply transform scale-75 -translate-y-6;
+  }
+
+  .btn-float:focus-within ~ label {
+    @apply text-primary-100;
+  }
+  .btn-float.error ~ label {
+    @apply text-error;
+  }
+}
