@@ -22,7 +22,7 @@ const signup = async (req: Request, res: Response) => {
 
   console.log(accessToken, refreshToken);
   res.status(StatusCodes.OK).send({
-    user,
+    user: user.getUserProfile(),
     accessToken,
     refreshToken,
   });
@@ -56,7 +56,7 @@ const signin = async (req: Request, res: Response) => {
   await user.save();
 
   res.status(StatusCodes.OK).send({
-    user,
+    user: user.getUserProfile(),
     accessToken,
     refreshToken,
   });

@@ -20,6 +20,7 @@ interface UserInterface extends IUser {
   createAccessToken: () => string;
   createRefreshToken: () => string;
   comparePassword: (rawPassword: string) => Promise<boolean>;
+  getUserProfile: () => { key: any };
 }
 interface UserModel extends Model<UserInterface> {
   // static methods
@@ -105,6 +106,11 @@ userSchema.method('createRefreshToken', function () {
 userSchema.method('comparePassword', async function (rawPassword) {
   const isMatch = await bcrypt.compare(rawPassword, this.password);
   return isMatch;
+});
+
+userSchema.method('getUserProfile', function () {
+  const { _id, username, email, avatarId } = this;
+  return { _id, username, email, avatarId };
 });
 
 const User = model<IUser, UserModel>('User', userSchema);
