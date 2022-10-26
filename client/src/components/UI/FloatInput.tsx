@@ -21,7 +21,7 @@ const FloatInput = <T extends FieldValues>({
         className={`btn-float ${
           errors[fieldName] && 'error'
         } block w-full pb-2 bg-transparent appearance-none outline-none text-text-primary-dark transition-colors duration-300`}
-        placeholder=""
+        placeholder=" "
         type={type}
         {...register(fieldName)}
       />
