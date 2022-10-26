@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
-class CustomAPIError extends Error implements ApiError {
+class CustomAPIError extends Error {
   constructor(message: string) {
     super(message);
   }
@@ -8,20 +8,26 @@ class CustomAPIError extends Error implements ApiError {
 
 class BadRequestError extends CustomAPIError implements ApiError {
   statusCode = StatusCodes.BAD_REQUEST;
-  constructor(message: string) {
+  fields;
+  constructor(message: string, fields: string[] = []) {
     super(message);
+    this.fields = fields;
   }
 }
 class NotFoundError extends CustomAPIError implements ApiError {
   statusCode = StatusCodes.NOT_FOUND;
-  constructor(message: string) {
+  fields;
+  constructor(message: string, fields: string[] = []) {
     super(message);
+    this.fields = fields;
   }
 }
 class UnauthenticatedError extends CustomAPIError implements ApiError {
   statusCode = StatusCodes.UNAUTHORIZED;
-  constructor(message: string) {
+  fields;
+  constructor(message: string, fields: string[] = []) {
     super(message);
+    this.fields = fields;
   }
 }
 
