@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -28,7 +28,7 @@ const validationSignUp = {
 };
 
 const RegisterForm = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState<Boolean>(false);
 
   const validationScema = useMemo(
     () =>
@@ -42,13 +42,27 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<IRegisterFields>({
     resolver: yupResolver(validationScema),
   });
 
+  useEffect(() => {
+    reset({
+      username: '',
+      email: '',
+      password: '',
+      identity: '',
+    });
+  }, [isLogin]);
+
   const submitHandler: SubmitHandler<IRegisterFields> = (data) => {
     console.log(data);
+  };
+
+  const loginToggleHandler = () => {
+    setIsLogin(!isLogin);
   };
 
   return (
@@ -70,7 +84,6 @@ const RegisterForm = () => {
                 errors={errors}
               />
               <FloatInput<IRegisterFields>
-                type="email"
                 register={register}
                 fieldName="email"
                 label="Email"
@@ -120,7 +133,7 @@ const RegisterForm = () => {
           <button
             type="button"
             className="text-primary-100 font-semibold"
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={loginToggleHandler}
           >
             {isLogin ? 'Sign Up' : 'Login'}
           </button>
