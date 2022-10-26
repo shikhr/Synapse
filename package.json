@@ -18,8 +18,5 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^7.4.0"
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^2.9.10"
   }
 }
