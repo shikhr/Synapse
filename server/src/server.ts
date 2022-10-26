@@ -4,7 +4,10 @@ dotenv.config();
 import connectDB from './database/connectDB.js';
 import cors from 'cors';
 import 'express-async-errors';
+
 import errorHandlerMiddleware from './middleware/error-handler.js';
+import notFoundMiddleware from './middleware/not-found.js';
+
 import AuthRouter from './routes/authRoutes.js';
 
 const app = express();
@@ -19,6 +22,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/auth', AuthRouter);
 
+app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 const PORT = process.env.PORT || 5000;
