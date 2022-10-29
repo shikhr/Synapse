@@ -30,7 +30,7 @@ const FloatInput = <T extends FieldValues>({
       </label>
       <div className="absolute text-error top-full right-0 text-xs py-0.5">
         {errors[fieldName] && errors[fieldName]?.message && (
-          <span>{errors[fieldName].message}</span>
+          <span className="lowercase">{errors[fieldName].message}</span>
         )}
       </div>
     </div>

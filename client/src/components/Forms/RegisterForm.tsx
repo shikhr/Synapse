@@ -1,4 +1,3 @@
-import { spawn } from 'child_process';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -6,6 +5,8 @@ import * as yup from 'yup';
 import Button from '../UI/Button';
 import FloatInput from '../UI/FloatInput';
 import OAuthButton from './OAuthButton';
+import { useMutation } from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
 
 interface IRegisterFields {
   username: string;
@@ -13,6 +14,7 @@ interface IRegisterFields {
   password: string;
   identity: string;
 }
+
 const validationLogin = {
   identity: yup.string().required(),
   username: yup.string().max(20),
@@ -27,7 +29,41 @@ const validationSignUp = {
   password: yup.string().min(8).max(40).required(),
 };
 
+const loginUser = async (bodyData: { identity: string; password: string }) => {
+  return axios.post('http://localhost:5000/api/v1/auth/signin', bodyData);
+};
+const signUpUser = async (bodyData: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  return axios.post('http://localhost:5000/api/v1/auth/signup', bodyData);
+};
+
 const RegisterForm = () => {
+  const { mutate: login } = useMutation(loginUser, {
+    onError: (error: AxiosError, variables, context) => {
+      const data: any = error.response!.data;
+      data.fields.forEach((field: any) => {
+        setError(field, { type: 'server', message: data.msg });
+      });
+    },
+    onSuccess: (data, variables, context) => {
+      alert('boom');
+    },
+  });
+  const { data, mutate: signup } = useMutation(signUpUser, {
+    onError: (error: AxiosError, variables, context) => {
+      const data: any = error.response!.data;
+      data.fields.forEach((field: any) => {
+        setError(field, { type: 'server', message: data.msg });
+      });
+    },
+    onSuccess: (data, variables, context) => {
+      alert('boom');
+    },
+  });
+
   const [isLogin, setIsLogin] = useState<Boolean>(false);
 
   const validationScema = useMemo(
@@ -42,6 +78,7 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     watch,
+    setError,
     reset,
     formState: { errors },
   } = useForm<IRegisterFields>({
@@ -58,7 +95,13 @@ const RegisterForm = () => {
   }, [isLogin]);
 
   const submitHandler: SubmitHandler<IRegisterFields> = (data) => {
-    console.log(data);
+    if (isLogin) {
+      const { identity, password } = data;
+      login({ identity, password });
+      return;
+    }
+    const { username, email, password } = data;
+    signup({ username, email, password });
   };
 
   const loginToggleHandler = () => {
