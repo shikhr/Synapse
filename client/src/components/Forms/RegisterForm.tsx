@@ -1,19 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Button from '../UI/Button';
 import FloatInput from '../UI/FloatInput';
 import OAuthButton from './OAuthButton';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
-
-interface IRegisterFields {
-  username: string;
-  email: string;
-  password: string;
-  identity: string;
-}
+import axios from 'axios';
+import useRegister from '../../hooks/useRegister';
+import { IRegisterFields } from '../../types/Register.types';
+import { useAppContext } from '../../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 
 const validationLogin = {
   identity: yup.string().required(),
@@ -41,28 +37,9 @@ const signUpUser = async (bodyData: {
 };
 
 const RegisterForm = () => {
-  const { mutate: login } = useMutation(loginUser, {
-    onError: (error: AxiosError, variables, context) => {
-      const data: any = error.response!.data;
-      data.fields.forEach((field: any) => {
-        setError(field, { type: 'server', message: data.msg });
-      });
-    },
-    onSuccess: (data, variables, context) => {
-      alert('boom');
-    },
-  });
-  const { data, mutate: signup } = useMutation(signUpUser, {
-    onError: (error: AxiosError, variables, context) => {
-      const data: any = error.response!.data;
-      data.fields.forEach((field: any) => {
-        setError(field, { type: 'server', message: data.msg });
-      });
-    },
-    onSuccess: (data, variables, context) => {
-      alert('boom');
-    },
-  });
+  const navigate = useNavigate();
+
+  const { user, accessToken } = useAppContext();
 
   const [isLogin, setIsLogin] = useState<Boolean>(false);
 
@@ -77,13 +54,21 @@ const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     reset,
     formState: { errors },
   } = useForm<IRegisterFields>({
     resolver: yupResolver(validationScema),
   });
+
+  const { mutate: login } = useRegister(loginUser, setError);
+  const { mutate: signup } = useRegister(signUpUser, setError);
+
+  useEffect(() => {
+    if (user || accessToken) {
+      navigate('/', { replace: true });
+    }
+  }, [user, accessToken, navigate]);
 
   useEffect(() => {
     reset({

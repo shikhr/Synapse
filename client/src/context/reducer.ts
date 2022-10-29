@@ -6,11 +6,16 @@ interface Action {
   payload?: any;
 }
 
-const reducer = (state: IAppContext, action: Action) => {
-  if (action.type === ActionKind.TEST) {
-    console.log('first');
+const reducer = (state: IAppContext, action: Action): IAppContext => {
+  switch (action.type) {
+    case ActionKind.REGISTER_USER_SUCCESS:
+      return {
+        ...state,
+        user: action.payload.user,
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
+      };
   }
-  return state;
 };
 
 export default reducer;

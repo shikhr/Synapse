@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-import axios from 'axios';
 import reducer from './reducer';
 import { ActionKind } from './actions';
+import { useNavigate } from 'react-router-dom';
 
 const user = localStorage.getItem('user');
 const accessToken = localStorage.getItem('accessToken');
@@ -11,25 +11,31 @@ interface IUser {
   _id: string;
   username: string;
   email: string;
-  avatarId: string;
-}
-
-interface IAppContext {
-  user: IUser | null;
-  accessToken: string | null;
-  refreshToken: string | null;
-  test: () => void;
+  avatarId?: string;
 }
 
 interface AppProviderProps {
   children: ReactNode;
 }
 
+interface ILocalStorageData {
+  user: IUser;
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface IAppContext {
+  user: IUser | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  registerUserSuccess: (data: ILocalStorageData) => void;
+}
+
 const initialAppState: IAppContext = {
   user: user ? JSON.parse(user) : null,
   accessToken: accessToken,
   refreshToken: refreshToken,
-  test: () => {},
+  registerUserSuccess: () => {},
 };
 
 const AppContext = createContext<IAppContext>({
@@ -37,13 +43,15 @@ const AppContext = createContext<IAppContext>({
 });
 
 const AppProvider = ({ children }: AppProviderProps) => {
+  const navigate = useNavigate();
+
   const [state, dispatch] = useReducer(reducer, initialAppState);
 
   const saveUserToLocalStorage = ({
     user,
     accessToken,
     refreshToken,
-  }: Record<string, any>) => {
+  }: ILocalStorageData) => {
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
@@ -55,12 +63,13 @@ const AppProvider = ({ children }: AppProviderProps) => {
     localStorage.removeItem('refreshToken');
   };
 
-  const test = () => {
-    dispatch({ type: ActionKind.TEST });
+  const registerUserSuccess = (userData: ILocalStorageData) => {
+    saveUserToLocalStorage(userData);
+    dispatch({ type: ActionKind.REGISTER_USER_SUCCESS, payload: userData });
   };
 
   return (
-    <AppContext.Provider value={{ ...state, test }}>
+    <AppContext.Provider value={{ ...state, registerUserSuccess }}>
       {children}
     </AppContext.Provider>
   );
