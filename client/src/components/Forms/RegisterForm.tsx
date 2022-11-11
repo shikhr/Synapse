@@ -39,9 +39,9 @@ const signUpUser = async (bodyData: {
 const RegisterForm = () => {
   const navigate = useNavigate();
 
-  const { user, accessToken } = useAppContext();
+  const { user, isLoggedIn } = useAppContext();
 
-  const [isLogin, setIsLogin] = useState<Boolean>(false);
+  const [isLogin, setIsLogin] = useState<Boolean>(true);
 
   const validationScema = useMemo(
     () =>
@@ -65,10 +65,10 @@ const RegisterForm = () => {
   const { mutate: signup } = useRegister(signUpUser, setError);
 
   useEffect(() => {
-    if (user || accessToken) {
+    if (isLoggedIn) {
       navigate('/', { replace: true });
     }
-  }, [user, accessToken, navigate]);
+  }, [isLoggedIn, navigate]);
 
   useEffect(() => {
     reset({
