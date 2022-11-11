@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { BadRequestError, UnauthenticatedError } from '../errors/errors.js';
 import { StatusCodes } from 'http-status-codes';
 import User from '../models/User.js';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const signup = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -81,8 +82,9 @@ const signin = async (req: Request, res: Response) => {
   });
 };
 
-const refresh = async (req: Request, res: Response) => {
-  res.send('refresh');
+const refresh = async (req: any, res: Response) => {
+  const accessToken = req.user.createAccessToken();
+  res.send({ user: req.user.getUserProfile(), accessToken });
 };
 
 export { signup, signin, refresh };

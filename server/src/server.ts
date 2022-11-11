@@ -9,7 +9,10 @@ import errorHandlerMiddleware from './middleware/error-handler.js';
 import notFoundMiddleware from './middleware/not-found.js';
 
 import AuthRouter from './routes/authRoutes.js';
-import MyJwtStrategy from './middleware/auth-middleware.js';
+import {
+  AuthenticateJwtStrategy,
+  RefreshJwtStrategy,
+} from './middleware/auth-middleware.js';
 import passport from 'passport';
 
 const app = express();
@@ -18,21 +21,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-passport.use(MyJwtStrategy);
+passport.use('authenticate_jwt', AuthenticateJwtStrategy);
+passport.use('refresh_jwt', RefreshJwtStrategy);
 
 app.get('/', (req, res) => {
   res.send('MERNLY API');
 });
-
-app.get(
-  '/api/v1/users',
-  passport.authenticate('jwt', { session: false }),
-  (req: any, res) => {
-    res.json({
-      user: req.user,
-    });
-  }
-);
 
 app.use('/api/v1/auth', AuthRouter);
 
