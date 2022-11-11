@@ -12,8 +12,13 @@ const reducer = (state: IAppContext, action: Action): IAppContext => {
       return {
         ...state,
         user: action.payload.user,
-        accessToken: action.payload.accessToken,
-        refreshToken: action.payload.refreshToken,
+        isLoggedIn: true,
+      };
+    case ActionKind.LOGOUT_USER:
+      return {
+        ...state,
+        user: null,
+        isLoggedIn: false,
       };
   }
 };

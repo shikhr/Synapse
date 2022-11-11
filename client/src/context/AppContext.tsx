@@ -1,11 +1,11 @@
 import { createContext, useContext, useReducer, ReactNode } from 'react';
 import reducer from './reducer';
 import { ActionKind } from './actions';
-import { useNavigate } from 'react-router-dom';
+import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 
 const user = localStorage.getItem('user');
-const accessToken = localStorage.getItem('accessToken');
-const refreshToken = localStorage.getItem('refreshToken');
+let accessToken = localStorage.getItem('accessToken');
+let refreshToken = localStorage.getItem('refreshToken');
 
 interface IUser {
   _id: string;
@@ -26,16 +26,18 @@ interface ILocalStorageData {
 
 interface IAppContext {
   user: IUser | null;
-  accessToken: string | null;
-  refreshToken: string | null;
+  isLoggedIn: boolean;
+  authFetch: any;
   registerUserSuccess: (data: ILocalStorageData) => void;
+  fetchUser: () => any;
 }
 
 const initialAppState: IAppContext = {
   user: user ? JSON.parse(user) : null,
-  accessToken: accessToken,
-  refreshToken: refreshToken,
+  isLoggedIn: accessToken && refreshToken ? true : false,
+  authFetch: undefined,
   registerUserSuccess: () => {},
+  fetchUser: () => {},
 };
 
 const AppContext = createContext<IAppContext>({
@@ -43,9 +45,42 @@ const AppContext = createContext<IAppContext>({
 });
 
 const AppProvider = ({ children }: AppProviderProps) => {
-  const navigate = useNavigate();
-
   const [state, dispatch] = useReducer(reducer, initialAppState);
+
+  const authFetch = axios.create({
+    baseURL: '/api/v1',
+  });
+
+  authFetch.interceptors.request.use(
+    (config: AxiosRequestConfig): AxiosRequestConfig => {
+      if (!config.headers) config.headers = {};
+      config.headers.authorization = `Bearer ${accessToken}`;
+      return config;
+    }
+  );
+
+  authFetch.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const status = error?.response?.status;
+      if (status === 401) {
+        const config = error.config;
+        const accessToken = await refreshAccessToken();
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
+        config.headers = JSON.parse(
+          JSON.stringify(config.headers || {})
+        ) as RawAxiosRequestHeaders;
+
+        return axios.request(config);
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  const fetchUser = async () => {
+    const { data } = await authFetch.get('/users');
+    return data;
+  };
 
   const saveUserToLocalStorage = ({
     user,
@@ -65,11 +100,49 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   const registerUserSuccess = (userData: ILocalStorageData) => {
     saveUserToLocalStorage(userData);
-    dispatch({ type: ActionKind.REGISTER_USER_SUCCESS, payload: userData });
+    accessToken = userData.accessToken;
+    refreshToken = userData.refreshToken;
+    dispatch({
+      type: ActionKind.REGISTER_USER_SUCCESS,
+      payload: userData,
+    });
+  };
+
+  const refreshAccessToken = async () => {
+    try {
+      const { data } = await axios.get('/api/v1/auth/refresh', {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      });
+      const { user, accessToken: newAccessToken } = data;
+      saveUserToLocalStorage({
+        user,
+        accessToken: newAccessToken,
+        refreshToken: refreshToken as string,
+      });
+      accessToken = newAccessToken;
+      dispatch({
+        type: ActionKind.REGISTER_USER_SUCCESS,
+        payload: { user },
+      });
+      return newAccessToken;
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        // logout();
+        accessToken = null;
+        refreshToken = null;
+        removeUserFromLocalStorage();
+        dispatch({ type: ActionKind.LOGOUT_USER });
+      }
+      return Promise.reject(error);
+    }
   };
 
   return (
-    <AppContext.Provider value={{ ...state, registerUserSuccess }}>
+    <AppContext.Provider
+      value={{ ...state, authFetch, fetchUser, registerUserSuccess }}
+    >
       {children}
     </AppContext.Provider>
   );
