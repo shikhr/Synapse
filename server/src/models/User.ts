@@ -1,4 +1,4 @@
-import { model, Model, mongo, Schema } from 'mongoose';
+import { model, Model, Schema } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -116,3 +116,4 @@ userSchema.method('getUserProfile', function () {
 const User = model<IUser, UserModel>('User', userSchema);
 
 export default User;
+export { UserModel, IUser, UserInterface };

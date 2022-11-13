@@ -9,6 +9,7 @@ import errorHandlerMiddleware from './middleware/error-handler.js';
 import notFoundMiddleware from './middleware/not-found.js';
 
 import AuthRouter from './routes/authRoutes.js';
+import PostRouter from './routes/postRoutes.js';
 import {
   AuthenticateJwtStrategy,
   RefreshJwtStrategy,
@@ -29,6 +30,12 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', AuthRouter);
+
+app.use(
+  '/api/v1/posts',
+  passport.authenticate('authenticate_jwt', { session: false }),
+  PostRouter
+);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
