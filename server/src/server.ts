@@ -18,25 +18,31 @@ import passport from 'passport';
 
 const app = express();
 
+// EXPRESS MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// AUTH MIDDLEWARE
 passport.use('authenticate_jwt', AuthenticateJwtStrategy);
 passport.use('refresh_jwt', RefreshJwtStrategy);
 
+// HOME ROUTER
 app.get('/', (req, res) => {
   res.send('MERNLY API');
 });
 
+// AUTH ROUTER
 app.use('/api/v1/auth', AuthRouter);
 
+// POST ROUTER
 app.use(
   '/api/v1/posts',
   passport.authenticate('authenticate_jwt', { session: false }),
   PostRouter
 );
 
+// FALLBACK MIDDLEWARE
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
