@@ -47,32 +47,28 @@ const postSchema = new Schema<IPost, PostModel>(
   }
 );
 
+const aggregatePipeline = {
+  $lookup: {
+    from: User.collection.name,
+    localField: 'createdBy',
+    foreignField: '_id',
+    pipeline: [
+      {
+        $project: {
+          username: 1,
+          avatarId: 1,
+        },
+      },
+    ],
+    as: 'createdBy',
+  },
+};
+
 postSchema.method('getPostInfo', async function (id) {
   const post = this;
   return await Post.aggregate([
     { $match: { _id: post._id } },
-    {
-      $lookup: {
-        from: User.collection.name,
-        let: { created_by: '$createdBy' },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ['$_id', '$$created_by'],
-              },
-            },
-          },
-          {
-            $project: {
-              username: 1,
-              avatarId: 1,
-            },
-          },
-        ],
-        as: 'createdBy',
-      },
-    },
+    aggregatePipeline,
     {
       $addFields: {
         likesCount: { $size: '$likes' },
@@ -90,31 +86,9 @@ postSchema.method('getPostInfo', async function (id) {
 });
 
 postSchema.static('getFeed', async function (id) {
-  const post = this;
-  return await Post.aggregate([
+  return await this.aggregate([
     { $sort: { createdAt: -1 } },
-    {
-      $lookup: {
-        from: User.collection.name,
-        let: { created_by: '$createdBy' },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ['$_id', '$$created_by'],
-              },
-            },
-          },
-          {
-            $project: {
-              username: 1,
-              avatarId: 1,
-            },
-          },
-        ],
-        as: 'createdBy',
-      },
-    },
+    aggregatePipeline,
     {
       $addFields: {
         likesCount: { $size: '$likes' },
