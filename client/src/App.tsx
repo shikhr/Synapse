@@ -27,7 +27,7 @@ function App() {
             }
           >
             <Route index element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:userId" element={<Profile />} />
             <Route path="/bookmarks" element={<Bookmarks />} />
             <Route path="/explore" element={<Explore />} />
           </Route>
