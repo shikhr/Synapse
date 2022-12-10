@@ -8,6 +8,11 @@ interface IUser {
   username: string;
   email: string;
   password: string;
+  displayName: string;
+  bio: string;
+  birthdate: Schema.Types.Date;
+  location: string;
+  website: string;
   provider: string;
   following: Array<Schema.Types.ObjectId>;
   followers: Array<Schema.Types.ObjectId>;
@@ -49,6 +54,37 @@ const userSchema = new Schema<IUser, UserModel>({
     required: false,
     trim: true,
     minlength: [8, 'Password should be greater than 8 characters'],
+  },
+  displayName: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: [30, 'Name should be less than 30 characters'],
+  },
+  birthdate: {
+    type: Schema.Types.Date,
+    required: false,
+  },
+  bio: {
+    type: String,
+    required: false,
+    trim: true,
+    maxlength: [150, 'Name should be less than 150 characters'],
+  },
+  location: {
+    type: String,
+    required: false,
+    trim: true,
+    maxlength: [30, 'Location should be less than 30 characters'],
+  },
+  website: {
+    type: String,
+    required: false,
+    trim: true,
+    validate: {
+      validator: validator.isURL,
+    },
+    maxlength: [60, 'Website should be less than 60 characters'],
   },
   provider: {
     type: String,
