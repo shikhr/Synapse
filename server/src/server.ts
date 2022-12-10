@@ -8,8 +8,11 @@ import 'express-async-errors';
 import errorHandlerMiddleware from './middleware/error-handler.js';
 import notFoundMiddleware from './middleware/not-found.js';
 
+// ROUTER IMPORT
 import AuthRouter from './routes/authRoutes.js';
 import PostRouter from './routes/postRoutes.js';
+import UserRouter from './routes/userRoutes.js';
+
 import {
   AuthenticateJwtStrategy,
   RefreshJwtStrategy,
@@ -40,6 +43,13 @@ app.use(
   '/api/v1/posts',
   passport.authenticate('authenticate_jwt', { session: false }),
   PostRouter
+);
+
+// USER ROUTER
+app.use(
+  '/api/v1/users',
+  passport.authenticate('authenticate_jwt', { session: false }),
+  UserRouter
 );
 
 // FALLBACK MIDDLEWARE

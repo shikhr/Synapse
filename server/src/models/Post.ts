@@ -13,7 +13,10 @@ interface PostInterface extends IPost {
 }
 
 interface PostModel extends Model<PostInterface> {
-  getFeed(id: Schema.Types.ObjectId): Promise<any>;
+  getFeed(
+    id: Schema.Types.ObjectId,
+    options: Record<string, any>
+  ): Promise<any>;
 }
 
 const postSchema = new Schema<IPost, PostModel>(
@@ -85,25 +88,68 @@ postSchema.method('getPostInfo', async function (id) {
   ]);
 });
 
-postSchema.static('getFeed', async function (id) {
+postSchema.static('getFeed', async function (user, { page }) {
+  const size = 3;
   return await this.aggregate([
-    { $sort: { createdAt: -1 } },
-    aggregatePipeline,
     {
-      $addFields: {
-        likesCount: { $size: '$likes' },
-        hasLiked: {
-          $in: [id, '$likes'],
-        },
+      $match: {
+        createdAt: { $gt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
       },
     },
     {
+      $addFields: {
+        followExists: {
+          $in: ['$createdBy', user.following],
+        },
+      },
+    },
+    { $sort: { followExists: -1, likes: -1, createdAt: -1 } },
+    {
       $project: {
-        likes: 0,
+        _id: 1,
+        description: 1,
+        createdAt: 1,
+        likes: 1,
+        followExists: 1,
+      },
+    },
+    {
+      $facet: {
+        mydata: [{ $skip: (page - 1) * size }, { $limit: size }],
+        meta: [
+          {
+            $count: 'count',
+          },
+          {
+            $project: {
+              totalPages: { $ceil: { $divide: ['$count', size] } },
+            },
+          },
+        ],
       },
     },
   ]);
 });
+
+// postSchema.static('getFeed', async function (id) {
+//   return await this.aggregate([
+//     { $sort: { createdAt: -1 } },
+//     aggregatePipeline,
+//     {
+//       $addFields: {
+//         likesCount: { $size: '$likes' },
+//         hasLiked: {
+//           $in: [id, '$likes'],
+//         },
+//       },
+//     },
+//     {
+//       $project: {
+//         likes: 0,
+//       },
+//     },
+//   ]);
+// });
 
 const Post = model<IPost, PostModel>('Post', postSchema);
 
