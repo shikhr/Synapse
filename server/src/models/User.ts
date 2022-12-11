@@ -145,8 +145,8 @@ userSchema.method('comparePassword', async function (rawPassword) {
 });
 
 userSchema.method('getUserProfile', function () {
-  const { _id, username, email, avatarId } = this;
-  return { _id, username, email, avatarId };
+  const { _id, username, displayName, email, avatarId } = this;
+  return { _id, username, displayName, email, avatarId };
 });
 
 const User = model<IUser, UserModel>('User', userSchema);

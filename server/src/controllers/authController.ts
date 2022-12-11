@@ -19,7 +19,7 @@ const signup = async (req: Request, res: Response) => {
       'email',
     ]);
   }
-  const user = new User({ username, email, password });
+  const user = new User({ username, email, password, displayName: username });
 
   const accessToken = user.createAccessToken();
   const refreshToken = user.createRefreshToken();
