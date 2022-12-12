@@ -1,6 +1,9 @@
 import { Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
-import { BadRequestError } from '../errors/errors.js';
+import sharp from 'sharp';
+import { BadRequestError, NotFoundError } from '../errors/errors.js';
+import Avatar from '../models/Avatar.js';
 import User from '../models/User.js';
 
 // TODO:
@@ -62,11 +65,37 @@ const unfollowUser = async (req: any, res: Response) => {
   res.status(200).send(unfollowedUser);
 };
 
-const getAvatar = async (req: any, res: Response) => {};
+const getAvatar = async (req: any, res: Response) => {
+  const { avatarId } = req.params;
+  const avatar = await Avatar.findById(avatarId);
+  if (!avatar) {
+    throw new NotFoundError('Cannot get resource');
+  }
+  res.set('Content-Type', 'image/png');
+  res.status(StatusCodes.CREATED).send(avatar.data);
+};
 
-const postAvatar = async (req: any, res: Response) => {};
+const postAvatar = async (req: any, res: Response) => {
+  const avatarBuffer = await sharp(req.file.buffer)
+    .resize({ width: 250, height: 250 })
+    .png()
+    .toBuffer();
+  const avatar = await Avatar.create({ data: avatarBuffer });
+  if (req.user.avatarId) {
+    await Avatar.findByIdAndDelete(req.user.avatarId);
+  }
+  req.user.avatarId = avatar._id;
+  await req.user.save();
+  res.set('Content-Type', 'image/png');
+  res.status(StatusCodes.CREATED).send(avatar.data);
+};
 
-const deleteAvatar = async (req: any, res: Response) => {};
+const deleteAvatar = async (req: any, res: Response) => {
+  await Avatar.findByIdAndDelete(req.user.avatarId);
+  req.user.avatarId = undefined;
+  await req.user.save();
+  res.status(StatusCodes.OK).send({ msg: 'avatar deleted' });
+};
 
 export {
   followUser,

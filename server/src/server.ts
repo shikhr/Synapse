@@ -18,6 +18,7 @@ import {
   RefreshJwtStrategy,
 } from './middleware/auth-middleware.js';
 import passport from 'passport';
+import { getAvatar } from './controllers/userController.js';
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use(
   PostRouter
 );
 
+app.use('/api/v1/users/avatar/:avatarId', getAvatar);
 // USER ROUTER
 app.use(
   '/api/v1/users',
