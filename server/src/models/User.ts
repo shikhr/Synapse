@@ -166,7 +166,7 @@ userSchema.method('getFullProfile', async function (userId: string) {
         displayName: 1,
         avatarId: 1,
         bio: 1,
-        birthDate: 1,
+        birthdate: 1,
         location: 1,
         website: 1,
         followers: 1,

@@ -6,7 +6,6 @@ import { BadRequestError, NotFoundError } from '../errors/errors.js';
 import Avatar from '../models/Avatar.js';
 import User from '../models/User.js';
 
-// TODO:
 const getProfile = async (req: any, res: Response) => {
   const id = req.params.id === 'me' ? req.user._id : req.params.id;
 
@@ -19,7 +18,27 @@ const getProfile = async (req: any, res: Response) => {
   res.send(userProfile);
 };
 
-const updateProfile = () => {};
+const updateProfile = async (req: any, res: Response) => {
+  const updateInfo = req.body;
+  const updatableParams = [
+    'displayName',
+    'bio',
+    'birthdate',
+    'location',
+    'website',
+  ];
+  const canUpdate = Object.keys(updateInfo).every((updateKey: string) =>
+    updatableParams.includes(updateKey)
+  );
+  if (!canUpdate) {
+    throw new BadRequestError('Incorrect update parameters');
+  }
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, updateInfo, {
+    upsert: true,
+    new: true,
+  });
+  res.send('Update success');
+};
 
 const followUser = async (req: any, res: Response) => {
   const { followId } = req.params;

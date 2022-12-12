@@ -6,6 +6,7 @@ import {
   getProfile,
   postAvatar,
   unfollowUser,
+  updateProfile,
 } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.route('/follow/:followId').put(followUser);
 router.route('/unfollow/:unfollowId').put(unfollowUser);
 
 router.route('/profile/:id').get(getProfile);
+router.route('/profile').patch(updateProfile);
 
 const upload = multer({
   limits: {
