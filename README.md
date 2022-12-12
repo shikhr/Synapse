@@ -1,0 +1,1 @@
+Mernly - A social media app built with MERN stack
