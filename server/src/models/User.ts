@@ -26,6 +26,7 @@ interface UserInterface extends IUser {
   createRefreshToken: () => string;
   comparePassword: (rawPassword: string) => Promise<boolean>;
   getUserProfile: () => { key: any };
+  getFullProfile: (userId: string) => Promise<any>;
 }
 interface UserModel extends Model<UserInterface> {
   // static methods
@@ -147,6 +148,32 @@ userSchema.method('comparePassword', async function (rawPassword) {
 userSchema.method('getUserProfile', function () {
   const { _id, username, displayName, email, avatarId } = this;
   return { _id, username, displayName, email, avatarId };
+});
+
+userSchema.method('getFullProfile', async function (userId: string) {
+  return await User.aggregate([
+    { $match: { _id: this._id } },
+    {
+      $addFields: {
+        isFollowing: { $in: [userId, '$followers'] },
+        followers: { $size: '$followers' },
+        following: { $size: '$following' },
+      },
+    },
+    {
+      $project: {
+        username: 1,
+        displayName: 1,
+        avatarId: 1,
+        bio: 1,
+        birthDate: 1,
+        location: 1,
+        website: 1,
+        followers: 1,
+        following: 1,
+      },
+    },
+  ]);
 });
 
 const User = model<IUser, UserModel>('User', userSchema);

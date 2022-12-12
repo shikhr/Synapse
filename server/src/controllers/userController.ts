@@ -4,7 +4,17 @@ import { BadRequestError } from '../errors/errors.js';
 import User from '../models/User.js';
 
 // TODO:
-const getProfile = () => {};
+const getProfile = async (req: any, res: Response) => {
+  const id = req.params.id === 'me' ? req.user._id : req.params.id;
+
+  const user = await User.findById(id);
+  if (!user) {
+    throw new BadRequestError('No user found');
+  }
+  const userProfile = await user.getFullProfile(req.user._id);
+
+  res.send(userProfile);
+};
 
 const updateProfile = () => {};
 
@@ -52,4 +62,18 @@ const unfollowUser = async (req: any, res: Response) => {
   res.status(200).send(unfollowedUser);
 };
 
-export { followUser, unfollowUser, getProfile, updateProfile };
+const getAvatar = async (req: any, res: Response) => {};
+
+const postAvatar = async (req: any, res: Response) => {};
+
+const deleteAvatar = async (req: any, res: Response) => {};
+
+export {
+  followUser,
+  unfollowUser,
+  getProfile,
+  updateProfile,
+  getAvatar,
+  postAvatar,
+  deleteAvatar,
+};
