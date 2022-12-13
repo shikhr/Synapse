@@ -171,6 +171,7 @@ userSchema.method('getFullProfile', async function (userId: string) {
         website: 1,
         followers: 1,
         following: 1,
+        isFollowing: 1,
       },
     },
   ]);

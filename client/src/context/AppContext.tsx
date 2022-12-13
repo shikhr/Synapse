@@ -27,29 +27,25 @@ interface ILocalStorageData {
 interface IAppContext {
   user: IUser | null;
   isLoggedIn: boolean;
-  authFetch: any;
   registerUserSuccess: (data: ILocalStorageData) => void;
-  fetchUser: () => any;
 }
 
 const initialAppState: IAppContext = {
   user: user ? JSON.parse(user) : null,
   isLoggedIn: accessToken && refreshToken ? true : false,
-  authFetch: undefined,
   registerUserSuccess: () => {},
-  fetchUser: () => {},
 };
 
 const AppContext = createContext<IAppContext>({
   ...initialAppState,
 });
 
+const authFetch = axios.create({
+  baseURL: '/api/v1',
+});
+
 const AppProvider = ({ children }: AppProviderProps) => {
   const [state, dispatch] = useReducer(reducer, initialAppState);
-
-  const authFetch = axios.create({
-    baseURL: '/api/v1',
-  });
 
   authFetch.interceptors.request.use(
     (config: AxiosRequestConfig): AxiosRequestConfig => {
@@ -76,11 +72,6 @@ const AppProvider = ({ children }: AppProviderProps) => {
       return Promise.reject(error);
     }
   );
-
-  const fetchUser = async () => {
-    const { data } = await authFetch.get('/users');
-    return data;
-  };
 
   const saveUserToLocalStorage = ({
     user,
@@ -140,9 +131,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
   };
 
   return (
-    <AppContext.Provider
-      value={{ ...state, authFetch, fetchUser, registerUserSuccess }}
-    >
+    <AppContext.Provider value={{ ...state, registerUserSuccess }}>
       {children}
     </AppContext.Provider>
   );
@@ -154,5 +143,6 @@ const useAppContext = () => {
 
 export default AppProvider;
 export { useAppContext };
+export { authFetch };
 
 export { type IAppContext };

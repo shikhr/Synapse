@@ -13,7 +13,7 @@ const getProfile = async (req: any, res: Response) => {
   if (!user) {
     throw new BadRequestError('No user found');
   }
-  const userProfile = await user.getFullProfile(req.user._id);
+  const [userProfile] = await user.getFullProfile(req.user._id);
 
   res.send(userProfile);
 };
@@ -70,7 +70,7 @@ const unfollowUser = async (req: any, res: Response) => {
   }
 
   await User.findByIdAndUpdate(user._id, {
-    $pull: { follwing: unfollowId },
+    $pull: { following: unfollowId },
   });
   const unfollowedUser = await User.findByIdAndUpdate(
     unfollowId,
