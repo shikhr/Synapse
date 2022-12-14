@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Avatar from '../../components/Avatar/Avatar';
 import Banner from '../../components/Avatar/Banner';
 import Button from '../../components/UI/Button';
+import DynamicNavTitle from '../../components/UI/DynamicNavTitle';
 import { authFetch, useAppContext } from '../../context/AppContext';
 
 const getProfile = async ({ queryKey }: QueryFunctionContext) => {
@@ -24,6 +25,7 @@ const Profile = () => {
   }
   return (
     <div>
+      <DynamicNavTitle title="Profile" />
       <div className="relative w-full h-40">
         <Banner sourceId={profile.avatarId}>
           <div className="absolute bottom-0 translate-y-1/2 left-10">

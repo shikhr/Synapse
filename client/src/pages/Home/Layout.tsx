@@ -5,7 +5,7 @@ import FollowSuggestions from '../../components/RightContainer/FollowSuggestions
 
 const Layout = () => {
   return (
-    <div className="bg-background-dark   flex flex-col">
+    <div className="bg-background-dark flex flex-col">
       <div className="max-w-7xl mx-auto flex flex-col min-h-screen h-full w-full">
         <div className="flex flex-1 relative w-full xs:px-2 md:px-4">
           <div className="hidden ml-auto xs:block h-screen">
@@ -18,7 +18,7 @@ const Layout = () => {
             <FollowSuggestions />
           </div>
         </div>
-        <div className="mt-auto border-t border-text-secondary-dark block xs:hidden">
+        <div className="sticky bottom-0 border-t border-text-secondary-dark bg-background-dark block xs:hidden">
           <BottomBar />
         </div>
       </div>
