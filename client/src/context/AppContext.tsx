@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer, ReactNode } from 'react';
 import reducer from './reducer';
 import { ActionKind } from './actions';
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
+import { QueryFunctionContext } from '@tanstack/react-query';
 
 const user = localStorage.getItem('user');
 let accessToken = localStorage.getItem('accessToken');
@@ -28,12 +29,14 @@ interface IAppContext {
   user: IUser | null;
   isLoggedIn: boolean;
   registerUserSuccess: (data: ILocalStorageData) => void;
+  getProfile: ({ queryKey }: QueryFunctionContext) => any;
 }
 
 const initialAppState: IAppContext = {
   user: user ? JSON.parse(user) : null,
   isLoggedIn: accessToken && refreshToken ? true : false,
   registerUserSuccess: () => {},
+  getProfile: () => {},
 };
 
 const AppContext = createContext<IAppContext>({
@@ -130,8 +133,13 @@ const AppProvider = ({ children }: AppProviderProps) => {
     }
   };
 
+  const getProfile = async ({ queryKey }: QueryFunctionContext) => {
+    const { data } = await authFetch.get(`/users/profile/${queryKey[1]}`);
+    return data;
+  };
+
   return (
-    <AppContext.Provider value={{ ...state, registerUserSuccess }}>
+    <AppContext.Provider value={{ ...state, getProfile, registerUserSuccess }}>
       {children}
     </AppContext.Provider>
   );

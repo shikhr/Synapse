@@ -1,25 +1,21 @@
-import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Avatar from '../../components/Avatar/Avatar';
 import Banner from '../../components/Avatar/Banner';
 import Button from '../../components/UI/Button';
 import DynamicNavTitle from '../../components/UI/DynamicNavTitle';
-import { authFetch, useAppContext } from '../../context/AppContext';
-
-const getProfile = async ({ queryKey }: QueryFunctionContext) => {
-  const { data } = await authFetch.get(`/users/profile/${queryKey[1]}`);
-  return data;
-};
+import { useAppContext } from '../../context/AppContext';
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { userId } = useParams();
-  const { user } = useAppContext();
-  console.log(userId);
+  const { user, getProfile } = useAppContext();
+
   const { isLoading, data: profile } = useQuery(
     ['profile', userId],
     getProfile
   );
-  console.log(profile);
   if (isLoading) {
     return <div>loading</div>;
   }
@@ -38,7 +34,12 @@ const Profile = () => {
       <div className="flex justify-end mt-4 px-4">
         <div className="w-28">
           {user?._id === profile._id && (
-            <Button onClick={() => {}} variant="standard">
+            <Button
+              onClick={() => {
+                navigate('/settings/profile', { state: location });
+              }}
+              variant="standard"
+            >
               edit
             </Button>
           )}
