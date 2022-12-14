@@ -8,6 +8,9 @@ import Button from '../UI/Button';
 import { useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { useQuery } from '@tanstack/react-query';
+import FloatTextarea from '../UI/FloatTextarea';
+import { IEditFormFields } from '../../types/Register.types';
+import DynamicNavTitle from '../UI/DynamicNavTitle';
 
 const EditProfileForm = () => {
   const navigate = useNavigate();
@@ -24,7 +27,7 @@ const EditProfileForm = () => {
     getValues,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<IEditFormFields>();
   useEffect(() => {
     console.log(watch('image')?.[0]);
   });
@@ -40,8 +43,8 @@ const EditProfileForm = () => {
     <div>
       <Overlay closeModal={closeFormHandler} />
       <Modal>
-        <div className="px-4 sm:px-16 py-4">
-          <div className="pb-2 flex justify-start items-center">
+        <div className="px-4 relative isolate sm:px-16 pb-4">
+          <div className="pt-4 text-text-primary-dark  pb-2 sticky z-20 top-0 left-0 flex justify-start items-center bg-opacity-90 bg-background-dark backdrop-blur-md">
             <button onClick={closeFormHandler} className="text-white text-xl">
               <FaTimes />
             </button>
@@ -57,7 +60,7 @@ const EditProfileForm = () => {
 
           <div className="flex flex-col gap-10 w-full py-4">
             <div className="relative w-28 h-28">
-              <div className="w-full h-full rounded-full group overflow-hidden border">
+              <div className="w-full h-full rounded-full group overflow-hidden border border-background-overlay-dark">
                 <input
                   className="absolute cursor-pointer opacity-0 inset-0 w-full h-full"
                   placeholder=" "
@@ -68,8 +71,8 @@ const EditProfileForm = () => {
                   className="w-full h-full object-cover"
                   src={
                     (watch('image')?.[0] &&
-                      URL.createObjectURL(watch('image')[0])) ||
-                    `/api/v1/users/avatar/${profile.avatarId}`
+                      URL.createObjectURL((watch('image') as FileList)[0])) ||
+                    `/api/v1/users/avatar/${profile?.avatarId}`
                   }
                   alt=""
                 />
@@ -87,26 +90,30 @@ const EditProfileForm = () => {
             <FloatInput
               register={register}
               fieldName="displayName"
-              label="DisplayName"
+              label="Display Name"
               errors={errors}
+              defaultVal={profile?.displayName}
             />
-            <FloatInput
+            <FloatTextarea
               register={register}
               fieldName="bio"
               label="Bio"
               errors={errors}
+              defaultVal={profile?.bio}
             />
             <FloatInput
               register={register}
               fieldName="location"
               label="Location"
               errors={errors}
+              defaultVal={profile?.location}
             />
             <FloatInput
               register={register}
               fieldName="website"
               label="Website"
               errors={errors}
+              defaultVal={profile?.website}
             />
             <FloatInput
               register={register}
@@ -114,6 +121,7 @@ const EditProfileForm = () => {
               label="BirthDate"
               errors={errors}
               type="date"
+              defaultVal={profile?.birthDate}
             />
           </div>
         </div>

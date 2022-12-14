@@ -3,6 +3,8 @@ import reducer from './reducer';
 import { ActionKind } from './actions';
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { QueryFunctionContext } from '@tanstack/react-query';
+import defaultUserProfile from '../utils/defaultUserProfile';
+import { IUserProfile } from '../types/Register.types';
 
 const user = localStorage.getItem('user');
 let accessToken = localStorage.getItem('accessToken');
@@ -29,14 +31,14 @@ interface IAppContext {
   user: IUser | null;
   isLoggedIn: boolean;
   registerUserSuccess: (data: ILocalStorageData) => void;
-  getProfile: ({ queryKey }: QueryFunctionContext) => any;
+  getProfile: ({ queryKey }: QueryFunctionContext) => Promise<IUserProfile>;
 }
 
 const initialAppState: IAppContext = {
   user: user ? JSON.parse(user) : null,
   isLoggedIn: accessToken && refreshToken ? true : false,
   registerUserSuccess: () => {},
-  getProfile: () => {},
+  getProfile: () => Promise.resolve(defaultUserProfile),
 };
 
 const AppContext = createContext<IAppContext>({
@@ -133,7 +135,9 @@ const AppProvider = ({ children }: AppProviderProps) => {
     }
   };
 
-  const getProfile = async ({ queryKey }: QueryFunctionContext) => {
+  const getProfile = async ({
+    queryKey,
+  }: QueryFunctionContext): Promise<IUserProfile> => {
     const { data } = await authFetch.get(`/users/profile/${queryKey[1]}`);
     return data;
   };

@@ -1,33 +1,30 @@
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 
-interface FloatInputProps<T extends FieldValues> {
+interface FloatTextareaProps<T extends FieldValues> {
   register: UseFormRegister<T>;
   fieldName: any;
   label: string;
-  type?: string;
   errors?: any;
   defaultVal?: any;
 }
 
-const FloatInput = <T extends FieldValues>({
+const FloatTextarea = <T extends FieldValues>({
   register,
+  defaultVal,
   fieldName,
   label,
-  defaultVal,
-  type = 'text',
   errors,
-}: FloatInputProps<T>) => {
+}: FloatTextareaProps<T>) => {
   return (
     <div className="w-full relative isolate border-b-2 border-text-secondary-dark focus-within:border-primary-100">
-      <input
+      <textarea
         className={`btn-float ${
           errors[fieldName] && 'error'
-        } block w-full pb-2 bg-transparent appearance-none outline-none text-text-primary-dark transition-colors duration-300`}
+        } block w-full h-18 resize-none pb-2 bg-transparent appearance-none outline-none text-text-primary-dark transition-colors duration-300`}
         placeholder=" "
-        type={type}
         defaultValue={defaultVal}
         {...register(fieldName)}
-      />
+      ></textarea>
       <label className="absolute -z-1 text-text-secondary-dark top-0 origin-left duration-300">
         {label}
       </label>
@@ -40,4 +37,4 @@ const FloatInput = <T extends FieldValues>({
   );
 };
 
-export default FloatInput;
+export default FloatTextarea;
