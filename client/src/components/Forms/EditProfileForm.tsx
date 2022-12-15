@@ -18,6 +18,7 @@ const validationProfileSchema = yup.object().shape({
   bio: yup.string().max(150),
   displayName: yup.string().max(30),
   location: yup.string().max(30),
+  birthDate: yup.date().nullable().typeError('Invalid Date'),
   website: yup.string().max(60),
 });
 
@@ -29,13 +30,14 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
     reset,
     watch,
     resetField,
+    setFocus,
     formState: { errors, dirtyFields },
   } = useForm<IEditFormFields>({
     resolver: yupResolver(validationProfileSchema),
     defaultValues: {
       avatar: undefined,
       bio: profile.bio || '',
-      birthDate: profile.birthDate || undefined,
+      birthDate: profile.birthDate || null,
       displayName: profile.displayName || '',
       location: profile.location || '',
       website: profile.website || '',
@@ -45,13 +47,22 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
   const [showEditBirthDate, setShowEditBirthDate] = useState(false);
 
   const submitHandler: SubmitHandler<IEditFormFields> = (data) => {
-    console.log(data);
-    const { bio, birthDate, displayName, avatar, location, website } = data;
-    const formData = new FormData();
-    console.log(Object.keys(dirtyFields));
-    if (avatar?.[0]) {
-      formData.set('avatar', avatar[0]);
+    const touchedFields = Object.keys(dirtyFields);
+    if (touchedFields.length === 0) {
+      return;
     }
+    const formData = new FormData();
+    console.log(touchedFields);
+    Object.entries(data).forEach(([key, value]) => {
+      if (touchedFields.includes(key)) {
+        if (key === 'avatar' && data.avatar) {
+          formData.set('avatar', data.avatar[0]);
+        } else {
+          formData.set(key, value);
+        }
+      }
+    });
+    console.log(formData);
   };
 
   return (
@@ -129,7 +140,7 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
         {!showEditBirthDate && (
           <button
             className="w-fit relative flex gap-4 text-text-primary-dark"
-            onClick={() => setShowEditBirthDate(!showEditBirthDate)}
+            onClick={() => setShowEditBirthDate(true)}
           >
             <span className="absolute scale-75 origin-left -translate-y-6 text-text-secondary-dark top-0 left-0">
               Birth Date
@@ -147,7 +158,7 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
           <div className="relative">
             <button
               onClick={() => {
-                setShowEditBirthDate(!showEditBirthDate);
+                setShowEditBirthDate(false);
                 resetField('birthDate');
               }}
               className="absolute -translate-y-6 z-40 scale-90 text-primary-100 top-0 right-0"

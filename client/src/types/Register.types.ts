@@ -14,7 +14,7 @@ interface IEditFormFields {
   bio: string;
   location: string;
   website: string;
-  birthDate: Date;
+  birthDate: Date | null;
 }
 
 interface IUserProfile {
