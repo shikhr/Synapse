@@ -23,23 +23,36 @@ const getProfile = async (req: any, res: Response) => {
 const updateProfile = async (req: any, res: Response) => {
   const updateInfo = req.body;
   const updatableParams = [
+    'avatarId',
     'displayName',
     'bio',
-    'birthdate',
+    'birthDate',
     'location',
     'website',
   ];
+  if (req.file) {
+    const avatarBuffer = await sharp(req.file.buffer)
+      .resize({ width: 250, height: 250 })
+      .png()
+      .toBuffer();
+    const avatar = await Avatar.create({ data: avatarBuffer });
+    if (req.user.avatarId) {
+      await Avatar.findByIdAndDelete(req.user.avatarId);
+    }
+    updateInfo.avatarId = avatar._id;
+  }
   const canUpdate = Object.keys(updateInfo).every((updateKey: string) =>
     updatableParams.includes(updateKey)
   );
   if (!canUpdate) {
     throw new BadRequestError('Incorrect update parameters');
   }
+  console.log(updateInfo);
   const updatedUser = await User.findByIdAndUpdate(req.user._id, updateInfo, {
     upsert: true,
     new: true,
   });
-  res.send('Update success');
+  res.send('Profile updated');
 };
 
 const followUser = async (req: any, res: Response) => {

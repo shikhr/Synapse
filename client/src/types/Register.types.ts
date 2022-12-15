@@ -14,7 +14,7 @@ interface IEditFormFields {
   bio: string;
   location: string;
   website: string;
-  birthDate: Date | null;
+  birthDate: string | Date | null;
 }
 
 interface IUserProfile {
@@ -23,7 +23,7 @@ interface IUserProfile {
   displayName: string;
   avatarId: string;
   bio: string;
-  birthDate: Date | undefined;
+  birthDate: string | undefined;
   location: string;
   website: string;
   following: string;

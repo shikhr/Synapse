@@ -8,21 +8,32 @@ import { SubmitHandler } from 'react-hook-form/dist/types/form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
+import { UseMutateFunction } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { convertDateTOYYMMDD, displayDate } from '../../utils/dateConvert';
 
 interface EditProfileFormProps {
   profile: IUserProfile;
   closeHandler: () => void;
+  updateProfile: UseMutateFunction<any, unknown, FormData, unknown>;
 }
+const re =
+  /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
 const validationProfileSchema = yup.object().shape({
   bio: yup.string().max(150),
   displayName: yup.string().max(30),
   location: yup.string().max(30),
   birthDate: yup.date().nullable().typeError('Invalid Date'),
-  website: yup.string().max(60),
+  website: yup.string().max(60).matches(re, 'url not valid'),
 });
 
-const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
+const EditProfileForm = ({
+  profile,
+  closeHandler,
+  updateProfile,
+}: EditProfileFormProps) => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -37,18 +48,19 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
     defaultValues: {
       avatar: undefined,
       bio: profile.bio || '',
-      birthDate: profile.birthDate || null,
+      birthDate:
+        convertDateTOYYMMDD(new Date(profile.birthDate as string)) || null,
       displayName: profile.displayName || '',
       location: profile.location || '',
       website: profile.website || '',
     },
   });
-
   const [showEditBirthDate, setShowEditBirthDate] = useState(false);
 
   const submitHandler: SubmitHandler<IEditFormFields> = (data) => {
     const touchedFields = Object.keys(dirtyFields);
     if (touchedFields.length === 0) {
+      navigate('/profile/me');
       return;
     }
     const formData = new FormData();
@@ -57,12 +69,14 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
       if (touchedFields.includes(key)) {
         if (key === 'avatar' && data.avatar) {
           formData.set('avatar', data.avatar[0]);
+        } else if (key === 'birthDate') {
+          formData.set('birthDate', value);
         } else {
           formData.set(key, value);
         }
       }
     });
-    console.log(formData);
+    updateProfile(formData);
   };
 
   return (
@@ -146,7 +160,7 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
               Birth Date
             </span>
             {profile.birthDate && (
-              <div className="">{profile.birthDate.toDateString()}</div>
+              <div className="">{displayDate(new Date(profile.birthDate))}</div>
             )}
             <span className="text-primary-100">
               {!profile.birthDate && 'Add Birth Date'}

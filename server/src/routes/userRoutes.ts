@@ -15,9 +15,6 @@ router.route('/follow/:followId').put(followUser);
 
 router.route('/unfollow/:unfollowId').put(unfollowUser);
 
-router.route('/profile/:id').get(getProfile);
-router.route('/profile').patch(updateProfile);
-
 const upload = multer({
   limits: {
     fileSize: 1000000,
@@ -30,6 +27,9 @@ const upload = multer({
   },
   storage: memoryStorage(),
 });
+
+router.route('/profile/:id').get(getProfile);
+router.route('/profile').patch(upload.single('avatar'), updateProfile);
 
 router
   .route('/avatar')

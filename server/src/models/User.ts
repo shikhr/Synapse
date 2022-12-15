@@ -10,7 +10,7 @@ interface IUser {
   password: string;
   displayName: string;
   bio: string;
-  birthdate: Schema.Types.Date;
+  birthDate: Schema.Types.Date;
   location: string;
   website: string;
   provider: string;
@@ -62,7 +62,7 @@ const userSchema = new Schema<IUser, UserModel>({
     trim: true,
     maxlength: [30, 'Name should be less than 30 characters'],
   },
-  birthdate: {
+  birthDate: {
     type: Schema.Types.Date,
     required: false,
   },
@@ -168,7 +168,7 @@ userSchema.static(
           displayName: 1,
           avatarId: 1,
           bio: 1,
-          birthdate: 1,
+          birthDate: 1,
           location: 1,
           website: 1,
           followers: 1,

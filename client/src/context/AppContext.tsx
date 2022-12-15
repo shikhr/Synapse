@@ -30,6 +30,7 @@ interface ILocalStorageData {
 interface IAppContext {
   user: IUser | null;
   isLoggedIn: boolean;
+  authFetch: any;
   registerUserSuccess: (data: ILocalStorageData) => void;
   getProfile: ({ queryKey }: QueryFunctionContext) => Promise<IUserProfile>;
 }
@@ -38,6 +39,7 @@ const initialAppState: IAppContext = {
   user: user ? JSON.parse(user) : null,
   isLoggedIn: accessToken && refreshToken ? true : false,
   registerUserSuccess: () => {},
+  authFetch: undefined,
   getProfile: () => Promise.resolve(defaultUserProfile),
 };
 
@@ -143,7 +145,9 @@ const AppProvider = ({ children }: AppProviderProps) => {
   };
 
   return (
-    <AppContext.Provider value={{ ...state, getProfile, registerUserSuccess }}>
+    <AppContext.Provider
+      value={{ ...state, authFetch, getProfile, registerUserSuccess }}
+    >
       {children}
     </AppContext.Provider>
   );
@@ -155,6 +159,5 @@ const useAppContext = () => {
 
 export default AppProvider;
 export { useAppContext };
-export { authFetch };
 
 export { type IAppContext };

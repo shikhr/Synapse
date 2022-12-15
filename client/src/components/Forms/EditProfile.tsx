@@ -1,13 +1,25 @@
 import { useNavigate } from 'react-router-dom';
 import Modal from '../UI/Modal';
 import Overlay from '../UI/Overlay';
-import { useQuery } from '@tanstack/react-query';
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
 import EditProfileForm from './EditProfileForm';
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const { getProfile } = useAppContext();
+  const queryClient = useQueryClient();
+  const { getProfile, authFetch } = useAppContext();
+
+  const updateProfileHandler = async (formData: FormData) => {
+    return authFetch.patch('/users/profile', formData);
+  };
+
+  const { mutate: updateProfile } = useMutation(updateProfileHandler, {
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
+      navigate('/profile/me', { replace: true });
+    },
+  });
 
   const {
     data: profile,
@@ -38,6 +50,7 @@ const EditProfile = () => {
             <EditProfileForm
               profile={profile}
               closeHandler={closeFormHandler}
+              updateProfile={updateProfile}
             />
           )}
         </>
