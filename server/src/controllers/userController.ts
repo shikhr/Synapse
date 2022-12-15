@@ -9,11 +9,13 @@ import User from '../models/User.js';
 const getProfile = async (req: any, res: Response) => {
   const id = req.params.id === 'me' ? req.user._id : req.params.id;
 
-  const user = await User.findById(id);
-  if (!user) {
-    throw new BadRequestError('No user found');
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new NotFoundError('No user found');
   }
-  const [userProfile] = await user.getFullProfile(req.user._id);
+  const [userProfile] = await User.getFullProfile(id, req.user._id);
+  if (!userProfile) {
+    throw new NotFoundError('No user found');
+  }
 
   res.send(userProfile);
 };

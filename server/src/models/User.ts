@@ -26,10 +26,10 @@ interface UserInterface extends IUser {
   createRefreshToken: () => string;
   comparePassword: (rawPassword: string) => Promise<boolean>;
   getUserProfile: () => { key: any };
-  getFullProfile: (userId: string) => Promise<any>;
 }
 interface UserModel extends Model<UserInterface> {
   // static methods
+  getFullProfile: (matchId: string, userId: string) => Promise<any>;
 }
 
 const userSchema = new Schema<IUser, UserModel>({
@@ -150,32 +150,35 @@ userSchema.method('getUserProfile', function () {
   return { _id, username, displayName, email, avatarId };
 });
 
-userSchema.method('getFullProfile', async function (userId: string) {
-  return await User.aggregate([
-    { $match: { _id: this._id } },
-    {
-      $addFields: {
-        isFollowing: { $in: [userId, '$followers'] },
-        followers: { $size: '$followers' },
-        following: { $size: '$following' },
+userSchema.static(
+  'getFullProfile',
+  async function (matchId: string, userId: string) {
+    return await User.aggregate([
+      { $match: { _id: matchId } },
+      {
+        $addFields: {
+          isFollowing: { $in: [userId, '$followers'] },
+          followers: { $size: '$followers' },
+          following: { $size: '$following' },
+        },
       },
-    },
-    {
-      $project: {
-        username: 1,
-        displayName: 1,
-        avatarId: 1,
-        bio: 1,
-        birthdate: 1,
-        location: 1,
-        website: 1,
-        followers: 1,
-        following: 1,
-        isFollowing: 1,
+      {
+        $project: {
+          username: 1,
+          displayName: 1,
+          avatarId: 1,
+          bio: 1,
+          birthdate: 1,
+          location: 1,
+          website: 1,
+          followers: 1,
+          following: 1,
+          isFollowing: 1,
+        },
       },
-    },
-  ]);
-});
+    ]);
+  }
+);
 
 const User = model<IUser, UserModel>('User', userSchema);
 

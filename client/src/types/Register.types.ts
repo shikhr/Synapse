@@ -9,7 +9,7 @@ interface IRegisterFields {
 }
 
 interface IEditFormFields {
-  image: FileList | undefined;
+  avatar: FileList | undefined;
   displayName: string;
   bio: string;
   location: string;

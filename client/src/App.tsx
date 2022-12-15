@@ -1,6 +1,6 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import EditProfileForm from './components/Forms/EditProfileForm';
+import EditProfile from './components/Forms/EditProfile';
 import AppProvider from './context/AppContext';
 
 import {
@@ -38,14 +38,14 @@ function App() {
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/settings" element={<Settings />}>
-            <Route path="profile" element={<EditProfileForm />} />
+            <Route path="profile" element={<EditProfile />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
         {background && (
           <Routes>
             <Route path="/settings" element={<Settings />}>
-              <Route path="profile" element={<EditProfileForm />} />
+              <Route path="profile" element={<EditProfile />} />
             </Route>
           </Routes>
         )}
