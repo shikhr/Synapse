@@ -14,7 +14,10 @@ const Profile = () => {
 
   const { isLoading, data: profile } = useQuery(
     ['profile', userId],
-    getProfile
+    getProfile,
+    {
+      refetchOnWindowFocus: false,
+    }
   );
   if (isLoading) {
     return <div>loading</div>;

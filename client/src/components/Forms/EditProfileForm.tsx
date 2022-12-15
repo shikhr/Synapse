@@ -5,11 +5,22 @@ import Button from '../UI/Button';
 import FloatTextarea from '../UI/FloatTextarea';
 import { IEditFormFields, IUserProfile } from '../../types/Register.types';
 import { SubmitHandler } from 'react-hook-form/dist/types/form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
 
 interface EditProfileFormProps {
   profile: IUserProfile;
   closeHandler: () => void;
 }
+
+const validationProfileSchema = yup.object().shape({
+  bio: yup.string().max(150),
+  displayName: yup.string().max(30),
+  location: yup.string().max(30),
+  website: yup.string().max(60),
+});
+
 const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
   const {
     register,
@@ -20,24 +31,27 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
     resetField,
     formState: { errors, dirtyFields },
   } = useForm<IEditFormFields>({
+    resolver: yupResolver(validationProfileSchema),
     defaultValues: {
       avatar: undefined,
       bio: profile.bio || '',
-      birthDate: profile.birthDate,
+      birthDate: profile.birthDate || undefined,
       displayName: profile.displayName || '',
       location: profile.location || '',
       website: profile.website || '',
     },
   });
 
+  const [showEditBirthDate, setShowEditBirthDate] = useState(false);
+
   const submitHandler: SubmitHandler<IEditFormFields> = (data) => {
     console.log(data);
     const { bio, birthDate, displayName, avatar, location, website } = data;
     const formData = new FormData();
+    console.log(Object.keys(dirtyFields));
     if (avatar?.[0]) {
       formData.set('avatar', avatar[0]);
     }
-    console.log(dirtyFields);
   };
 
   return (
@@ -112,13 +126,43 @@ const EditProfileForm = ({ profile, closeHandler }: EditProfileFormProps) => {
           label="Website"
           errors={errors}
         />
-        <FloatInput
-          register={register}
-          fieldName="birthDate"
-          label="BirthDate"
-          errors={errors}
-          type="date"
-        />
+        {!showEditBirthDate && (
+          <button
+            className="w-fit relative flex gap-4 text-text-primary-dark"
+            onClick={() => setShowEditBirthDate(!showEditBirthDate)}
+          >
+            <span className="absolute scale-75 origin-left -translate-y-6 text-text-secondary-dark top-0 left-0">
+              Birth Date
+            </span>
+            {profile.birthDate && (
+              <div className="">{profile.birthDate.toDateString()}</div>
+            )}
+            <span className="text-primary-100">
+              {!profile.birthDate && 'Add Birth Date'}
+              {profile.birthDate && 'Edit Birth Date'}
+            </span>
+          </button>
+        )}
+        {showEditBirthDate && (
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowEditBirthDate(!showEditBirthDate);
+                resetField('birthDate');
+              }}
+              className="absolute -translate-y-6 z-40 scale-90 text-primary-100 top-0 right-0"
+            >
+              Cancel
+            </button>
+            <FloatInput
+              register={register}
+              fieldName="birthDate"
+              label="Birth Date"
+              errors={errors}
+              type="date"
+            />
+          </div>
+        )}
       </div>
     </form>
   );
