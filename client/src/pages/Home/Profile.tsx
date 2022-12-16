@@ -6,6 +6,11 @@ import Button from '../../components/UI/Button';
 import DynamicNavTitle from '../../components/UI/DynamicNavTitle';
 import { useAppContext } from '../../context/AppContext';
 import { displayDate } from '../../utils/dateConvert';
+import {
+  IoCalendarOutline,
+  IoLinkOutline,
+  IoLocationOutline,
+} from 'react-icons/io5';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -74,10 +79,37 @@ const Profile = () => {
               {profile.bio}
             </div>
           )}
-          <div className="text-text-secondary-dark text-md">
-            <div>{profile?.location}</div>
-            <div>{profile?.website}</div>
-            <div>{displayDate(new Date(profile.birthDate as string))}</div>
+          <div className="text-text-secondary-dark flex gap-6 text-md">
+            {profile.location && (
+              <div className="flex items-center gap-1">
+                <span>
+                  <IoLocationOutline />
+                </span>
+                <span>{profile.location}</span>
+              </div>
+            )}
+            {profile.website && (
+              <div className="flex items-center gap-1">
+                <span className="pt-1">
+                  <IoLinkOutline />
+                </span>
+                <span>
+                  <a target="_blank" href={`//${profile.website}`}>
+                    {profile?.website}
+                  </a>
+                </span>
+              </div>
+            )}
+            {profile.birthDate && (
+              <div className="flex items-center gap-1">
+                <span>
+                  <IoCalendarOutline />
+                </span>
+                <span>
+                  {displayDate(new Date(profile.birthDate as string))}
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex gap-6 text-text-primary-dark text-md py-2 font-bold">
             <div onClick={() => {}} className="cursor-pointer hover:underline">

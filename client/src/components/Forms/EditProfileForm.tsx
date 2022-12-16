@@ -25,7 +25,7 @@ const validationProfileSchema = yup.object().shape({
   displayName: yup.string().max(30),
   location: yup.string().max(30),
   birthDate: yup.date().nullable().typeError('Invalid Date'),
-  website: yup.string().max(60).matches(re, 'url not valid'),
+  website: yup.string().max(60),
 });
 
 const EditProfileForm = ({
