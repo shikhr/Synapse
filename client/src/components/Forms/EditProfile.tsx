@@ -8,7 +8,7 @@ import EditProfileForm from './EditProfileForm';
 const EditProfile = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { getProfile, authFetch } = useAppContext();
+  const { getProfile, user, authFetch, updateUser } = useAppContext();
 
   const updateProfileHandler = async (formData: FormData) => {
     return authFetch.patch('/users/profile', formData);
@@ -17,6 +17,7 @@ const EditProfile = () => {
   const { mutate: updateProfile } = useMutation(updateProfileHandler, {
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
+      updateUser(data.data);
       navigate('/profile/me', { replace: true });
     },
   });

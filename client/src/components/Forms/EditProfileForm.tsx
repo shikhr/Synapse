@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { UseMutateFunction } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { convertDateTOYYMMDD, displayDate } from '../../utils/dateConvert';
+import { format } from 'date-fns';
 
 interface EditProfileFormProps {
   profile: IUserProfile;
@@ -49,7 +49,7 @@ const EditProfileForm = ({
       avatar: undefined,
       bio: profile.bio || '',
       birthDate:
-        convertDateTOYYMMDD(new Date(profile.birthDate as string)) || null,
+        format(new Date(profile.birthDate as string), 'yyyy-MM-dd') || null,
       displayName: profile.displayName || '',
       location: profile.location || '',
       website: profile.website || '',
@@ -160,7 +160,9 @@ const EditProfileForm = ({
               Birth Date
             </span>
             {profile.birthDate && (
-              <div className="">{displayDate(new Date(profile.birthDate))}</div>
+              <div className="">
+                {format(new Date(profile.birthDate), 'MMM dd, yyyy')}
+              </div>
             )}
             <span className="text-primary-100">
               {!profile.birthDate && 'Add Birth Date'}
