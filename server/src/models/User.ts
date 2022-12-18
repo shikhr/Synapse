@@ -1,4 +1,4 @@
-import { model, Model, Schema } from 'mongoose';
+import mongoose, { model, Model, Schema } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -29,7 +29,10 @@ interface UserInterface extends IUser {
 }
 interface UserModel extends Model<UserInterface> {
   // static methods
-  getFullProfile: (matchId: string, userId: string) => Promise<any>;
+  getFullProfile: (
+    matchId: mongoose.Types.ObjectId,
+    userId: mongoose.Types.ObjectId
+  ) => Promise<any>;
 }
 
 const userSchema = new Schema<IUser, UserModel>({
@@ -152,7 +155,10 @@ userSchema.method('getUserProfile', function () {
 
 userSchema.static(
   'getFullProfile',
-  async function (matchId: string, userId: string) {
+  async function (
+    matchId: mongoose.Types.ObjectId,
+    userId: mongoose.Types.ObjectId
+  ) {
     return await User.aggregate([
       { $match: { _id: matchId } },
       {

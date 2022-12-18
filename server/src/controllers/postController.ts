@@ -32,7 +32,7 @@ const getPost = async (req: any, res: Response) => {
 
 const getFeed = async (req: any, res: Response) => {
   // const { page } = req.query;
-  const feed = await Post.getFeed(req.user, req.query);
+  const [feed] = await Post.getFeed(req.user, req.query);
 
   res.status(200).send(feed);
 };

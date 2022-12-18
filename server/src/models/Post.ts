@@ -24,7 +24,7 @@ const postSchema = new Schema<IPost, PostModel>(
     description: {
       type: String,
       required: true,
-      maxlength: 400,
+      maxlength: 1000,
       trim: true,
     },
     createdBy: {
@@ -59,6 +59,7 @@ const aggregatePipeline = {
       {
         $project: {
           username: 1,
+          displayName: 1,
           avatarId: 1,
         },
       },
@@ -107,10 +108,6 @@ postSchema.static('getFeed', async function (user, { page }) {
     {
       $project: {
         _id: 1,
-        description: 1,
-        createdAt: 1,
-        likes: 1,
-        followExists: 1,
       },
     },
     {
@@ -121,35 +118,29 @@ postSchema.static('getFeed', async function (user, { page }) {
             $count: 'count',
           },
           {
-            $project: {
+            $addFields: {
+              currentPage: Number(page),
+              hasMorePages: { $gt: ['$count', Number(page) * size] },
               totalPages: { $ceil: { $divide: ['$count', size] } },
+            },
+          },
+          {
+            $project: {
+              currentPage: 1,
+              hasMorePages: 1,
+              totalPages: 1,
             },
           },
         ],
       },
     },
+    {
+      $addFields: {
+        mydata: '$mydata._id',
+      },
+    },
   ]);
 });
-
-// postSchema.static('getFeed', async function (id) {
-//   return await this.aggregate([
-//     { $sort: { createdAt: -1 } },
-//     aggregatePipeline,
-//     {
-//       $addFields: {
-//         likesCount: { $size: '$likes' },
-//         hasLiked: {
-//           $in: [id, '$likes'],
-//         },
-//       },
-//     },
-//     {
-//       $project: {
-//         likes: 0,
-//       },
-//     },
-//   ]);
-// });
 
 const Post = model<IPost, PostModel>('Post', postSchema);
 

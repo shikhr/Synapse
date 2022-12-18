@@ -5,7 +5,7 @@ import Banner from '../../components/Avatar/Banner';
 import Button from '../../components/UI/Button';
 import DynamicNavTitle from '../../components/UI/DynamicNavTitle';
 import { useAppContext } from '../../context/AppContext';
-import { displayDate } from '../../utils/dateConvert';
+import { format } from 'date-fns';
 import {
   IoCalendarOutline,
   IoLinkOutline,
@@ -22,9 +22,7 @@ const Profile = () => {
     isLoading,
     isError,
     data: profile,
-  } = useQuery(['profile', userId], getProfile, {
-    refetchOnWindowFocus: false,
-  });
+  } = useQuery(['profile', userId], getProfile);
   if (isLoading) {
     return <div>loading</div>;
   }
@@ -37,7 +35,7 @@ const Profile = () => {
         <div className="relative w-full h-40">
           <Banner sourceId={profile.avatarId}>
             <div className="absolute bottom-0 translate-y-1/2 left-10">
-              <div className="w-28 xs:w-32 aspect-square bg-primary-0 rounded-full">
+              <div className="w-28 text-7xl xs:w-32 aspect-square bg-primary-0 rounded-full">
                 <Avatar sourceId={profile.avatarId} />
               </div>
             </div>
@@ -106,7 +104,10 @@ const Profile = () => {
                   <IoCalendarOutline />
                 </span>
                 <span>
-                  {displayDate(new Date(profile.birthDate as string))}
+                  {format(
+                    new Date(profile.birthDate as string),
+                    'MMM dd, yyyy'
+                  )}
                 </span>
               </div>
             )}

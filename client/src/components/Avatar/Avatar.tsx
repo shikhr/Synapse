@@ -18,7 +18,7 @@ const Avatar = ({ sourceId }: { sourceId: any }) => {
   return (
     <div className="w-full h-full rounded-full overflow-hidden bg-gray-700 flex justify-center items-center">
       {defaultAvatar && (
-        <div className="text-7xl text-gray-200">
+        <div className="text-gray-200">
           <FaUserCircle />
         </div>
       )}

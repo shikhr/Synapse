@@ -32,13 +32,15 @@ interface IAppContext {
   isLoggedIn: boolean;
   authFetch: any;
   registerUserSuccess: (data: ILocalStorageData) => void;
+  updateUser: (data: IUser | null) => void;
   getProfile: ({ queryKey }: QueryFunctionContext) => Promise<IUserProfile>;
 }
 
 const initialAppState: IAppContext = {
   user: user ? JSON.parse(user) : null,
-  isLoggedIn: accessToken && refreshToken ? true : false,
+  isLoggedIn: user && accessToken && refreshToken ? true : false,
   registerUserSuccess: () => {},
+  updateUser: () => {},
   authFetch: undefined,
   getProfile: () => Promise.resolve(defaultUserProfile),
 };
@@ -106,6 +108,18 @@ const AppProvider = ({ children }: AppProviderProps) => {
     });
   };
 
+  const updateUser = (user: IUser | null) => {
+    saveUserToLocalStorage({
+      user: user as IUser,
+      accessToken: accessToken as string,
+      refreshToken: refreshToken as string,
+    });
+    dispatch({
+      type: ActionKind.REGISTER_USER_SUCCESS,
+      payload: { user },
+    });
+  };
+
   const refreshAccessToken = async () => {
     try {
       const { data } = await axios.get('/api/v1/auth/refresh', {
@@ -146,7 +160,13 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   return (
     <AppContext.Provider
-      value={{ ...state, authFetch, getProfile, registerUserSuccess }}
+      value={{
+        ...state,
+        authFetch,
+        getProfile,
+        registerUserSuccess,
+        updateUser,
+      }}
     >
       {children}
     </AppContext.Provider>

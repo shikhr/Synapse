@@ -7,10 +7,12 @@ import Avatar from '../models/Avatar.js';
 import User from '../models/User.js';
 
 const getProfile = async (req: any, res: Response) => {
-  const id = req.params.id === 'me' ? req.user._id : req.params.id;
+  let id = req.params.id === 'me' ? req.user._id : req.params.id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new NotFoundError('No user found');
+  } else {
+    id = new mongoose.Types.ObjectId(id);
   }
   const [userProfile] = await User.getFullProfile(id, req.user._id);
   if (!userProfile) {
@@ -52,7 +54,7 @@ const updateProfile = async (req: any, res: Response) => {
     upsert: true,
     new: true,
   });
-  res.send('Profile updated');
+  res.send(updatedUser.getUserProfile());
 };
 
 const followUser = async (req: any, res: Response) => {
@@ -74,7 +76,7 @@ const followUser = async (req: any, res: Response) => {
   if (!followedUser) {
     throw new BadRequestError('User not found');
   }
-  res.status(200).send(followedUser);
+  res.status(200).send('User followed');
 };
 
 const unfollowUser = async (req: any, res: Response) => {
@@ -96,7 +98,7 @@ const unfollowUser = async (req: any, res: Response) => {
   if (!unfollowedUser) {
     throw new BadRequestError('User not found');
   }
-  res.status(200).send(unfollowedUser);
+  res.status(200).send('User unfollowed');
 };
 
 const getAvatar = async (req: any, res: Response) => {
