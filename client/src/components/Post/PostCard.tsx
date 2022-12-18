@@ -7,7 +7,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 import Avatar from '../Avatar/Avatar';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsHeart, BsHeartFill, BsThreeDots } from 'react-icons/bs';
 import { FaHeart, FaCommentAlt, FaBookmark, FaShare } from 'react-icons/fa';
 import PostIiconContainer from './PostIconContainer';
 import { formatDistanceToNowStrict } from 'date-fns';
@@ -129,9 +129,13 @@ const PostCard = ({ id }: PostCardProps) => {
         </div>
 
         <div className="flex w-full pr-1 max-w-lg justify-between text-sm sm:text-base pt-6 text-text-secondary-dark">
-          <PostIiconContainer onClick={() => {}} color={`text-red-600`}>
-            <FaHeart />
-            <span>hi</span>
+          <PostIiconContainer
+            onClick={() => {}}
+            color={`${post.hasLiked && 'text-red-600'} hover:text-red-600`}
+          >
+            {post.hasLiked && <BsHeartFill />}
+            {!post.hasLiked && <BsHeart />}
+            <span>{post.likesCount}</span>
           </PostIiconContainer>
           <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
             <FaCommentAlt />
