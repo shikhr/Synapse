@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import {
   addPost,
+  deletePost,
   getFeed,
   getPost,
   likePost,
@@ -14,7 +15,7 @@ const upload = multer();
 router.route('/').post(upload.array('media'), addPost);
 
 router.route('/feed').get(getFeed);
-router.route('/:postId').get(getPost);
+router.route('/:postId').get(getPost).delete(deletePost);
 
 router.route('/like').put(likePost);
 

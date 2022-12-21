@@ -12,29 +12,11 @@ import { FaHeart, FaCommentAlt, FaBookmark, FaShare } from 'react-icons/fa';
 import PostIiconContainer from './PostIconContainer';
 import { formatDistanceToNowStrict } from 'date-fns';
 import PostImages from './PostImages';
-import PostPopup from '../UI/PostPopup';
-import Overlay from '../UI/Overlay';
-import { useState } from 'react';
-import PostPopupItem from './PostPopupItem';
+import KebabMenu from './KebabMenu';
+import { IPostData } from '../../types/Post.types';
 
 interface PostCardProps {
   id: string;
-}
-interface ICreatedBy {
-  _id: string;
-  username: string;
-  avatarId: string;
-  displayName: string;
-}
-
-interface IPostData {
-  _id: string;
-  createdAt: string;
-  createdBy: ICreatedBy[];
-  description: string;
-  hasLiked: boolean;
-  likesCount: number;
-  media: string[];
 }
 
 const PostCard = ({ id }: PostCardProps) => {
@@ -46,7 +28,7 @@ const PostCard = ({ id }: PostCardProps) => {
     const { data } = await authFetch.get(`/posts/${postId}`);
     return data[0];
   };
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   const {
     data: post,
     isLoading,
@@ -62,28 +44,28 @@ const PostCard = ({ id }: PostCardProps) => {
     return <div>loading</div>;
   }
   if (isError) {
-    return <div>errorr</div>;
+    return <div></div>;
   }
 
   return (
     <div className="flex items-start gap-3 px-3 py-4 hover:bg-opacity-20 duration-300 hover:bg-background-overlay-dark border-b border-text-secondary-dark cursor-pointer transition-colors">
       <Link
-        to={`/profile/${post.createdBy[0]._id}`}
+        to={`/profile/${post.createdBy._id}`}
         className="aspect-square shrink-0 basis-14 text-5xl"
       >
-        <Avatar sourceId={post.createdBy[0].avatarId} />
+        <Avatar sourceId={post.createdBy.avatarId} />
       </Link>
 
       <div className="basis-full flex flex-col text-text-primary-dark">
         <div className="flex items-center justify-between w-full">
           <div onClick={() => {}} className="flex flex-col justify-start">
             <Link
-              to={`/profile/${post.createdBy[0]._id}`}
+              to={`/profile/${post.createdBy._id}`}
               className="flex gap-2 items-center justify-start"
             >
-              <span className="font-bold">{post.createdBy[0].displayName}</span>
+              <span className="font-bold">{post.createdBy.displayName}</span>
               <span className="text-text-secondary-dark text-sm font-semibold">
-                @{post.createdBy[0].username}
+                @{post.createdBy.username}
               </span>
             </Link>
             <span className="text-text-secondary-dark text-sm font-semibold">
@@ -92,35 +74,11 @@ const PostCard = ({ id }: PostCardProps) => {
               })}
             </span>
           </div>
-          <div className="relative">
-            <div
-              onClick={() => setIsPopupOpen(!isPopupOpen)}
-              className=" text-text-secondary-dark text-lg p-2 rounded-full duration-300 hover:bg-background-overlay-dark"
-            >
-              <BsThreeDots />
-            </div>
-            {isPopupOpen && (
-              <div>
-                <PostPopup closePopup={() => setIsPopupOpen(!isPopupOpen)}>
-                  <div className="flex flex-col">
-                    {post.createdBy[0].username === user?.username && (
-                      <PostPopupItem onClick={() => {}}>
-                        <span>Delete</span>
-                      </PostPopupItem>
-                    )}
-                    {post.createdBy[0].username !== user?.username && (
-                      <PostPopupItem onClick={() => {}}>
-                        <span>Follow @{post.createdBy[0].username}</span>
-                      </PostPopupItem>
-                    )}
-                    <PostPopupItem onClick={() => {}}>
-                      <span>Report</span>
-                    </PostPopupItem>
-                  </div>
-                </PostPopup>
-              </div>
-            )}
-          </div>
+          <KebabMenu
+            createdBy={post.createdBy}
+            postId={post._id}
+            followExists={post.followExists}
+          />
         </div>
 
         <div className="flex flex-col">

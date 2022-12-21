@@ -22,7 +22,7 @@ const Hot = () => {
     status,
   } = useInfiniteQuery(['feed', 'hot'], fetchFeed, {
     getNextPageParam: (lastPage, pages) => {
-      const { hasMorePages, currentPage } = lastPage.meta[0];
+      const { hasMorePages, currentPage } = lastPage.meta;
       return hasMorePages ? currentPage + 1 : undefined;
     },
   });

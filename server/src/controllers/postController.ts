@@ -18,14 +18,17 @@ const addPost = async (req: any, res: Response) => {
   }
   const post = await Post.create(postParams);
   res.send({
-    post: await post.getPostInfo(user._id),
+    post: await post.getPostInfo(user),
   });
 };
 
 const getPost = async (req: any, res: Response) => {
   const { postId } = req.params;
   const post = await Post.findById(postId);
-  const fullPost = await post?.getPostInfo(req.user._id);
+  if (!post) {
+    throw new BadRequestError('Post not found');
+  }
+  const fullPost = await post?.getPostInfo(req.user);
 
   res.status(200).send(fullPost);
 };
@@ -49,8 +52,21 @@ const likePost = async (req: any, res: Response) => {
     throw new BadRequestError('Invalid key');
   }
   const post = await Post.findByIdAndUpdate(postId, options);
-  const postInfo = await post?.getPostInfo(req.user._id);
+  const postInfo = await post?.getPostInfo(req.user);
   res.status(200).send(postInfo);
 };
 
-export { addPost, getPost, getFeed, likePost };
+const deletePost = async (req: any, res: Response) => {
+  const { postId } = req.params;
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new BadRequestError('Post not found');
+  }
+  if (!req.user._id.equals(post.createdBy)) {
+    throw new BadRequestError('Post not created by user');
+  }
+  await Post.findByIdAndDelete(postId);
+  res.send('Successfully Deleted');
+};
+
+export { addPost, getPost, getFeed, likePost, deletePost };

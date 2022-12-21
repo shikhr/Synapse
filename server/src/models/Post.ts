@@ -1,5 +1,5 @@
 import { Schema, model, Model } from 'mongoose';
-import User from './User.js';
+import User, { UserModel } from './User.js';
 
 interface IPost {
   description: string;
@@ -9,14 +9,11 @@ interface IPost {
 }
 
 interface PostInterface extends IPost {
-  getPostInfo(id: Schema.Types.ObjectId): Promise<any>;
+  getPostInfo(user: UserModel): Promise<any>;
 }
 
 interface PostModel extends Model<PostInterface> {
-  getFeed(
-    id: Schema.Types.ObjectId,
-    options: Record<string, any>
-  ): Promise<any>;
+  getFeed(user: UserModel, options: Record<string, any>): Promise<any>;
 }
 
 const postSchema = new Schema<IPost, PostModel>(
@@ -50,34 +47,44 @@ const postSchema = new Schema<IPost, PostModel>(
   }
 );
 
-const aggregatePipeline = {
-  $lookup: {
-    from: User.collection.name,
-    localField: 'createdBy',
-    foreignField: '_id',
-    pipeline: [
-      {
-        $project: {
-          username: 1,
-          displayName: 1,
-          avatarId: 1,
+const aggregatePipeline = [
+  {
+    $lookup: {
+      from: User.collection.name,
+      localField: 'createdBy',
+      foreignField: '_id',
+      pipeline: [
+        {
+          $project: {
+            username: 1,
+            displayName: 1,
+            avatarId: 1,
+          },
         },
-      },
-    ],
-    as: 'createdBy',
+      ],
+      as: 'createdBy',
+    },
   },
-};
+  {
+    $set: {
+      createdBy: { $first: '$createdBy' },
+    },
+  },
+];
 
-postSchema.method('getPostInfo', async function (id) {
+postSchema.method('getPostInfo', async function (user) {
   const post = this;
   return await Post.aggregate([
     { $match: { _id: post._id } },
-    aggregatePipeline,
+    ...aggregatePipeline,
     {
-      $addFields: {
+      $set: {
         likesCount: { $size: '$likes' },
         hasLiked: {
-          $in: [id, '$likes'],
+          $in: [user._id, '$likes'],
+        },
+        followExists: {
+          $in: ['$createdBy._id', user.following],
         },
       },
     },
@@ -135,8 +142,9 @@ postSchema.static('getFeed', async function (user, { page }) {
       },
     },
     {
-      $addFields: {
+      $set: {
         mydata: '$mydata._id',
+        meta: { $first: '$meta' },
       },
     },
   ]);
