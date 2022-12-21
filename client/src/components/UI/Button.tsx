@@ -1,6 +1,6 @@
 interface PrimaryButtonProps {
   children: React.ReactNode;
-  onClick: () => any;
+  onClick?: () => any;
   variant: 'primary' | 'standard';
   disabled?: boolean | undefined;
   type?: 'button' | 'submit' | 'reset';
