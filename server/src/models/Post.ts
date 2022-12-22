@@ -1,4 +1,4 @@
-import { Schema, model, Model } from 'mongoose';
+import mongoose, { Schema, model, Model } from 'mongoose';
 import User, { UserModel } from './User.js';
 
 interface IPost {
@@ -96,59 +96,85 @@ postSchema.method('getPostInfo', async function (user) {
   ]);
 });
 
-postSchema.static('getFeed', async function (user, { page }) {
-  const size = 3;
-  return await this.aggregate([
+postSchema.static(
+  'getFeed',
+  async function (
+    user,
     {
-      $match: {
-        createdAt: { $gt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
+      page,
+      filterBy = 'hot',
+      createdBy,
+    }: { page: number; filterBy: 'hot' | 'new'; createdBy: string }
+  ) {
+    const size = 3;
+    const query: any = {
+      hot: {
+        match: {
+          createdAt: { $gt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
+        },
+        sort: { followExists: -1, likes: -1, createdAt: -1 },
       },
-    },
-    {
-      $addFields: {
-        followExists: {
-          $in: ['$createdBy', user.following],
+      new: {
+        match: {},
+        sort: { followExists: -1, createdAt: -1 },
+      },
+    };
+    const matchQuery = query[filterBy].match;
+    if (createdBy) {
+      matchQuery.createdBy = new mongoose.Types.ObjectId(createdBy);
+    }
+    const sortQuery = query[filterBy].sort;
+
+    return await this.aggregate([
+      {
+        $match: matchQuery,
+      },
+      {
+        $addFields: {
+          followExists: {
+            $in: ['$createdBy', user.following],
+          },
         },
       },
-    },
-    { $sort: { followExists: -1, likes: -1, createdAt: -1 } },
-    {
-      $project: {
-        _id: 1,
+      { $sort: sortQuery },
+      {
+        $project: {
+          _id: 1,
+        },
       },
-    },
-    {
-      $facet: {
-        mydata: [{ $skip: (page - 1) * size }, { $limit: size }],
-        meta: [
-          {
-            $count: 'count',
-          },
-          {
-            $addFields: {
-              currentPage: Number(page),
-              hasMorePages: { $gt: ['$count', Number(page) * size] },
-              totalPages: { $ceil: { $divide: ['$count', size] } },
+      {
+        $facet: {
+          mydata: [{ $skip: (page - 1) * size }, { $limit: size }],
+          meta: [
+            {
+              $count: 'count',
             },
-          },
-          {
-            $project: {
-              currentPage: 1,
-              hasMorePages: 1,
-              totalPages: 1,
+            {
+              $addFields: {
+                currentPage: Number(page),
+                hasMorePages: { $gt: ['$count', Number(page) * size] },
+                totalPages: { $ceil: { $divide: ['$count', size] } },
+              },
             },
-          },
-        ],
+            {
+              $project: {
+                currentPage: 1,
+                hasMorePages: 1,
+                totalPages: 1,
+              },
+            },
+          ],
+        },
       },
-    },
-    {
-      $set: {
-        mydata: '$mydata._id',
-        meta: { $first: '$meta' },
+      {
+        $set: {
+          mydata: '$mydata._id',
+          meta: { $first: '$meta' },
+        },
       },
-    },
-  ]);
-});
+    ]);
+  }
+);
 
 const Post = model<IPost, PostModel>('Post', postSchema);
 

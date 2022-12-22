@@ -17,9 +17,7 @@ const addPost = async (req: any, res: Response) => {
     postParams.media = data.map((item) => item.data.url);
   }
   const post = await Post.create(postParams);
-  res.send({
-    post: await post.getPostInfo(user),
-  });
+  res.send(await post.getPostInfo(user));
 };
 
 const getPost = async (req: any, res: Response) => {
