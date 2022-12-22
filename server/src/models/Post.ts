@@ -106,7 +106,7 @@ postSchema.static(
       createdBy,
     }: { page: number; filterBy: 'hot' | 'new'; createdBy: string }
   ) {
-    const size = 3;
+    const size = 5;
     const query: any = {
       hot: {
         match: {

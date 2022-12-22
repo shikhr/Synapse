@@ -26,8 +26,8 @@ const KebabMenu = ({ createdBy, postId, followExists }: KebabMenuProps) => {
   };
   const { mutate: deletePost } = useMutation(deletePostHandler, {
     onSuccess(data, variables, context) {
-      queryClient.invalidateQueries(['feed']);
       queryClient.removeQueries(['post', postId]);
+      queryClient.invalidateQueries(['feed']);
       console.log(data.data);
     },
   });

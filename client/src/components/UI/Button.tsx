@@ -25,7 +25,7 @@ const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${colorStyles[variant]} p-2 w-full rounded-full capitalize font-semibold transition-colors duration-300`}
+      className={`${colorStyles[variant]} p-2 w-full disabled:cursor-not-allowed rounded-full capitalize font-semibold transition-colors duration-300`}
     >
       {children}
     </button>
