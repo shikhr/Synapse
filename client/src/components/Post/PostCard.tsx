@@ -4,7 +4,7 @@ import {
   QueryKey,
   useQuery,
 } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 import Avatar from '../Avatar/Avatar';
 import { BsHeart, BsHeartFill, BsThreeDots } from 'react-icons/bs';
@@ -21,6 +21,8 @@ interface PostCardProps {
 
 const PostCard = ({ id }: PostCardProps) => {
   const { authFetch, user } = useAppContext();
+  const navigate = useNavigate();
+
   const fetchPost = async ({
     queryKey,
   }: QueryFunctionContext): Promise<IPostData> => {
@@ -40,6 +42,10 @@ const PostCard = ({ id }: PostCardProps) => {
     refetchOnWindowFocus: false,
   });
 
+  const openFullPost = (id: string) => {
+    navigate(`/post/${id}`);
+  };
+
   if (isLoading) {
     return <div>loading</div>;
   }
@@ -56,7 +62,10 @@ const PostCard = ({ id }: PostCardProps) => {
         <Avatar sourceId={post.createdBy.avatarId} />
       </Link>
 
-      <div className="basis-full flex flex-col text-text-primary-dark">
+      <div
+        onClick={() => openFullPost(post._id)}
+        className="basis-full flex flex-col text-text-primary-dark"
+      >
         <div className="flex items-center justify-between w-full">
           <div onClick={() => {}} className="flex flex-col justify-start">
             <Link

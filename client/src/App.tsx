@@ -1,6 +1,7 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import EditProfile from './components/Forms/EditProfile';
+import FullPost from './components/Post/FullPost';
 import AppProvider from './context/AppContext';
 
 import {
@@ -32,6 +33,7 @@ function App() {
             }
           >
             <Route index element={<Home />} />
+            <Route path="post/:postId" element={<FullPost />} />
             <Route path="profile/:userId" element={<Profile />} />
             <Route path="bookmarks" element={<Bookmarks />} />
             <Route path="explore" element={<Explore />} />
