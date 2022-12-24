@@ -48,8 +48,9 @@ const EditProfileForm = ({
     defaultValues: {
       avatar: undefined,
       bio: profile.bio || '',
-      birthDate:
-        format(new Date(profile.birthDate as string), 'yyyy-MM-dd') || null,
+      birthDate: profile.birthDate
+        ? format(new Date(profile.birthDate as string), 'yyyy-MM-dd')
+        : null,
       displayName: profile.displayName || '',
       location: profile.location || '',
       website: profile.website || '',

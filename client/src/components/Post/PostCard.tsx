@@ -14,6 +14,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import PostImages from './PostImages';
 import KebabMenu from './KebabMenu';
 import { IPostData } from '../../types/Post.types';
+import React from 'react';
 
 interface PostCardProps {
   id: string;
@@ -28,7 +29,7 @@ const PostCard = ({ id }: PostCardProps) => {
   }: QueryFunctionContext): Promise<IPostData> => {
     const postId = queryKey[1];
     const { data } = await authFetch.get(`/posts/${postId}`);
-    return data[0];
+    return data;
   };
 
   const {
@@ -54,20 +55,24 @@ const PostCard = ({ id }: PostCardProps) => {
   }
 
   return (
-    <div className="flex items-start gap-3 px-3 py-4 hover:bg-opacity-20 duration-300 hover:bg-background-overlay-dark border-b border-text-secondary-dark cursor-pointer transition-colors">
+    <div
+      onClick={() => openFullPost(post._id)}
+      className="flex items-start gap-3 px-3 py-4 hover:bg-opacity-20 duration-300 hover:bg-background-overlay-dark border-b border-text-secondary-dark cursor-pointer transition-colors"
+    >
       <Link
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
         to={`/profile/${post.createdBy._id}`}
         className="aspect-square shrink-0 basis-14 text-5xl"
       >
         <Avatar sourceId={post.createdBy.avatarId} />
       </Link>
 
-      <div
-        onClick={() => openFullPost(post._id)}
-        className="basis-full flex flex-col text-text-primary-dark"
-      >
+      <div className="basis-full flex flex-col text-text-primary-dark">
         <div className="flex items-center justify-between w-full">
-          <div onClick={() => {}} className="flex flex-col justify-start">
+          <div
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            className="flex flex-col justify-start"
+          >
             <Link
               to={`/profile/${post.createdBy._id}`}
               className="flex gap-2 items-center justify-start"
@@ -95,7 +100,10 @@ const PostCard = ({ id }: PostCardProps) => {
           {post.media.length > 0 && <PostImages media={post.media} />}
         </div>
 
-        <div className="flex w-full pr-1 max-w-lg justify-between text-sm sm:text-base pt-6 text-text-secondary-dark">
+        <div
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          className="flex w-full pr-1 max-w-lg justify-between text-sm sm:text-base pt-6 text-text-secondary-dark"
+        >
           <PostIiconContainer
             onClick={() => {}}
             color={`${post.hasLiked && 'text-red-600'} hover:text-red-600`}

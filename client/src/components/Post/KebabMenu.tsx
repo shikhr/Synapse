@@ -3,7 +3,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { useAppContext } from '../../context/AppContext';
 import { ICreatedBy } from '../../types/Post.types';
@@ -33,7 +33,10 @@ const KebabMenu = ({ createdBy, postId, followExists }: KebabMenuProps) => {
   });
 
   return (
-    <div className="relative">
+    <div
+      onClick={(e: React.MouseEvent) => e.stopPropagation()}
+      className="relative"
+    >
       <div
         onClick={() => setIsKebabPopupOpen(!isKebabPopupOpen)}
         className=" text-text-secondary-dark text-lg p-2 rounded-full duration-300 hover:bg-background-overlay-dark"
