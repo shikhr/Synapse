@@ -12,6 +12,7 @@ import notFoundMiddleware from './middleware/not-found.js';
 import AuthRouter from './routes/authRoutes.js';
 import PostRouter from './routes/postRoutes.js';
 import UserRouter from './routes/userRoutes.js';
+import CommentRouter from './routes/commentRoutes.js';
 
 import {
   AuthenticateJwtStrategy,
@@ -52,6 +53,12 @@ app.use(
   '/api/v1/users',
   passport.authenticate('authenticate_jwt', { session: false }),
   UserRouter
+);
+
+app.use(
+  '/api/v1/comments',
+  passport.authenticate('authenticate_jwt', { session: false }),
+  CommentRouter
 );
 
 // FALLBACK MIDDLEWARE
