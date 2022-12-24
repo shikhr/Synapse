@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from '../errors/errors.js';
 import Comment from '../models/Comments.js';
 import Post from '../models/Post.js';
 
-const postComment = async (req: any, res: Response) => {
+const addComment = async (req: any, res: Response) => {
   let { postId } = req.params;
   const { content } = req.body;
   if (!content) {
@@ -12,7 +12,7 @@ const postComment = async (req: any, res: Response) => {
   }
   const post = await Post.findById(postId);
   if (!post) {
-    throw new BadRequestError('Invalid post');
+    throw new NotFoundError('post not found');
   }
   const comment = await Comment.create({
     content,
@@ -75,7 +75,7 @@ const likeComment = async (req: any, res: Response) => {
   }
   const comment = await Comment.findByIdAndUpdate(commentId, options);
   if (!comment) {
-    throw new BadRequestError('comment not found');
+    throw new NotFoundError('comment not found');
   }
   const [commentInfo] = await Comment.getCommentInfo(comment._id, req.user);
   res.send(commentInfo);
@@ -97,7 +97,7 @@ const removeComment = async (req: any, res: Response) => {
 export {
   getComment,
   getCommentList,
-  postComment,
+  addComment,
   getUserComments,
   removeComment,
   likeComment,

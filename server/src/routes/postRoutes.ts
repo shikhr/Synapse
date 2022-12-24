@@ -5,6 +5,7 @@ import {
   deletePost,
   getFeed,
   getPost,
+  getUserPosts,
   likePost,
 } from '../controllers/postController.js';
 
@@ -15,6 +16,7 @@ const upload = multer();
 router.route('/').post(upload.array('media'), addPost);
 
 router.route('/feed').get(getFeed);
+router.route('/user/:userId').get(getUserPosts);
 router.route('/:postId').get(getPost).delete(deletePost);
 
 router.route('/like').put(likePost);

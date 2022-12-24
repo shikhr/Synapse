@@ -1,5 +1,6 @@
 import { Response } from 'express';
-import { BadRequestError } from '../errors/errors.js';
+import mongoose from 'mongoose';
+import { BadRequestError, NotFoundError } from '../errors/errors.js';
 import Post from '../models/Post.js';
 import { filestackFetch } from '../utils/filestackFetch.js';
 
@@ -17,25 +18,42 @@ const addPost = async (req: any, res: Response) => {
     postParams.media = data.map((item) => item.data.url);
   }
   const post = await Post.create(postParams);
-  res.send(await post.getPostInfo(user));
+  const [postInfo] = await Post.getPostInfo(post._id, user);
+  res.send(postInfo);
 };
 
 const getPost = async (req: any, res: Response) => {
-  const { postId } = req.params;
-  const post = await Post.findById(postId);
-  if (!post) {
-    throw new BadRequestError('Post not found');
+  let { postId } = req.params;
+  if (!mongoose.isValidObjectId(postId)) {
+    throw new BadRequestError('post id invalid');
+  } else {
+    postId = new mongoose.Types.ObjectId(postId);
   }
-  const fullPost = await post?.getPostInfo(req.user);
-
-  res.status(200).send(fullPost);
+  const [postInfo] = await Post.getPostInfo(postId, req.user);
+  if (!postInfo) {
+    throw new NotFoundError('comment not found');
+  }
+  res.status(200).send(postInfo);
 };
 
 const getFeed = async (req: any, res: Response) => {
-  // const { page } = req.query;
   const [feed] = await Post.getFeed(req.user, req.query);
 
   res.status(200).send(feed);
+};
+
+const getUserPosts = async (req: any, res: Response) => {
+  let { userId } = req.params;
+  if (!mongoose.isValidObjectId(userId)) {
+    throw new BadRequestError('user id invalid');
+  } else {
+    userId = new mongoose.Types.ObjectId(userId);
+  }
+  const [postList] = await Post.getFeed(req.user, {
+    createdBy: userId,
+    ...req.query,
+  });
+  res.send(postList);
 };
 
 const likePost = async (req: any, res: Response) => {
@@ -50,7 +68,10 @@ const likePost = async (req: any, res: Response) => {
     throw new BadRequestError('Invalid key');
   }
   const post = await Post.findByIdAndUpdate(postId, options);
-  const postInfo = await post?.getPostInfo(req.user);
+  if (!post) {
+    throw new NotFoundError('comment not found');
+  }
+  const [postInfo] = await Post.getPostInfo(post._id, req.user);
   res.status(200).send(postInfo);
 };
 
@@ -67,4 +88,4 @@ const deletePost = async (req: any, res: Response) => {
   res.send('Successfully Deleted');
 };
 
-export { addPost, getPost, getFeed, likePost, deletePost };
+export { addPost, getPost, getUserPosts, getFeed, likePost, deletePost };

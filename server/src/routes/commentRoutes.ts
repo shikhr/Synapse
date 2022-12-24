@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   getComment,
-  postComment,
+  addComment,
   removeComment,
   getCommentList,
   likeComment,
@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-router.route('/post/:postId').get(getCommentList).post(postComment);
+router.route('/post/:postId').get(getCommentList).post(addComment);
 router.route('/:commentId').get(getComment).delete(removeComment);
 router.route('/user/:userId').get(getUserComments);
 router.route('/like').put(likeComment);

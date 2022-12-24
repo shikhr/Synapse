@@ -9,8 +9,8 @@ import User from '../models/User.js';
 const getProfile = async (req: any, res: Response) => {
   let id = req.params.id === 'me' ? req.user._id : req.params.id;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new NotFoundError('No user found');
+  if (!mongoose.isValidObjectId(id)) {
+    throw new BadRequestError('No user found');
   } else {
     id = new mongoose.Types.ObjectId(id);
   }

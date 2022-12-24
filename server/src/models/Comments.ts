@@ -8,6 +8,13 @@ interface IComment {
   createdBy: Schema.Types.ObjectId;
 }
 
+interface queryOptions {
+  page: number;
+  filterBy: 'hot' | 'new';
+  createdBy: mongoose.Types.ObjectId;
+  postId?: mongoose.Types.ObjectId;
+}
+
 interface CommentInterface extends IComment {}
 
 interface CommentModel extends Model<CommentInterface> {
@@ -15,12 +22,7 @@ interface CommentModel extends Model<CommentInterface> {
     commentId: mongoose.Types.ObjectId,
     user: UserModel
   ): Promise<any>;
-  getCommentList(options: {
-    page: number;
-    filterBy: 'hot' | 'new';
-    createdBy: mongoose.Types.ObjectId;
-    postId?: mongoose.Types.ObjectId;
-  }): Promise<any>;
+  getCommentList(options: queryOptions): Promise<any>;
 }
 
 const commentSchema = new Schema<IComment, CommentModel>(
@@ -96,21 +98,28 @@ commentSchema.static('getCommentInfo', async function (commentId, user) {
 
 commentSchema.static(
   'getCommentList',
-  async function ({ page = 1, filterBy = 'hot', createdBy, postId }) {
+  async function ({
+    page = 1,
+    filterBy = 'hot',
+    createdBy,
+    postId,
+  }: queryOptions) {
     const size = 5;
     const sortQuery: any = {
       hot: { likes: -1 },
       new: { createdAt: -1 },
     };
-    const matchQuery: { postId?: mongoose.Types.ObjectId; createdBy?: any } =
-      {};
+    const matchQuery: {
+      postId?: mongoose.Types.ObjectId;
+      createdBy?: mongoose.Types.ObjectId;
+    } = {};
+
     if (createdBy) {
       matchQuery.createdBy = createdBy;
     }
     if (postId) {
       matchQuery.postId = postId;
     }
-    console.log(postId, createdBy);
     return await this.aggregate([
       { $match: matchQuery },
       { $sort: sortQuery[filterBy] },

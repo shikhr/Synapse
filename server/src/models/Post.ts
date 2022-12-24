@@ -8,12 +8,18 @@ interface IPost {
   media: Array<string>;
 }
 
-interface PostInterface extends IPost {
-  getPostInfo(user: UserModel): Promise<any>;
+interface queryOptions {
+  page: number;
+  filterBy: 'hot' | 'new';
+  createdBy: mongoose.Types.ObjectId;
+  postId?: mongoose.Types.ObjectId;
 }
 
+interface PostInterface extends IPost {}
+
 interface PostModel extends Model<PostInterface> {
-  getFeed(user: UserModel, options: Record<string, any>): Promise<any>;
+  getPostInfo(postId: mongoose.Types.ObjectId, user: UserModel): Promise<any>;
+  getFeed(user: UserModel, options: queryOptions): Promise<any>;
 }
 
 const postSchema = new Schema<IPost, PostModel>(
@@ -72,10 +78,9 @@ const aggregatePipeline = [
   },
 ];
 
-postSchema.method('getPostInfo', async function (user) {
-  const post = this;
-  return await Post.aggregate([
-    { $match: { _id: post._id } },
+postSchema.static('getPostInfo', async function (postId, user) {
+  return await this.aggregate([
+    { $match: { _id: postId } },
     ...aggregatePipeline,
     {
       $set: {
@@ -98,14 +103,7 @@ postSchema.method('getPostInfo', async function (user) {
 
 postSchema.static(
   'getFeed',
-  async function (
-    user,
-    {
-      page,
-      filterBy = 'hot',
-      createdBy,
-    }: { page: number; filterBy: 'hot' | 'new'; createdBy: string }
-  ) {
+  async function (user, { page, filterBy = 'hot', createdBy }: queryOptions) {
     const size = 5;
     const query: any = {
       hot: {
@@ -121,7 +119,7 @@ postSchema.static(
     };
     const matchQuery = query[filterBy].match;
     if (createdBy) {
-      matchQuery.createdBy = new mongoose.Types.ObjectId(createdBy);
+      matchQuery.createdBy = createdBy;
     }
     const sortQuery = query[filterBy].sort;
 
