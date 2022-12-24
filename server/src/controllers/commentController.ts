@@ -63,8 +63,24 @@ const getUserComments = async (req: any, res: Response) => {
 };
 
 const likeComment = async (req: any, res: Response) => {
-  res.send('like');
+  const { key, commentId } = req.body;
+  const userId = req.user._id;
+  const options: any = {};
+  if (key == 1) {
+    options['$addToSet'] = { likes: userId };
+  } else if (key == -1) {
+    options['$pull'] = { likes: userId };
+  } else {
+    throw new BadRequestError('Invalid key');
+  }
+  const comment = await Comment.findByIdAndUpdate(commentId, options);
+  if (!comment) {
+    throw new BadRequestError('comment not found');
+  }
+  const [commentInfo] = await Comment.getCommentInfo(comment._id, req.user);
+  res.send(commentInfo);
 };
+
 const removeComment = async (req: any, res: Response) => {
   const { commentId } = req.params;
   const comment = await Comment.findById(commentId);
