@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import mongoose from 'mongoose';
 import { BadRequestError, NotFoundError } from '../errors/errors.js';
+import Comment from '../models/Comments.js';
 import Post from '../models/Post.js';
 import { filestackFetch } from '../utils/filestackFetch.js';
 
@@ -84,6 +85,7 @@ const deletePost = async (req: any, res: Response) => {
   if (!req.user._id.equals(post.createdBy)) {
     throw new BadRequestError('Post not created by user');
   }
+  await Comment.deleteMany({ postId });
   await Post.findByIdAndDelete(postId);
   res.send('Successfully Deleted');
 };
