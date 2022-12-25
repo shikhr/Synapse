@@ -17,14 +17,17 @@ interface EditProfileFormProps {
   closeHandler: () => void;
   updateProfile: UseMutateFunction<any, unknown, FormData, unknown>;
 }
-const re =
-  /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
 const validationProfileSchema = yup.object().shape({
   bio: yup.string().max(150),
-  displayName: yup.string().max(30),
+  avatar: yup
+    .mixed()
+    .test('is-big-file', 'file is too big', (files?: FileList) => {
+      return !files || files.length === 0 || files[0].size < 1048576;
+    }),
+  displayName: yup.string().max(30).required(),
   location: yup.string().max(30),
-  birthDate: yup.date().nullable().typeError('Invalid Date'),
+  birthDate: yup.string().nullable().typeError('Invalid Date'),
   website: yup.string().max(60),
 });
 
@@ -41,7 +44,6 @@ const EditProfileForm = ({
     reset,
     watch,
     resetField,
-    setFocus,
     formState: { errors, dirtyFields },
   } = useForm<IEditFormFields>({
     resolver: yupResolver(validationProfileSchema),
@@ -65,7 +67,6 @@ const EditProfileForm = ({
       return;
     }
     const formData = new FormData();
-    console.log(touchedFields);
     Object.entries(data).forEach(([key, value]) => {
       if (touchedFields.includes(key)) {
         if (key === 'avatar' && data.avatar) {
@@ -100,7 +101,7 @@ const EditProfileForm = ({
       </div>
 
       <div className="flex flex-col gap-10 w-full py-4">
-        <div className="relative w-28 h-28">
+        <div className="relative w-28 h-28 mb-4">
           <div className="w-full h-full rounded-full group overflow-hidden border border-background-overlay-dark">
             <input
               className="absolute cursor-pointer opacity-0 inset-0 w-full h-full"
@@ -126,6 +127,11 @@ const EditProfileForm = ({
               <FaTimes />
             </button>
           )}
+          <div className="text-error text-xs py-1">
+            {errors['avatar'] && errors['avatar']?.message && (
+              <span className="lowercase">{errors['avatar'].message}</span>
+            )}
+          </div>
         </div>
 
         <FloatInput

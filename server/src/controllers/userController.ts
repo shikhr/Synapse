@@ -23,38 +23,35 @@ const getProfile = async (req: any, res: Response) => {
 };
 
 const updateProfile = async (req: any, res: Response) => {
-  const updateInfo = req.body;
-  const updatableParams = [
-    'avatarId',
-    'displayName',
-    'bio',
-    'birthDate',
-    'location',
-    'website',
-  ];
+  const updateBody = req.body;
+  const updateKeys = ['bio', 'website', 'birthDate', 'location'];
+  const user = req.user;
   if (req.file) {
     const avatarBuffer = await sharp(req.file.buffer)
       .resize({ width: 250, height: 250 })
       .png()
       .toBuffer();
     const avatar = await Avatar.create({ data: avatarBuffer });
-    if (req.user.avatarId) {
-      await Avatar.findByIdAndDelete(req.user.avatarId);
+    if (user.avatarId) {
+      await Avatar.findByIdAndDelete(user.avatarId);
     }
-    updateInfo.avatarId = avatar._id;
+    user.avatarId = avatar._id;
   }
-  const canUpdate = Object.keys(updateInfo).every((updateKey: string) =>
-    updatableParams.includes(updateKey)
-  );
-  if (!canUpdate) {
-    throw new BadRequestError('Incorrect update parameters');
+  if (updateBody.displayName) {
+    user.displayName = updateBody.displayName;
   }
-  console.log(updateInfo);
-  const updatedUser = await User.findByIdAndUpdate(req.user._id, updateInfo, {
-    upsert: true,
-    new: true,
+  updateKeys.forEach((key) => {
+    if (updateBody[key] !== undefined) {
+      if (updateBody[key] === '') {
+        user[key] = undefined;
+      } else {
+        user[key] = updateBody[key];
+      }
+    }
   });
-  res.send(updatedUser.getUserProfile());
+
+  await user.save();
+  res.send(user.getUserProfile());
 };
 
 const followUser = async (req: any, res: Response) => {
