@@ -32,7 +32,7 @@ const getPost = async (req: any, res: Response) => {
   }
   const [postInfo] = await Post.getPostInfo(postId, req.user);
   if (!postInfo) {
-    throw new NotFoundError('comment not found');
+    throw new NotFoundError('post not found');
   }
   res.status(200).send(postInfo);
 };
@@ -70,7 +70,7 @@ const likePost = async (req: any, res: Response) => {
   }
   const post = await Post.findByIdAndUpdate(postId, options);
   if (!post) {
-    throw new NotFoundError('comment not found');
+    throw new NotFoundError('Post not found');
   }
   const [postInfo] = await Post.getPostInfo(post._id, req.user);
   res.status(200).send(postInfo);
