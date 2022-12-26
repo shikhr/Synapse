@@ -1,6 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
+import FeedLoadingError from '../Errrors/FeedLoadingError';
 import PostCard from '../Post/PostCard';
+import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import Button from '../UI/Button';
 
 const Hot = () => {
@@ -13,23 +15,38 @@ const Hot = () => {
   };
 
   const {
+    isLoading,
+    isError,
+    isLoadingError,
     data,
-    error,
     fetchNextPage,
     hasNextPage,
-    isFetching,
     isFetchingNextPage,
-    status,
+    refetch,
   } = useInfiniteQuery(['feed', 'hot'], fetchFeed, {
+    retry: 2,
+    refetchOnWindowFocus: false,
     getNextPageParam: (lastPage, pages) => {
       const { hasMorePages, currentPage } = lastPage.meta;
       return hasMorePages ? currentPage + 1 : undefined;
     },
   });
 
+  if (isLoadingError) {
+    return <FeedLoadingError refetch={refetch} />;
+  }
+
   console.log(data);
   return (
     <div className="text-white">
+      {isLoading && (
+        <>
+          <PostLoadingSkeleton />
+          <PostLoadingSkeleton />
+          <PostLoadingSkeleton />
+          <PostLoadingSkeleton />
+        </>
+      )}
       <div className="flex flex-col">
         {data &&
           data.pages &&
@@ -46,6 +63,14 @@ const Hot = () => {
       >
         next
       </Button>
+      {isFetchingNextPage && (
+        <>
+          <PostLoadingSkeleton />
+        </>
+      )}
+      {isError && !isFetchingNextPage && (
+        <FeedLoadingError refetch={fetchNextPage} />
+      )}
     </div>
   );
 };

@@ -1,7 +1,5 @@
 import {
-  QueryFunction,
   QueryFunctionContext,
-  QueryKey,
   useMutation,
   useQuery,
   useQueryClient,
@@ -17,6 +15,8 @@ import PostImages from './PostImages';
 import KebabMenu from './KebabMenu';
 import { IPostData } from '../../types/Post.types';
 import React from 'react';
+import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
+import PostLoadingError from '../Errrors/PostLoadingError';
 
 interface PostCardProps {
   id: string;
@@ -43,11 +43,10 @@ const PostCard = ({ id }: PostCardProps) => {
     data: post,
     isLoading,
     isError,
-    status,
-    error,
-    isSuccess,
+    refetch,
   } = useQuery(['post', id], fetchPost, {
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   const { mutate: likePost } = useMutation(likePostHandler, {
@@ -80,10 +79,10 @@ const PostCard = ({ id }: PostCardProps) => {
   };
 
   if (isLoading) {
-    return <div>loading</div>;
+    return <PostLoadingSkeleton />;
   }
   if (isError) {
-    return <div></div>;
+    return <PostLoadingError refetch={refetch} />;
   }
 
   return (

@@ -66,7 +66,7 @@ const AddPostForm = () => {
   };
 
   return (
-    <div className="w-full flex justify-center border-b border-text-gray">
+    <div className="w-full flex justify-center border-b border-text-secondary-dark">
       <form
         className="w-full pt-6 px-4 flex flex-col gap-2 pb-4"
         onSubmit={handleSubmit(submitHandler)}
