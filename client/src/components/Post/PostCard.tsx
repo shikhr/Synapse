@@ -2,7 +2,9 @@ import {
   QueryFunction,
   QueryFunctionContext,
   QueryKey,
+  useMutation,
   useQuery,
+  useQueryClient,
 } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
@@ -21,8 +23,9 @@ interface PostCardProps {
 }
 
 const PostCard = ({ id }: PostCardProps) => {
-  const { authFetch, user } = useAppContext();
+  const { authFetch } = useAppContext();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const fetchPost = async ({
     queryKey,
@@ -30,6 +33,10 @@ const PostCard = ({ id }: PostCardProps) => {
     const postId = queryKey[1];
     const { data } = await authFetch.get(`/posts/${postId}`);
     return data;
+  };
+
+  const likePostHandler = async (data: { postId: string; key: string }) => {
+    return await authFetch.put('/posts/like', data);
   };
 
   const {
@@ -41,6 +48,31 @@ const PostCard = ({ id }: PostCardProps) => {
     isSuccess,
   } = useQuery(['post', id], fetchPost, {
     refetchOnWindowFocus: false,
+  });
+
+  const { mutate: likePost } = useMutation(likePostHandler, {
+    onMutate: async ({ key, postId }) => {
+      await queryClient.cancelQueries(['post', id]);
+      const prevPostData = queryClient.getQueryData(['post', id]);
+      queryClient.setQueryData(['post', id], (oldQueryData: any) => {
+        return {
+          ...oldQueryData,
+          likesCount:
+            key === '1'
+              ? oldQueryData.likesCount + 1
+              : oldQueryData.likesCount - 1,
+          hasLiked: key === '1' ? true : false,
+        };
+      });
+      return { prevPostData };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(['post', id], context?.prevPostData);
+      console.log({ error, variables, context });
+    },
+    onSettled: (data, error, variables, context) => {
+      queryClient.invalidateQueries(['post', id]);
+    },
   });
 
   const openFullPost = (id: string) => {
@@ -105,7 +137,10 @@ const PostCard = ({ id }: PostCardProps) => {
           className="flex w-full pr-1 max-w-lg justify-between text-sm sm:text-base pt-6 text-text-secondary-dark"
         >
           <PostIiconContainer
-            onClick={() => {}}
+            onClick={() => {
+              let key = post.hasLiked ? '-1' : '1';
+              likePost({ postId: post._id, key });
+            }}
             color={`${post.hasLiked && 'text-red-600'} hover:text-red-600`}
           >
             {post.hasLiked && <BsHeartFill />}
