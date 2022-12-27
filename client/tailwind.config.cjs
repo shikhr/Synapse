@@ -18,6 +18,14 @@ module.exports = {
       },
       zIndex: {
         '-1': '-1',
+        element: '10',
+        dropdown: '20',
+        sticky: '30',
+        overlay: '40',
+        modal: '50',
+        popover: '70',
+        tooltip: '80',
+        sudo: '999',
       },
     },
     screens: {
