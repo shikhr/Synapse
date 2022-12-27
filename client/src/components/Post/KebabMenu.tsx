@@ -6,6 +6,7 @@ import {
 import React, { useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { useAppContext } from '../../context/AppContext';
+import useOuterClick from '../../hooks/useOuterClick';
 import { ICreatedBy } from '../../types/Post.types';
 import PostPopup from '../UI/PostPopup';
 import PostPopupItem from './PostPopupItem';
@@ -17,9 +18,11 @@ interface KebabMenuProps {
 }
 
 const KebabMenu = ({ createdBy, postId, followExists }: KebabMenuProps) => {
-  const [isKebabPopupOpen, setIsKebabPopupOpen] = useState(false);
   const { authFetch, user } = useAppContext();
   const queryClient = useQueryClient();
+
+  const { innerRef, isComponentVisible, setIsComponentVisible } =
+    useOuterClick<HTMLDivElement>();
 
   const deletePostHandler = async (id: string) => {
     return await authFetch.delete(`/posts/${id}`);
@@ -38,14 +41,14 @@ const KebabMenu = ({ createdBy, postId, followExists }: KebabMenuProps) => {
       className="relative"
     >
       <div
-        onClick={() => setIsKebabPopupOpen(!isKebabPopupOpen)}
+        onClick={() => setIsComponentVisible(true)}
         className=" text-text-secondary-dark text-lg p-2 rounded-full duration-300 hover:bg-background-overlay-dark"
       >
         <BsThreeDots />
       </div>
-      {isKebabPopupOpen && (
-        <div>
-          <PostPopup closePopup={() => setIsKebabPopupOpen(!isKebabPopupOpen)}>
+      {isComponentVisible && (
+        <div ref={innerRef}>
+          <PostPopup>
             <div className="flex flex-col">
               {createdBy._id === user?._id && (
                 <PostPopupItem onClick={() => deletePost(postId)}>
