@@ -5,10 +5,12 @@ const useOuterClick = <T extends HTMLElement>() => {
   const ref = useRef<T | null>(null);
 
   const _onClick = (e: MouseEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
     const clickedOutside = !ref.current?.contains(e.target as Node);
-    if (clickedOutside) setIsComponentVisible(false);
+    if (clickedOutside) {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsComponentVisible(false);
+    }
   };
 
   const innerRef = useCallback((node: T) => {
