@@ -15,6 +15,7 @@ interface IUser {
   username: string;
   email: string;
   avatarId?: string;
+  displayName: string;
 }
 
 interface AppProviderProps {
@@ -33,6 +34,7 @@ interface IAppContext {
   authFetch: any;
   registerUserSuccess: (data: ILocalStorageData) => void;
   updateUser: (data: IUser | null) => void;
+  logoutUser: () => void;
   getProfile: ({ queryKey }: QueryFunctionContext) => Promise<IUserProfile>;
 }
 
@@ -41,6 +43,7 @@ const initialAppState: IAppContext = {
   isLoggedIn: user && accessToken && refreshToken ? true : false,
   registerUserSuccess: () => {},
   updateUser: () => {},
+  logoutUser: () => {},
   authFetch: undefined,
   getProfile: () => Promise.resolve(defaultUserProfile),
 };
@@ -120,6 +123,13 @@ const AppProvider = ({ children }: AppProviderProps) => {
     });
   };
 
+  const logoutUser = async () => {
+    accessToken = null;
+    refreshToken = null;
+    removeUserFromLocalStorage();
+    dispatch({ type: ActionKind.LOGOUT_USER });
+  };
+
   const refreshAccessToken = async () => {
     try {
       const { data } = await axios.get('/api/v1/auth/refresh', {
@@ -142,10 +152,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
     } catch (error: any) {
       if (error.response.status === 401) {
         // logout();
-        accessToken = null;
-        refreshToken = null;
-        removeUserFromLocalStorage();
-        dispatch({ type: ActionKind.LOGOUT_USER });
+        logoutUser();
       }
       return Promise.reject(error);
     }
@@ -166,6 +173,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
         getProfile,
         registerUserSuccess,
         updateUser,
+        logoutUser,
       }}
     >
       {children}
