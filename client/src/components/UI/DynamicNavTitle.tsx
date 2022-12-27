@@ -5,7 +5,7 @@ const DynamicNavTitle = ({ title }: { title: string }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex text-text-primary-dark items-center py-2 px-4 w-full sticky z-10 top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
+    <div className="flex text-text-primary-dark items-center py-2 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
       <div
         onClick={() => {
           navigate(-1);
