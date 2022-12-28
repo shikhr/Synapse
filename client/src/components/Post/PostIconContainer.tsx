@@ -12,7 +12,7 @@ const PostIiconContainer = ({
   return (
     <div
       onClick={onClick}
-      className={`${color} flex gap-2 items-center transition-all`}
+      className={`${color} cursor-pointer flex gap-2 items-center transition-all`}
     >
       {children}
     </div>
