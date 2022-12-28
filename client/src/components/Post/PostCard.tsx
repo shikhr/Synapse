@@ -1,79 +1,23 @@
-import {
-  QueryFunctionContext,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppContext } from '../../context/AppContext';
 import Avatar from '../Avatar/Avatar';
-import { BsHeart, BsHeartFill, BsThreeDots } from 'react-icons/bs';
-import { FaHeart, FaCommentAlt, FaBookmark, FaShare } from 'react-icons/fa';
-import PostIiconContainer from './PostIconContainer';
+
 import { formatDistanceToNowStrict } from 'date-fns';
 import PostImages from './PostImages';
 import KebabMenu from './KebabMenu';
-import { IPostData } from '../../types/Post.types';
 import React from 'react';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import PostLoadingError from '../Errrors/PostLoadingError';
-import { IconContext } from 'react-icons';
+import useFetchPost from '../../hooks/useFetchPost';
+import PostActionBar from './PostActionBar';
 
 interface PostCardProps {
   id: string;
 }
 
 const PostCard = ({ id }: PostCardProps) => {
-  const { authFetch } = useAppContext();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const fetchPost = async ({
-    queryKey,
-  }: QueryFunctionContext): Promise<IPostData> => {
-    const postId = queryKey[1];
-    const { data } = await authFetch.get(`/posts/${postId}`);
-    return data;
-  };
-
-  const likePostHandler = async (data: { postId: string; key: string }) => {
-    return await authFetch.put('/posts/like', data);
-  };
-
-  const {
-    data: post,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery(['post', id], fetchPost, {
-    refetchOnWindowFocus: false,
-    retry: 1,
-  });
-
-  const { mutate: likePost } = useMutation(likePostHandler, {
-    onMutate: async ({ key, postId }) => {
-      await queryClient.cancelQueries(['post', id]);
-      const prevPostData = queryClient.getQueryData(['post', id]);
-      queryClient.setQueryData(['post', id], (oldQueryData: any) => {
-        return {
-          ...oldQueryData,
-          likesCount:
-            key === '1'
-              ? oldQueryData.likesCount + 1
-              : oldQueryData.likesCount - 1,
-          hasLiked: key === '1' ? true : false,
-        };
-      });
-      return { prevPostData };
-    },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['post', id], context?.prevPostData);
-      console.log({ error, variables, context });
-    },
-    onSettled: (data, error, variables, context) => {
-      queryClient.invalidateQueries(['post', id]);
-    },
-  });
+  const { data: post, isLoading, isError, refetch } = useFetchPost(id);
 
   const openFullPost = (id: string) => {
     navigate(`/post/${id}`);
@@ -136,46 +80,7 @@ const PostCard = ({ id }: PostCardProps) => {
           onClick={(e: React.MouseEvent) => e.stopPropagation()}
           className="flex w-full pr-1 max-w-lg justify-between items-center pt-6 text-text-secondary-dark"
         >
-          <IconContext.Provider
-            value={{
-              style: {
-                verticalAlign: 'bottom',
-                marginTop: 3,
-              },
-            }}
-          >
-            <PostIiconContainer
-              onClick={() => {
-                let key = post.hasLiked ? '-1' : '1';
-                likePost({ postId: post._id, key });
-              }}
-              color={`${post.hasLiked && 'text-red-600'} hover:text-red-600`}
-            >
-              {post.hasLiked && <BsHeartFill />}
-              {!post.hasLiked && <BsHeart />}
-              <span>{post.likesCount}</span>
-            </PostIiconContainer>
-            <PostIiconContainer
-              onClick={() => {}}
-              color="hover:text-primary-100"
-            >
-              <FaCommentAlt />
-              <span>{post.commentsCount}</span>
-            </PostIiconContainer>
-            <PostIiconContainer
-              onClick={() => {}}
-              color="hover:text-primary-100"
-            >
-              <FaBookmark />
-              <span className="hidden xs:block">Save</span>
-            </PostIiconContainer>
-            <PostIiconContainer
-              onClick={() => {}}
-              color="hover:text-primary-100"
-            >
-              <FaShare />
-            </PostIiconContainer>
-          </IconContext.Provider>
+          <PostActionBar post={post} />
         </div>
       </div>
     </div>
