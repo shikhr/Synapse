@@ -30,6 +30,7 @@ const commentSchema = new Schema<IComment, CommentModel>(
     content: {
       type: String,
       required: true,
+      maxlength: 350,
     },
     postId: {
       type: Schema.Types.ObjectId,
