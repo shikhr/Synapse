@@ -1,5 +1,6 @@
 import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
+import Button from '../UI/Button';
 import CommentCard from './CommentCard';
 
 interface CommentListProps {
@@ -47,6 +48,13 @@ const CommentList = ({ id }: CommentListProps) => {
             <CommentCard key={id} id={id} />
           ));
         })}
+      <Button
+        variant="standard"
+        disabled={!hasNextPage}
+        onClick={() => fetchNextPage()}
+      >
+        next
+      </Button>
     </div>
   );
 };
