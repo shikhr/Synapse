@@ -1,4 +1,5 @@
 import mongoose, { Schema, model, Model } from 'mongoose';
+import Comment from './Comments.js';
 import User, { UserModel } from './User.js';
 
 interface IPost {
@@ -83,8 +84,17 @@ postSchema.static('getPostInfo', async function (postId, user) {
     { $match: { _id: postId } },
     ...aggregatePipeline,
     {
+      $lookup: {
+        from: Comment.collection.name,
+        localField: '_id',
+        foreignField: 'postId',
+        as: 'comments',
+      },
+    },
+    {
       $set: {
         likesCount: { $size: '$likes' },
+        commentsCount: { $size: '$comments' },
         hasLiked: {
           $in: [user._id, '$likes'],
         },
@@ -96,6 +106,8 @@ postSchema.static('getPostInfo', async function (postId, user) {
     {
       $project: {
         likes: 0,
+        comments: 0,
+        updatedAt: 0,
       },
     },
   ]);

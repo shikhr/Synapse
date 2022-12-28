@@ -12,6 +12,7 @@ interface IPostData {
   description: string;
   hasLiked: boolean;
   likesCount: number;
+  commentsCount: number;
   media: string[];
   followExists: boolean;
 }

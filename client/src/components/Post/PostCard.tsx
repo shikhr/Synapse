@@ -17,6 +17,7 @@ import { IPostData } from '../../types/Post.types';
 import React from 'react';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import PostLoadingError from '../Errrors/PostLoadingError';
+import { IconContext } from 'react-icons';
 
 interface PostCardProps {
   id: string;
@@ -133,30 +134,48 @@ const PostCard = ({ id }: PostCardProps) => {
 
         <div
           onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          className="flex w-full pr-1 max-w-lg justify-between text-sm sm:text-base pt-6 text-text-secondary-dark"
+          className="flex w-full pr-1 max-w-lg justify-between items-center pt-6 text-text-secondary-dark"
         >
-          <PostIiconContainer
-            onClick={() => {
-              let key = post.hasLiked ? '-1' : '1';
-              likePost({ postId: post._id, key });
+          <IconContext.Provider
+            value={{
+              style: {
+                verticalAlign: 'bottom',
+                marginTop: 3,
+              },
             }}
-            color={`${post.hasLiked && 'text-red-600'} hover:text-red-600`}
           >
-            {post.hasLiked && <BsHeartFill />}
-            {!post.hasLiked && <BsHeart />}
-            <span>{post.likesCount}</span>
-          </PostIiconContainer>
-          <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
-            <FaCommentAlt />
-            <span>800</span>
-          </PostIiconContainer>
-          <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
-            <FaBookmark />
-            <span className="hidden xs:block">Save</span>
-          </PostIiconContainer>
-          <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
-            <FaShare />
-          </PostIiconContainer>
+            <PostIiconContainer
+              onClick={() => {
+                let key = post.hasLiked ? '-1' : '1';
+                likePost({ postId: post._id, key });
+              }}
+              color={`${post.hasLiked && 'text-red-600'} hover:text-red-600`}
+            >
+              {post.hasLiked && <BsHeartFill />}
+              {!post.hasLiked && <BsHeart />}
+              <span>{post.likesCount}</span>
+            </PostIiconContainer>
+            <PostIiconContainer
+              onClick={() => {}}
+              color="hover:text-primary-100"
+            >
+              <FaCommentAlt />
+              <span>{post.commentsCount}</span>
+            </PostIiconContainer>
+            <PostIiconContainer
+              onClick={() => {}}
+              color="hover:text-primary-100"
+            >
+              <FaBookmark />
+              <span className="hidden xs:block">Save</span>
+            </PostIiconContainer>
+            <PostIiconContainer
+              onClick={() => {}}
+              color="hover:text-primary-100"
+            >
+              <FaShare />
+            </PostIiconContainer>
+          </IconContext.Provider>
         </div>
       </div>
     </div>
