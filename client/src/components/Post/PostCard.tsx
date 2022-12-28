@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Avatar from '../Avatar/Avatar';
-
 import { formatDistanceToNowStrict } from 'date-fns';
 import PostImages from './PostImages';
 import KebabMenu from './KebabMenu';
@@ -9,6 +8,7 @@ import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import PostLoadingError from '../Errrors/PostLoadingError';
 import useFetchPost from '../../hooks/useFetchPost';
 import PostActionBar from './PostActionBar';
+import PostPopup from './PostPopup';
 
 interface PostCardProps {
   id: string;
@@ -64,11 +64,13 @@ const PostCard = ({ id }: PostCardProps) => {
               })}
             </span>
           </div>
-          <KebabMenu
-            createdBy={post.createdBy}
-            postId={post._id}
-            followExists={post.followExists}
-          />
+          <KebabMenu>
+            <PostPopup
+              createdBy={post.createdBy}
+              postId={post._id}
+              followExists={post.followExists}
+            />
+          </KebabMenu>
         </div>
 
         <div className="flex flex-col">

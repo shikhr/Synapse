@@ -1,4 +1,4 @@
-import { formatDistanceToNowStrict, format } from 'date-fns';
+import { format } from 'date-fns';
 import { BsDot } from 'react-icons/bs';
 import { Link, useParams } from 'react-router-dom';
 import useFetchPost from '../../hooks/useFetchPost';
@@ -10,8 +10,8 @@ import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import DynamicNavTitle from '../UI/DynamicNavTitle';
 import KebabMenu from './KebabMenu';
 import PostActionBar from './PostActionBar';
-import PostCard from './PostCard';
 import PostImages from './PostImages';
+import PostPopup from './PostPopup';
 
 const FullPost = () => {
   const { postId } = useParams();
@@ -48,11 +48,13 @@ const FullPost = () => {
                 </span>
               </Link>
               <div className="ml-auto">
-                <KebabMenu
-                  createdBy={post.createdBy}
-                  postId={post._id}
-                  followExists={post.followExists}
-                />
+                <KebabMenu>
+                  <PostPopup
+                    createdBy={post.createdBy}
+                    postId={post._id}
+                    followExists={post.followExists}
+                  />
+                </KebabMenu>
               </div>
             </div>
 

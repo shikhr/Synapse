@@ -1,39 +1,14 @@
-import {
-  UseMutateFunction,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { ReactElement } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
-import { useAppContext } from '../../context/AppContext';
 import useOuterClick from '../../hooks/useOuterClick';
-import { ICreatedBy } from '../../types/Post.types';
-import PostPopup from '../UI/PostPopup';
-import PostPopupItem from './PostPopupItem';
 
 interface KebabMenuProps {
-  postId: string;
-  createdBy: ICreatedBy;
-  followExists: boolean;
+  children: ReactElement;
 }
 
-const KebabMenu = ({ createdBy, postId, followExists }: KebabMenuProps) => {
-  const { authFetch, user } = useAppContext();
-  const queryClient = useQueryClient();
-
+const KebabMenu = ({ children }: KebabMenuProps) => {
   const { innerRef, isComponentVisible, setIsComponentVisible } =
     useOuterClick<HTMLDivElement>();
-
-  const deletePostHandler = async (id: string) => {
-    return await authFetch.delete(`/posts/${id}`);
-  };
-  const { mutate: deletePost } = useMutation(deletePostHandler, {
-    onSuccess(data, variables, context) {
-      queryClient.removeQueries(['post', postId]);
-      queryClient.invalidateQueries(['feed']);
-      console.log(data.data);
-    },
-  });
 
   return (
     <div
@@ -47,26 +22,11 @@ const KebabMenu = ({ createdBy, postId, followExists }: KebabMenuProps) => {
         <BsThreeDots />
       </div>
       {isComponentVisible && (
-        <div ref={innerRef}>
-          <PostPopup>
-            <div className="flex flex-col">
-              {createdBy._id === user?._id && (
-                <PostPopupItem onClick={() => deletePost(postId)}>
-                  <span>Delete</span>
-                </PostPopupItem>
-              )}
-              {createdBy._id !== user?._id && (
-                <PostPopupItem onClick={() => {}}>
-                  <span>
-                    {followExists ? 'Unfollow' : 'Follow'} @{createdBy.username}
-                  </span>
-                </PostPopupItem>
-              )}
-              <PostPopupItem onClick={() => {}}>
-                <span>Report</span>
-              </PostPopupItem>
-            </div>
-          </PostPopup>
+        <div
+          ref={innerRef}
+          className="z-dropdown overflow-hidden absolute rounded-lg right-0 top-0 w-40 border border-text-secondary-dark bg-background-dark"
+        >
+          {children}
         </div>
       )}
     </div>
