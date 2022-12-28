@@ -27,6 +27,7 @@ const Hot = () => {
     retry: 2,
     refetchOnWindowFocus: false,
     getNextPageParam: (lastPage, pages) => {
+      if (!lastPage.meta) return undefined;
       const { hasMorePages, currentPage } = lastPage.meta;
       return hasMorePages ? currentPage + 1 : undefined;
     },
