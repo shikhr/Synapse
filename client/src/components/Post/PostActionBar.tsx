@@ -5,6 +5,7 @@ import { FaCommentAlt, FaBookmark, FaShare } from 'react-icons/fa';
 import PostIiconContainer from './PostIconContainer';
 import { useAppContext } from '../../context/AppContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { numberFormatCompact } from '../../utils/numbers';
 
 interface PostActionBarProps {
   post: IPostData;
@@ -60,11 +61,11 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
       >
         {post.hasLiked && <BsHeartFill />}
         {!post.hasLiked && <BsHeart />}
-        <span>{post.likesCount}</span>
+        <span>{numberFormatCompact(post.likesCount)}</span>
       </PostIiconContainer>
       <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
         <FaCommentAlt />
-        <span>{post.commentsCount}</span>
+        <span>{numberFormatCompact(post.commentsCount)}</span>
       </PostIiconContainer>
       <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
         <FaBookmark />
