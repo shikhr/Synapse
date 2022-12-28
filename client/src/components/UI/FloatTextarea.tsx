@@ -31,7 +31,7 @@ const FloatTextarea = <T extends FieldValues>({
         }}
         {...register(fieldName)}
       ></textarea>
-      <label className="absolute -z-1 text-text-secondary-dark top-0 origin-left duration-300">
+      <label className="absolute -z-1 w-full whitespace-nowrap text-ellipsis overflow-hidden text-text-secondary-dark top-0 origin-left duration-300">
         {label}
       </label>
       <div className="absolute text-error top-full right-0 text-xs py-0.5">
