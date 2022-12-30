@@ -53,7 +53,8 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
       }}
     >
       <PostIiconContainer
-        onClick={() => {
+        onClick={(e: React.MouseEvent) => {
+          e.stopPropagation();
           let key = post.hasLiked ? '-1' : '1';
           likePost({ postId: post._id, key });
         }}
@@ -67,11 +68,21 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
         <FaCommentAlt />
         <span>{numberFormatCompact(post.commentsCount)}</span>
       </PostIiconContainer>
-      <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
+      <PostIiconContainer
+        onClick={(e: React.MouseEvent) => {
+          e.stopPropagation();
+        }}
+        color="hover:text-primary-100"
+      >
         <FaBookmark />
         <span className="hidden xs:block">Save</span>
       </PostIiconContainer>
-      <PostIiconContainer onClick={() => {}} color="hover:text-primary-100">
+      <PostIiconContainer
+        onClick={(e: React.MouseEvent) => {
+          e.stopPropagation();
+        }}
+        color="hover:text-primary-100"
+      >
         <FaShare />
       </PostIiconContainer>
     </IconContext.Provider>

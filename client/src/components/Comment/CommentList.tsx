@@ -1,5 +1,7 @@
 import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
+import FeedLoadingError from '../Errrors/FeedLoadingError';
+import CommentLoadingSkeleton from '../Skeletons/CommentLoadingSkeleton';
 import Button from '../UI/Button';
 import CommentCard from './CommentCard';
 
@@ -25,8 +27,10 @@ const CommentList = ({ id }: CommentListProps) => {
     data: commentList,
     isLoading,
     isError,
+    isLoadingError,
     fetchNextPage,
     hasNextPage,
+    refetch,
     isFetchingNextPage,
   } = useInfiniteQuery(['commentList', id], fetchCommentList, {
     getNextPageParam: (lastPage, pages) => {
@@ -36,18 +40,30 @@ const CommentList = ({ id }: CommentListProps) => {
     },
   });
   console.log(commentList);
-  if (isLoading) {
-    return <div>Loading</div>;
+
+  if (isLoadingError) {
+    return <FeedLoadingError refetch={refetch} />;
   }
+
   return (
     <div className="w-full">
-      {commentList &&
-        commentList.pages &&
-        commentList.pages.map((page) => {
-          return page.mydata.map((id: string) => (
-            <CommentCard key={id} id={id} />
-          ));
-        })}
+      {isLoading && (
+        <>
+          <CommentLoadingSkeleton />
+          <CommentLoadingSkeleton />
+          <CommentLoadingSkeleton />
+          <CommentLoadingSkeleton />
+        </>
+      )}
+      <div>
+        {commentList &&
+          commentList.pages &&
+          commentList.pages.map((page) => {
+            return page.mydata.map((id: string) => (
+              <CommentCard key={id} id={id} />
+            ));
+          })}
+      </div>
       <Button
         variant="standard"
         disabled={!hasNextPage}
@@ -55,6 +71,14 @@ const CommentList = ({ id }: CommentListProps) => {
       >
         next
       </Button>
+      {isFetchingNextPage && (
+        <>
+          <CommentLoadingSkeleton />
+        </>
+      )}
+      {isError && !isFetchingNextPage && (
+        <FeedLoadingError refetch={fetchNextPage} />
+      )}
     </div>
   );
 };

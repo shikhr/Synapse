@@ -78,10 +78,7 @@ const PostCard = ({ id }: PostCardProps) => {
           {post.media.length > 0 && <PostImages media={post.media} />}
         </div>
 
-        <div
-          onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          className="flex w-full pr-1 max-w-lg justify-between items-center pt-6 text-text-secondary-dark"
-        >
+        <div className="flex w-full pr-1 max-w-lg justify-between items-center mt-6 text-text-secondary-dark">
           <PostActionBar post={post} />
         </div>
       </div>
