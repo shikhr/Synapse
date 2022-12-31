@@ -18,7 +18,7 @@ const Layout = () => {
             <FollowSuggestions />
           </div>
         </div>
-        <div className="sticky bottom-0 border-t border-text-secondary-dark bg-background-dark block xs:hidden">
+        <div className="sticky z-50 bottom-0 border-t border-text-secondary-dark bg-background-dark block xs:hidden">
           <BottomBar />
         </div>
       </div>
