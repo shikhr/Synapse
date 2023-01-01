@@ -4,7 +4,6 @@ import { useRef, useCallback, useEffect } from 'react';
 import FeedLoadingError from '../Errrors/FeedLoadingError';
 import PostCard from '../Post/PostCard';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
-import Button from '../UI/Button';
 
 const Hot = () => {
   const { authFetch } = useAppContext();
@@ -48,7 +47,7 @@ const Hot = () => {
 
   useEffect(() => {
     const element = observerElem.current as Element;
-    const option = { threshold: 0, rootMargin: '500px' };
+    const option = { threshold: 0, rootMargin: '200px' };
 
     const observer = new IntersectionObserver(handleObserver, option);
     observer.observe(element);
