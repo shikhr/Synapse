@@ -6,7 +6,11 @@ import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
 
 interface feedPage {
   mydata: string[];
-  meta: any;
+  meta: {
+    currentPage: number;
+    hasMorePages: boolean;
+    totalPages: number;
+  };
 }
 
 const Hot = () => {
