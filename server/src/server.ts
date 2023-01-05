@@ -17,6 +17,7 @@ import CommentRouter from './routes/commentRoutes.js';
 import {
   AuthenticateJwtStrategy,
   RefreshJwtStrategy,
+  OAUTHGoogleStrategy,
 } from './middleware/auth-middleware.js';
 import passport from 'passport';
 import { getAvatar } from './controllers/userController.js';
@@ -31,6 +32,14 @@ app.use(express.urlencoded({ extended: true }));
 // AUTH MIDDLEWARE
 passport.use('authenticate_jwt', AuthenticateJwtStrategy);
 passport.use('refresh_jwt', RefreshJwtStrategy);
+passport.use('google', OAUTHGoogleStrategy);
+
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+passport.deserializeUser(function (obj: any, done) {
+  done(null, obj);
+});
 
 // HOME ROUTER
 app.get('/', (req, res) => {
