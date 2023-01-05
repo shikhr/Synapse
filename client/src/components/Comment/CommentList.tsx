@@ -1,12 +1,20 @@
 import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
+import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
 import FeedLoadingError from '../Errrors/FeedLoadingError';
 import CommentLoadingSkeleton from '../Skeletons/CommentLoadingSkeleton';
-import Button from '../UI/Button';
 import CommentCard from './CommentCard';
 
 interface CommentListProps {
   id: string;
+}
+interface commentsListPage {
+  mydata: string[];
+  meta: {
+    currentPage: number;
+    hasMorePages: boolean;
+    totalPages: number;
+  };
 }
 
 const CommentList = ({ id }: CommentListProps) => {
@@ -32,13 +40,21 @@ const CommentList = ({ id }: CommentListProps) => {
     hasNextPage,
     refetch,
     isFetchingNextPage,
-  } = useInfiniteQuery(['commentList', id], fetchCommentList, {
+    observerElem,
+  } = useInfiniteQueryScroll<commentsListPage>({
+    queryKey: ['commentList', id],
+    queryFn: fetchCommentList,
+    options: {
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.meta) return undefined;
       const { hasMorePages, currentPage } = lastPage.meta;
       return hasMorePages ? currentPage + 1 : undefined;
     },
   });
+
   console.log(commentList);
 
   if (isLoadingError) {
@@ -55,7 +71,7 @@ const CommentList = ({ id }: CommentListProps) => {
           <CommentLoadingSkeleton />
         </>
       )}
-      <div>
+      <div className="flex flex-col">
         {commentList &&
           commentList.pages &&
           commentList.pages.map((page) => {
@@ -64,21 +80,19 @@ const CommentList = ({ id }: CommentListProps) => {
             ));
           })}
       </div>
-      <Button
-        variant="standard"
-        disabled={!hasNextPage}
-        onClick={() => fetchNextPage()}
-      >
-        next
-      </Button>
-      {isFetchingNextPage && (
-        <>
-          <CommentLoadingSkeleton />
-        </>
-      )}
       {isError && !isFetchingNextPage && (
         <FeedLoadingError refetch={fetchNextPage} />
       )}
+      <div ref={observerElem}>
+        {isFetchingNextPage && hasNextPage && <CommentLoadingSkeleton />}
+      </div>
+      <div>
+        {!isFetchingNextPage && !hasNextPage && (
+          <div className="w-full text-center px-2 py-8 text-text-secondary-dark">
+            You have reached the end
+          </div>
+        )}
+      </div>
     </div>
   );
 };
