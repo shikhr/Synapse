@@ -6,9 +6,12 @@ const oAuthSuccess = async (req: any, res: Response) => {
     url = 'http://localhost:5173';
     console.log('dev redirect');
   }
-  res.redirect(
-    `${url}/authParams?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}&_id=${req.user._id}&email=${req.user.email}&username=${req.user.username}&displayName=${req.user.displayName}`
-  );
+  const params = req.user;
+  if (!req.user.avatarId) {
+    delete params.avatarId;
+  }
+  const paramURL = new URLSearchParams(params);
+  res.redirect(`${url}/authParams?${paramURL.toString()}`);
 };
 
 export { oAuthSuccess };

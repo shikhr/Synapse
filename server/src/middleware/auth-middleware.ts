@@ -68,7 +68,7 @@ const OAUTHGoogleStrategy = new GoogleStrategy(
       const usernameSeed = `user${new Date().getTime().toString().slice(8)}`;
       user = await User.create({
         username: usernameSeed,
-        displayName: usernameSeed,
+        displayName: profile._json.name || usernameSeed,
         email: profile._json.email,
       });
     }
@@ -76,6 +76,8 @@ const OAUTHGoogleStrategy = new GoogleStrategy(
     const myRefreshToken = user.createRefreshToken();
     done(null, {
       username: user.username,
+      displayName: user.displayName,
+      avatarId: user.avatarId,
       email: user.email,
       _id: user._id,
       refreshToken: myRefreshToken,

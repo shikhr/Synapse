@@ -13,7 +13,11 @@ router
   .route('/refresh')
   .get(passport.authenticate('refresh_jwt', { session: false }), refresh);
 
-router.route('/google').get(
+router
+  .route('/google')
+  .get(passport.authenticate('google', { scope: ['email', 'profile'] }));
+
+router.route('/google/redirect').get(
   passport.authenticate('google', {
     failureRedirect: '/',
     session: false,
