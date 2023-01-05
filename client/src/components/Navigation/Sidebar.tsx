@@ -49,9 +49,9 @@ const Sidebar = () => {
               <Avatar sourceId={user?.avatarId} />
             </div>
             <div className="flex-col hidden lx:flex">
-              <span className="font-semibold text-lg">{user?.username}</span>
+              <span className="font-semibold text-lg">{user?.displayName}</span>
               <span className="text-text-secondary-dark text-sm">
-                @{user?.displayName}
+                @{user?.username}
               </span>
             </div>
           </div>
