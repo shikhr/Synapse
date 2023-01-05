@@ -16,6 +16,7 @@ import {
   ProtectedRoute,
   Register,
 } from './pages';
+import OAuthParams from './pages/OAuthParams';
 import Settings from './pages/Settings';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/settings" element={<Settings />}>
               <Route path="profile" element={<EditProfile />} />
             </Route>
+            <Route path="/authParams" element={<OAuthParams />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           {background && (
