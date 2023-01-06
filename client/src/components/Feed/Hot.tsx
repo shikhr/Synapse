@@ -5,7 +5,7 @@ import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
 
 interface feedPage {
-  mydata: string[];
+  data: string[];
   meta: {
     currentPage: number;
     hasMorePages: boolean;
@@ -67,9 +67,7 @@ const Hot = () => {
         {data &&
           data.pages &&
           data.pages.map((page: feedPage) => {
-            return page.mydata.map((id: string) => (
-              <PostCard key={id} id={id} />
-            ));
+            return page.data.map((id: string) => <PostCard key={id} id={id} />);
           })}
       </div>
       {isError && !isFetchingNextPage && (

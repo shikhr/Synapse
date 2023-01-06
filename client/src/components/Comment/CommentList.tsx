@@ -9,7 +9,7 @@ interface CommentListProps {
   id: string;
 }
 interface commentsListPage {
-  mydata: string[];
+  data: string[];
   meta: {
     currentPage: number;
     hasMorePages: boolean;
@@ -75,7 +75,7 @@ const CommentList = ({ id }: CommentListProps) => {
         {commentList &&
           commentList.pages &&
           commentList.pages.map((page) => {
-            return page.mydata.map((id: string) => (
+            return page.data.map((id: string) => (
               <CommentCard key={id} id={id} />
             ));
           })}
