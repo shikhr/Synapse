@@ -131,7 +131,7 @@ commentSchema.static(
       },
       {
         $facet: {
-          mydata: [{ $skip: (page - 1) * size }, { $limit: size }],
+          data: [{ $skip: (page - 1) * size }, { $limit: size }],
           meta: [
             {
               $count: 'count',
@@ -155,7 +155,7 @@ commentSchema.static(
       },
       {
         $set: {
-          mydata: '$mydata._id',
+          data: '$data._id',
           meta: { $first: '$meta' },
         },
       },

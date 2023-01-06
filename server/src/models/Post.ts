@@ -154,7 +154,7 @@ postSchema.static(
       },
       {
         $facet: {
-          mydata: [{ $skip: (page - 1) * size }, { $limit: size }],
+          data: [{ $skip: (page - 1) * size }, { $limit: size }],
           meta: [
             {
               $count: 'count',
@@ -178,7 +178,7 @@ postSchema.static(
       },
       {
         $set: {
-          mydata: '$mydata._id',
+          data: '$data._id',
           meta: { $first: '$meta' },
         },
       },

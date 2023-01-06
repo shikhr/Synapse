@@ -47,7 +47,7 @@ bookmarkSchema.static(
       { $project: { postId: 1, _id: 0 } },
       {
         $facet: {
-          mydata: [{ $skip: (page - 1) * size }, { $limit: size }],
+          data: [{ $skip: (page - 1) * size }, { $limit: size }],
           meta: [
             {
               $count: 'count',
@@ -71,7 +71,7 @@ bookmarkSchema.static(
       },
       {
         $set: {
-          mydata: '$mydata.postId',
+          data: '$data.postId',
           meta: { $first: '$meta' },
         },
       },
