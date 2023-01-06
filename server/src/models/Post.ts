@@ -80,7 +80,7 @@ const aggregatePipeline = [
 ];
 
 postSchema.static('getPostInfo', async function (postId, user) {
-  return await this.aggregate([
+  return this.aggregate([
     { $match: { _id: postId } },
     ...aggregatePipeline,
     {
@@ -135,7 +135,7 @@ postSchema.static(
     }
     const sortQuery = query[filterBy].sort;
 
-    return await this.aggregate([
+    return this.aggregate([
       {
         $match: matchQuery,
       },

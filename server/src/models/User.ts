@@ -159,7 +159,7 @@ userSchema.static(
     matchId: mongoose.Types.ObjectId,
     userId: mongoose.Types.ObjectId
   ) {
-    return await User.aggregate([
+    return User.aggregate([
       { $match: { _id: matchId } },
       {
         $addFields: {

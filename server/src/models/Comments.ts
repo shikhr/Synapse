@@ -55,7 +55,7 @@ const commentSchema = new Schema<IComment, CommentModel>(
 );
 
 commentSchema.static('getCommentInfo', async function (commentId, user) {
-  return await this.aggregate([
+  return this.aggregate([
     {
       $match: { _id: commentId },
     },
@@ -121,7 +121,7 @@ commentSchema.static(
     if (postId) {
       matchQuery.postId = postId;
     }
-    return await this.aggregate([
+    return this.aggregate([
       { $match: matchQuery },
       { $sort: sortQuery[filterBy] },
       {
