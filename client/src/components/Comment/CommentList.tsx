@@ -62,7 +62,7 @@ const CommentList = ({ id }: CommentListProps) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-16">
       {isLoading && (
         <>
           <CommentLoadingSkeleton />
@@ -85,13 +85,6 @@ const CommentList = ({ id }: CommentListProps) => {
       )}
       <div ref={observerElem}>
         {isFetchingNextPage && hasNextPage && <CommentLoadingSkeleton />}
-      </div>
-      <div>
-        {!isFetchingNextPage && !hasNextPage && (
-          <div className="w-full text-center px-2 py-8 text-text-secondary-dark">
-            You have reached the end
-          </div>
-        )}
       </div>
     </div>
   );
