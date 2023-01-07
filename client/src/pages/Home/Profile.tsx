@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Avatar from '../../components/Avatar/Avatar';
 import Banner from '../../components/Avatar/Banner';
@@ -13,21 +13,25 @@ import {
 } from 'react-icons/io5';
 import ProfileLoadingSkeleton from '../../components/Skeletons/ProfileLoadingSkeleton';
 import ErrorWithRefetch from '../../components/Errrors/ErrorWithRefetch';
+import useFollowUser from '../../hooks/useFollowUser';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const location = useLocation();
   const { userId } = useParams();
   const { user, getProfile } = useAppContext();
 
   const {
-    isLoading,
-    isError,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
     data: profile,
     refetch,
   } = useQuery(['profile', userId], getProfile);
 
-  if (isLoading) {
+  const { followAction, isFollowError, isFollowLoading } = useFollowUser();
+
+  if (isProfileLoading) {
     return (
       <div>
         <DynamicNavTitle title="Profile" />
@@ -36,7 +40,7 @@ const Profile = () => {
     );
   }
 
-  if (isError) {
+  if (isProfileError) {
     return (
       <div className="h-screen flex justify-center items-center -mt-16">
         <ErrorWithRefetch refetch={refetch} />
@@ -68,16 +72,37 @@ const Profile = () => {
               edit
             </Button>
           )}
-          {user?._id !== profile._id && !profile.isFollowing && (
-            <Button onClick={() => {}} variant="standard">
-              Follow
+          {user?._id !== profile._id && (
+            <Button
+              onClick={() => {
+                followAction(
+                  {
+                    id: profile._id,
+                    action: !profile.isFollowing ? 'follow' : 'unfollow',
+                  },
+                  {
+                    onSettled(data, error, variables, context) {
+                      queryClient.invalidateQueries(['profile', userId]);
+                    },
+                  }
+                );
+              }}
+              variant="standard"
+              disabled={isFollowLoading}
+            >
+              {!profile.isFollowing ? 'Follow' : 'Unfollow'}
             </Button>
           )}
-          {user?._id !== profile._id && profile.isFollowing && (
-            <Button onClick={() => {}} variant="standard">
+          {/* {user?._id !== profile._id && profile.isFollowing && (
+            <Button
+              onClick={() =>
+                followAction({ id: profile._id, action: 'unfollow' })
+              }
+              variant="standard"
+            >
               Unfollow
             </Button>
-          )}
+          )} */}
         </div>
       </div>
       <div className="px-5 pt-6">

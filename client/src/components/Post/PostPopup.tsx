@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
+import useFollowUser from '../../hooks/useFollowUser';
 import { ICreatedBy } from '../../types/Post.types';
 import PostPopupItem from './PostPopupItem';
 
@@ -24,6 +25,8 @@ const PostPopup = ({ postId, createdBy, followExists }: PostPopupProps) => {
     },
   });
 
+  const { followAction, isFollowError, isFollowLoading } = useFollowUser();
+
   return (
     <div className="flex flex-col">
       {createdBy._id === user?._id && (
@@ -32,7 +35,22 @@ const PostPopup = ({ postId, createdBy, followExists }: PostPopupProps) => {
         </PostPopupItem>
       )}
       {createdBy._id !== user?._id && (
-        <PostPopupItem onClick={() => {}}>
+        <PostPopupItem
+          onClick={() => {
+            if (isFollowLoading) return;
+            followAction(
+              {
+                id: createdBy._id,
+                action: followExists ? 'unfollow' : 'follow',
+              },
+              {
+                onSettled(data, error, variables, context) {
+                  queryClient.invalidateQueries(['post', postId]);
+                },
+              }
+            );
+          }}
+        >
           <span>
             {followExists ? 'Unfollow' : 'Follow'} @{createdBy.username}
           </span>
