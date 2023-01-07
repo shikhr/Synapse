@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "server": "nodemon dist/server.js",
-    "build": "tsx"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

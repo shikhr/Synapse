@@ -1,9 +1,10 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 import connectDB from './database/connectDB.js';
 import cors from 'cors';
 import 'express-async-errors';
+import path, { dirname } from 'path';
 
 import errorHandlerMiddleware from './middleware/error-handler.js';
 import notFoundMiddleware from './middleware/not-found.js';
@@ -22,13 +23,17 @@ import {
 } from './middleware/auth-middleware.js';
 import passport from 'passport';
 import { getAvatar } from './controllers/userController.js';
+import { fileURLToPath } from 'url';
 
 const app = express();
+
+const __dirname = dirname(fileURLToPath(new URL('../', import.meta.url)));
 
 // EXPRESS MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.resolve(__dirname, './client/dist')));
 
 // AUTH MIDDLEWARE
 passport.use('authenticate_jwt', AuthenticateJwtStrategy);
@@ -43,7 +48,7 @@ passport.deserializeUser(function (obj: any, done) {
 });
 
 // HOME ROUTER
-app.get('/', (req, res) => {
+app.get('/api/v1', (req, res) => {
   res.send('MERNLY API');
 });
 
@@ -76,6 +81,10 @@ app.use(
   passport.authenticate('authenticate_jwt', { session: false }),
   BookmarkRouter
 );
+
+app.get('*', (req: Request, res: Response) => {
+  res.sendFile('index.html', { root: path.join(__dirname, './client/dist') });
+});
 
 // FALLBACK MIDDLEWARE
 app.use(notFoundMiddleware);
