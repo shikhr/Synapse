@@ -5,7 +5,12 @@ import {
   BsBookmarkStar,
   BsBookmarkStarFill,
 } from 'react-icons/bs';
-import { IoSearchOutline, IoSearch } from 'react-icons/io5';
+import {
+  IoSearchOutline,
+  IoSearch,
+  IoSettings,
+  IoSettingsOutline,
+} from 'react-icons/io5';
 import { HiOutlineUserCircle, HiUserCircle } from 'react-icons/hi';
 import { RiSearchLine, RiSearchFill } from 'react-icons/ri';
 
@@ -41,6 +46,12 @@ const AllLinks: Record<string, Link> = {
     iconActive: BsBookmarkStarFill,
     path: '/bookmarks',
   },
+  settings: {
+    title: 'Settings',
+    icon: IoSettingsOutline,
+    iconActive: IoSettings,
+    path: '/settings',
+  },
 };
 
 const SidebarLinks: Link[] = [
@@ -48,6 +59,7 @@ const SidebarLinks: Link[] = [
   AllLinks.explore,
   AllLinks.profile,
   AllLinks.bookmarks,
+  AllLinks.settings,
 ];
 const BottomBarLinks: Link[] = [
   AllLinks.home,

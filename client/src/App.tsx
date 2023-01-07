@@ -41,17 +41,25 @@ function App() {
               <Route path="profile/:userId" element={<Profile />} />
               <Route path="bookmarks" element={<Bookmarks />} />
               <Route path="explore" element={<Explore />} />
+              <Route path="settings" element={<Settings />}>
+                <Route path="profile" element={<EditProfile />} />
+              </Route>
             </Route>
             <Route path="/register" element={<Register />} />
-            <Route path="/settings" element={<Settings />}>
-              <Route path="profile" element={<EditProfile />} />
-            </Route>
             <Route path="/authParams" element={<OAuthParams />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          {/* when settings route is opened from a link with a background state location */}
           {background && (
             <Routes>
-              <Route path="/settings" element={<Settings />}>
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              >
                 <Route path="profile" element={<EditProfile />} />
               </Route>
             </Routes>
