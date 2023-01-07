@@ -9,7 +9,7 @@ const Avatar = ({ sourceId }: { sourceId: any }) => {
     if (sourceId && sourceId.length > 0) {
       setDefaultAvatar(false);
     }
-  }, []);
+  }, [sourceId]);
 
   const errorHandler = (e: React.SyntheticEvent) => {
     setDefaultAvatar(true);
