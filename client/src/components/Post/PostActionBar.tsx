@@ -24,6 +24,10 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
     return await authFetch.put('/posts/like', data);
   };
 
+  const bookmarkPostHandler = async ({ postId }: { postId: string }) => {
+    return await authFetch.post(`/bookmarks/${postId}`);
+  };
+
   const { mutate: likePost } = useMutation(likePostHandler, {
     onMutate: async ({ key, postId }) => {
       await queryClient.cancelQueries(['post', postId]);
@@ -45,6 +49,27 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
     },
     onSettled: (data, error, { key, postId }, context) => {
       queryClient.invalidateQueries(['post', postId]);
+    },
+  });
+
+  const { mutate: bookmarkPost } = useMutation(bookmarkPostHandler, {
+    onMutate: async ({ postId }) => {
+      await queryClient.cancelQueries(['post', postId]);
+      const prevPostData = queryClient.getQueryData(['post', postId]);
+      queryClient.setQueryData(['post', postId], (oldQueryData: any) => {
+        return {
+          ...oldQueryData,
+          hasBookmarked: !oldQueryData.hasBookmarked,
+        };
+      });
+      return { prevPostData };
+    },
+    onError: (error, { postId }, context) => {
+      queryClient.setQueryData(['post', postId], context?.prevPostData);
+    },
+    onSettled: (data, error, { postId }, context) => {
+      queryClient.invalidateQueries(['post', postId]);
+      queryClient.invalidateQueries(['bookmarks']);
     },
   });
 
@@ -81,6 +106,7 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
       <PostIiconContainer
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
+          bookmarkPost({ postId: post._id });
         }}
         color={`${
           post.hasBookmarked && 'text-primary-100'
