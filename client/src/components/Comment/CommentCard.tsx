@@ -1,4 +1,9 @@
-import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
+import {
+  QueryFunctionContext,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { IconContext } from 'react-icons';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
@@ -16,6 +21,7 @@ interface CommentCardProps {
 
 const CommentCard = ({ id }: CommentCardProps) => {
   const { authFetch } = useAppContext();
+  const queryClient = useQueryClient();
 
   const fetchComment = async ({
     queryKey,
@@ -32,6 +38,38 @@ const CommentCard = ({ id }: CommentCardProps) => {
   } = useQuery(['comment', id], fetchComment, {
     refetchOnWindowFocus: false,
   });
+
+  const likeCommentHandler = async (data: {
+    commentId: string;
+    key: string;
+  }) => {
+    return await authFetch.put('/comments/like', data);
+  };
+
+  const { mutate: likeComment } = useMutation(likeCommentHandler, {
+    onMutate: async ({ key, commentId }) => {
+      await queryClient.cancelQueries(['comment', commentId]);
+      const prevPostData = queryClient.getQueryData(['comment', commentId]);
+      queryClient.setQueryData(['comment', commentId], (oldQueryData: any) => {
+        return {
+          ...oldQueryData,
+          likesCount:
+            key === '1'
+              ? oldQueryData.likesCount + 1
+              : oldQueryData.likesCount - 1,
+          hasLiked: key === '1' ? true : false,
+        };
+      });
+      return { prevPostData };
+    },
+    onError: (error, { key, commentId }, context) => {
+      queryClient.setQueryData(['comment', commentId], context?.prevPostData);
+    },
+    onSettled: (data, error, { key, commentId }, context) => {
+      queryClient.invalidateQueries(['comment', commentId]);
+    },
+  });
+
   if (isLoading) {
     return <div>loading</div>;
   }
@@ -76,6 +114,7 @@ const CommentCard = ({ id }: CommentCardProps) => {
           <PostIiconContainer
             onClick={() => {
               let key = comment.hasLiked ? '-1' : '1';
+              likeComment({ commentId: comment._id, key });
             }}
             color={`${comment.hasLiked && 'text-red-600'} hover:text-red-600`}
           >
