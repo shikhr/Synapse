@@ -15,6 +15,7 @@ interface IPostData {
   commentsCount: number;
   media: string[];
   followExists: boolean;
+  hasBookmarked: true;
 }
 
 export type { ICreatedBy, IPostData };
