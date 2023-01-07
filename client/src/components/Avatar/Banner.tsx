@@ -13,7 +13,7 @@ const Banner = ({
     if (sourceId && sourceId.length > 0) {
       setDefaultBanner(false);
     }
-  }, []);
+  }, [sourceId]);
 
   const errorHandler = (e: React.SyntheticEvent) => {
     setDefaultBanner(true);
