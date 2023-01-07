@@ -3,6 +3,7 @@ import multer, { memoryStorage } from 'multer';
 import {
   deleteAvatar,
   followUser,
+  getFollowSuggestions,
   getProfile,
   postAvatar,
   unfollowUser,
@@ -14,6 +15,8 @@ const router = express.Router();
 router.route('/follow/:followId').put(followUser);
 
 router.route('/unfollow/:unfollowId').put(unfollowUser);
+
+router.route('/followsuggest').get(getFollowSuggestions);
 
 const upload = multer({
   limits: {

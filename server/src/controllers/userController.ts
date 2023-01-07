@@ -98,6 +98,28 @@ const unfollowUser = async (req: any, res: Response) => {
   res.status(200).send('User unfollowed');
 };
 
+const getFollowSuggestions = async (req: any, res: Response) => {
+  const followList = await User.aggregate([
+    {
+      $set: {
+        followExists: { $in: [req.user._id, '$followers'] },
+      },
+    },
+    { $match: { followExists: false, _id: { $ne: req.user._id } } },
+    { $sort: { followers: -1 } },
+    {
+      $project: {
+        username: 1,
+        displayName: 1,
+        avatarId: 1,
+        followExists: 1,
+      },
+    },
+  ]);
+
+  res.send(followList);
+};
+
 const getAvatar = async (req: any, res: Response) => {
   const { avatarId } = req.params;
   const avatar = await Avatar.findById(avatarId);
@@ -138,4 +160,5 @@ export {
   getAvatar,
   postAvatar,
   deleteAvatar,
+  getFollowSuggestions,
 };
