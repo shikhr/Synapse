@@ -22,7 +22,7 @@ const addRemoveBookmark = async (req: any, res: Response) => {
 };
 
 const getBookmarkList = async (req: any, res: Response) => {
-  const list = await Bookmark.getBookmarkList({
+  const [list] = await Bookmark.getBookmarkList({
     page: req.query.page || 1,
     userId: req.user._id,
   });
