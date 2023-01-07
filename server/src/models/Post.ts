@@ -1,4 +1,5 @@
 import mongoose, { Schema, model, Model } from 'mongoose';
+import Bookmark from './Bookmark.js';
 import Comment from './Comments.js';
 import User, { UserModel } from './User.js';
 
@@ -54,7 +55,7 @@ const postSchema = new Schema<IPost, PostModel>(
   }
 );
 
-const aggregatePipeline = [
+const userAggregatePipeline = [
   {
     $lookup: {
       from: User.collection.name,
@@ -82,7 +83,7 @@ const aggregatePipeline = [
 postSchema.static('getPostInfo', async function (postId, user) {
   return this.aggregate([
     { $match: { _id: postId } },
-    ...aggregatePipeline,
+    ...userAggregatePipeline,
     {
       $lookup: {
         from: Comment.collection.name,
@@ -92,11 +93,40 @@ postSchema.static('getPostInfo', async function (postId, user) {
       },
     },
     {
+      $lookup: {
+        from: Bookmark.collection.name,
+        let: { post_id: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$$post_id', '$postId'] },
+                  { $eq: ['$createdBy', user._id] },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'bookmarks',
+      },
+    },
+    {
+      $set: {
+        bookmarks: {
+          $first: '$bookmarks',
+        },
+      },
+    },
+    {
       $set: {
         likesCount: { $size: '$likes' },
         commentsCount: { $size: '$comments' },
         hasLiked: {
           $in: [user._id, '$likes'],
+        },
+        hasBookmarked: {
+          $eq: [user._id, '$bookmarks.createdBy'],
         },
         followExists: {
           $in: ['$createdBy._id', user.following],
@@ -107,6 +137,7 @@ postSchema.static('getPostInfo', async function (postId, user) {
       $project: {
         likes: 0,
         comments: 0,
+        bookmarks: 0,
         updatedAt: 0,
       },
     },
