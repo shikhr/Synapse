@@ -38,7 +38,13 @@ const getPost = async (req: any, res: Response) => {
 };
 
 const getFeed = async (req: any, res: Response) => {
-  const [feed] = await Post.getFeed(req.user, req.query);
+  const [feed] = await Post.getFeed(req.query, req.user);
+
+  res.status(200).send(feed);
+};
+
+const getExplore = async (req: any, res: Response) => {
+  const [feed] = await Post.getFeed(req.query);
 
   res.status(200).send(feed);
 };
@@ -50,10 +56,13 @@ const getUserPosts = async (req: any, res: Response) => {
   } else {
     userId = new mongoose.Types.ObjectId(userId);
   }
-  const [postList] = await Post.getFeed(req.user, {
-    createdBy: userId,
-    ...req.query,
-  });
+  const [postList] = await Post.getFeed(
+    {
+      createdBy: userId,
+      ...req.query,
+    },
+    req.user
+  );
   res.send(postList);
 };
 
@@ -90,4 +99,12 @@ const deletePost = async (req: any, res: Response) => {
   res.send('Successfully Deleted');
 };
 
-export { addPost, getPost, getUserPosts, getFeed, likePost, deletePost };
+export {
+  addPost,
+  getPost,
+  getUserPosts,
+  getFeed,
+  likePost,
+  deletePost,
+  getExplore,
+};

@@ -21,7 +21,7 @@ interface PostInterface extends IPost {}
 
 interface PostModel extends Model<PostInterface> {
   getPostInfo(postId: mongoose.Types.ObjectId, user: UserModel): Promise<any>;
-  getFeed(user: UserModel, options: queryOptions): Promise<any>;
+  getFeed(options: queryOptions, user?: UserModel): Promise<any>;
 }
 
 const postSchema = new Schema<IPost, PostModel>(
@@ -146,7 +146,7 @@ postSchema.static('getPostInfo', async function (postId, user) {
 
 postSchema.static(
   'getFeed',
-  async function (user, { page, filterBy = 'hot', createdBy }: queryOptions) {
+  async function ({ page, filterBy = 'hot', createdBy }: queryOptions, user) {
     const size = 5;
     const query: any = {
       hot: {
@@ -166,15 +166,20 @@ postSchema.static(
     }
     const sortQuery = query[filterBy].sort;
 
+    let followExistsField: any = false;
+    if (user) {
+      followExistsField = {
+        $in: ['$createdBy', user.following],
+      };
+    }
+
     return this.aggregate([
       {
         $match: matchQuery,
       },
       {
         $addFields: {
-          followExists: {
-            $in: ['$createdBy', user.following],
-          },
+          followExists: followExistsField,
         },
       },
       { $sort: sortQuery },
