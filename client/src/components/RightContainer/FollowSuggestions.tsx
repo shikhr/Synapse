@@ -25,7 +25,7 @@ const FollowSuggestions = () => {
             Who To Follow
           </h2>
           {data.map((user: IUserBasic) => (
-            <FollowCard {...user} />
+            <FollowCard key={user._id} {...user} />
           ))}
         </div>
       )}
