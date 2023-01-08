@@ -1,3 +1,4 @@
+import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
@@ -15,7 +16,10 @@ const PostImg = ({ url }: { url: string }) => {
 
 const PostImages = ({ media }: PostImagesProps) => {
   return (
-    <div className="select-none pt-4 overflow-hidden rounded-md">
+    <div
+      onClick={(e: React.MouseEvent) => e.stopPropagation()}
+      className="select-none pt-4 overflow-hidden rounded-md"
+    >
       {media.length > 1 ? (
         <Carousel
           swipeable={true}
