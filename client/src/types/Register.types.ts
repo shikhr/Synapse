@@ -31,6 +31,14 @@ interface IUserProfile {
   isFollowing: string;
 }
 
+interface IUserBasic {
+  _id: string;
+  username: string;
+  displayName: string;
+  avatarId: string;
+  followExists: boolean;
+}
+
 type Tcallback<T> = (bodyData: T) => Promise<AxiosResponse<any, any>>;
 type TsetError = UseFormSetError<IRegisterFields>;
 
@@ -40,4 +48,5 @@ export type {
   IRegisterFields,
   IEditFormFields,
   IUserProfile,
+  IUserBasic,
 };

@@ -30,8 +30,8 @@ module.exports = {
     },
     screens: {
       xs: '576px',
-      ml: '960px',
-      lx: '1152px',
+      ml: '990px',
+      lx: '1200px',
       ...defaultTheme.screens,
     },
   },
