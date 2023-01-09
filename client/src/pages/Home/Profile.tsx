@@ -12,8 +12,8 @@ import {
   IoLocationOutline,
 } from 'react-icons/io5';
 import ProfileLoadingSkeleton from '../../components/Skeletons/ProfileLoadingSkeleton';
-import ErrorWithRefetch from '../../components/Errrors/ErrorWithRefetch';
 import useFollowUser from '../../hooks/useFollowUser';
+import DisplayError from '../../components/Errrors/DisplayError';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -26,6 +26,7 @@ const Profile = () => {
     isLoading: isProfileLoading,
     isError: isProfileError,
     data: profile,
+    error: profileError,
     refetch,
   } = useQuery(['profile', userId], getProfile);
 
@@ -42,8 +43,11 @@ const Profile = () => {
 
   if (isProfileError) {
     return (
-      <div className="h-screen flex justify-center items-center -mt-16">
-        <ErrorWithRefetch refetch={refetch} />
+      <div>
+        <DynamicNavTitle title="Profile" />
+        <div className="py-4">
+          <DisplayError refetch={refetch} error={profileError} />
+        </div>
       </div>
     );
   }
@@ -93,16 +97,6 @@ const Profile = () => {
               {!profile.isFollowing ? 'Follow' : 'Unfollow'}
             </Button>
           )}
-          {/* {user?._id !== profile._id && profile.isFollowing && (
-            <Button
-              onClick={() =>
-                followAction({ id: profile._id, action: 'unfollow' })
-              }
-              variant="standard"
-            >
-              Unfollow
-            </Button>
-          )} */}
         </div>
       </div>
       <div className="px-5 pt-6">
