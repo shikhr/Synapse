@@ -5,10 +5,10 @@ import PostImages from './PostImages';
 import KebabMenu from './KebabMenu';
 import React from 'react';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
-import PostLoadingError from '../Errrors/PostLoadingError';
 import useFetchPost from '../../hooks/useFetchPost';
 import PostActionBar from './PostActionBar';
 import PostPopup from './PostPopup';
+import DisplayError from '../Errrors/DisplayError';
 
 interface PostCardProps {
   id: string;
@@ -17,7 +17,7 @@ interface PostCardProps {
 const PostCard = ({ id }: PostCardProps) => {
   const navigate = useNavigate();
 
-  const { data: post, isLoading, isError, refetch } = useFetchPost(id);
+  const { data: post, isLoading, isError, error, refetch } = useFetchPost(id);
 
   const openFullPost = (id: string) => {
     navigate(`/post/${id}`);
@@ -27,7 +27,11 @@ const PostCard = ({ id }: PostCardProps) => {
     return <PostLoadingSkeleton />;
   }
   if (isError) {
-    return <PostLoadingError refetch={refetch} />;
+    return (
+      <div className="w-full flex h-52 justify-center items-center border-b border-text-secondary-dark">
+        <DisplayError refetch={refetch} error={error} />
+      </div>
+    );
   }
 
   return (

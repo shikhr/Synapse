@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import useFetchPost from '../../hooks/useFetchPost';
 import Avatar from '../Avatar/Avatar';
 import CommentList from '../Comment/CommentList';
-import PostLoadingError from '../Errrors/PostLoadingError';
+import DisplayError from '../Errrors/DisplayError';
 import AddCommentForm from '../Forms/AddCommentForm';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import DynamicNavTitle from '../UI/DynamicNavTitle';
@@ -19,13 +19,23 @@ const FullPost = () => {
     return <div>error</div>;
   }
 
-  const { data: post, isLoading, isError, refetch } = useFetchPost(postId);
+  const {
+    data: post,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useFetchPost(postId);
 
   return (
     <div>
       <DynamicNavTitle title="Post" />
       {isLoading && <PostLoadingSkeleton />}
-      {isError && <PostLoadingError refetch={refetch} />}
+      {isError && (
+        <div className="w-full flex h-52 justify-center items-center text-text-secondary-dark">
+          <DisplayError refetch={refetch} error={error} />
+        </div>
+      )}
       {post && (
         <div>
           <div className="flex flex-col items-start gap-3 px-4 py-4 text-text-primary-dark">

@@ -1,10 +1,10 @@
-import { ErrorWithRefetchProps } from '../../types/Error.types';
-import ErrorWithRefetch from './ErrorWithRefetch';
+import { DisplayErrorProps } from '../../types/Error.types';
+import DisplayError from './DisplayError';
 
-const FeedLoadingError = ({ refetch }: ErrorWithRefetchProps) => {
+const FeedLoadingError = ({ refetch, error }: DisplayErrorProps) => {
   return (
     <div className="w-full py-10 justify-center items-center">
-      <ErrorWithRefetch refetch={refetch} />
+      <DisplayError refetch={refetch} error={error} />
     </div>
   );
 };

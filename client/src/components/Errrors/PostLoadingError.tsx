@@ -1,10 +1,10 @@
-import { ErrorWithRefetchProps } from '../../types/Error.types';
-import ErrorWithRefetch from './ErrorWithRefetch';
+import { DisplayErrorProps } from '../../types/Error.types';
+import DisplayError from './DisplayError';
 
-const PostLoadingError = ({ refetch }: ErrorWithRefetchProps) => {
+const PostLoadingError = ({ refetch, error }: DisplayErrorProps) => {
   return (
     <div className="w-full flex h-52 justify-center items-center border-b border-text-secondary-dark">
-      <ErrorWithRefetch refetch={refetch} />
+      <DisplayError refetch={refetch} error={error} />
     </div>
   );
 };

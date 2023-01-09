@@ -26,7 +26,7 @@ const addPost = async (req: any, res: Response) => {
 const getPost = async (req: any, res: Response) => {
   let { postId } = req.params;
   if (!mongoose.isValidObjectId(postId)) {
-    throw new BadRequestError('post id invalid');
+    throw new NotFoundError('post not found');
   } else {
     postId = new mongoose.Types.ObjectId(postId);
   }
