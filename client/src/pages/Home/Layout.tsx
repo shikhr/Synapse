@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import BottomBar from '../../components/Navigation/BottomBar';
+import MobileBar from '../../components/Navigation/MobileBar';
 import Sidebar from '../../components/Navigation/Sidebar';
 import FollowSuggestions from '../../components/RightContainer/FollowSuggestions';
 
@@ -22,6 +23,9 @@ const Layout = () => {
           <BottomBar />
         </div>
       </div>
+      {/* <div className="block xs:hidden">
+        <MobileBar />
+      </div> */}
     </div>
   );
 };
