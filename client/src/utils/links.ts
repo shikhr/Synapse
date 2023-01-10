@@ -68,4 +68,6 @@ const BottomBarLinks: Link[] = [
   AllLinks.bookmarks,
 ];
 
-export { AllLinks, SidebarLinks, BottomBarLinks };
+const MobileBarLinks: Link[] = [AllLinks.settings];
+
+export { AllLinks, SidebarLinks, BottomBarLinks, MobileBarLinks };
