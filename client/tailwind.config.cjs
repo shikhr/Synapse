@@ -27,6 +27,15 @@ module.exports = {
         tooltip: '80',
         sudo: '999',
       },
+      keyframes: {
+        slidefromleft: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
+      },
+      animation: {
+        slidefromleft: 'slidefromleft 200ms linear',
+      },
     },
     screens: {
       xs: '576px',
