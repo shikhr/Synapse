@@ -32,7 +32,7 @@ const DynamicNavMain = ({ title }: { title: string }) => {
           />
           <CustomModal>
             <div ref={innerRef} className="block xs:hidden">
-              <MobileBar />
+              <MobileBar closeMobileBar={() => setIsComponentVisible(false)} />
             </div>
           </CustomModal>
         </div>
