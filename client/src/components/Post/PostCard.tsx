@@ -47,17 +47,19 @@ const PostCard = ({ id }: PostCardProps) => {
         <Avatar sourceId={post.createdBy.avatarId} />
       </Link>
 
-      <div className="basis-full flex flex-col text-text-primary-dark">
+      <div className="basis-full flex flex-col text-text-primary-dark overflow-auto">
         <div className="flex items-center justify-between w-full">
           <div
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            className="flex flex-col justify-start"
+            className="flex flex-col justify-start overflow-hidden"
           >
             <Link
               to={`/profile/${post.createdBy._id}`}
-              className="flex gap-2 items-center justify-start"
+              className="flex w-full gap-2 items-center justify-start"
             >
-              <span className="font-bold">{post.createdBy.displayName}</span>
+              <span className="font-bold overflow-hidden overflow-ellipsis">
+                {post.createdBy.displayName}
+              </span>
               <span className="text-text-secondary-dark text-sm font-semibold">
                 @{post.createdBy.username}
               </span>

@@ -100,7 +100,7 @@ const Profile = () => {
         </div>
       </div>
       <div className="px-5 pt-6">
-        <div className="text-text-primary-dark text-2xl font-bold">
+        <div className="text-text-primary-dark text-2xl font-bold whitespace-normal break-words">
           {profile.displayName}
         </div>
         <div className="text-text-secondary-dark text-md ">

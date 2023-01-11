@@ -42,14 +42,16 @@ const Sidebar = () => {
       <div className="relative w-full mt-auto cursor-pointer pr-2">
         <div
           onClick={() => setIsComponentVisible(!isComponentVisible)}
-          className="p-1 aspect-square lx:aspect-auto lx:py-2 lx:px-3 rounded-full duration-300 hover:bg-background-overlay-dark flex items-center justify-center"
+          className="p-1 aspect-square lx:aspect-auto lx:py-2 lx:px-3 rounded-full duration-300 hover:bg-background-overlay-dark flex items-center gap-2 justify-center"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-8 lx:w-11 aspect-square text-4xl">
+          <div className="flex w-full items-center gap-4 overflow-hidden">
+            <div className="w-8 lx:w-11 shrink-0 aspect-square text-4xl">
               <Avatar sourceId={user?.avatarId} />
             </div>
             <div className="flex-col hidden lx:flex">
-              <span className="font-semibold text-lg">{user?.displayName}</span>
+              <span className="font-semibold text-lg overflow-hidden overflow-ellipsis">
+                {user?.displayName}
+              </span>
               <span className="text-text-secondary-dark text-sm">
                 @{user?.username}
               </span>
