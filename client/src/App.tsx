@@ -4,6 +4,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import EditProfile from './components/Forms/EditProfile';
 import FullPost from './components/Post/FullPost';
+import Account from './components/Settings/Account';
 import AppProvider from './context/AppContext';
 
 import {
@@ -15,9 +16,9 @@ import {
   Profile,
   ProtectedRoute,
   Register,
+  OAuthParams,
+  Settings,
 } from './pages';
-import OAuthParams from './pages/OAuthParams';
-import Settings from './pages/Settings';
 
 function App() {
   const location = useLocation();
@@ -42,6 +43,7 @@ function App() {
               <Route path="bookmarks" element={<Bookmarks />} />
               <Route path="explore" element={<Explore />} />
               <Route path="settings" element={<Settings />}>
+                <Route index element={<Account />} />
                 <Route path="profile" element={<EditProfile />} />
               </Route>
             </Route>
