@@ -1,3 +1,4 @@
+import { RiSearchLine } from 'react-icons/ri';
 import FeedLoadingError from '../../components/Errrors/FeedLoadingError';
 import PostCard from '../../components/Post/PostCard';
 import PostLoadingSkeleton from '../../components/Skeletons/PostLoadingSkeleton';
@@ -55,6 +56,19 @@ const Explore = () => {
 
   return (
     <div className="text-white">
+      <div className="sticky top-0 z-sticky px-4 py-2 bg-opacity-50 bg-background-dark backdrop-blur-md ">
+        <div className="w-full group flex rounded-full px-6 py-1 justify-start items-center bg-background-overlay-dark ">
+          <RiSearchLine
+            className="text-text-secondary-dark group-focus-within:text-primary-100"
+            size={20}
+          />
+          <input
+            className="bg-transparent outline-none border-none py-2 px-4"
+            type="text"
+            placeholder="I am looking for..."
+          />
+        </div>
+      </div>
       {isLoading && (
         <>
           <PostLoadingSkeleton />

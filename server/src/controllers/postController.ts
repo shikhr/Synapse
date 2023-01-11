@@ -44,7 +44,7 @@ const getFeed = async (req: any, res: Response) => {
 };
 
 const getExplore = async (req: any, res: Response) => {
-  const [feed] = await Post.getFeed(req.query);
+  const [feed] = await Post.getFeed({ ...req.query, filterBy: 'all' });
 
   res.status(200).send(feed);
 };

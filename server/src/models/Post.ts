@@ -12,7 +12,7 @@ interface IPost {
 
 interface queryOptions {
   page: number;
-  filterBy: 'hot' | 'new';
+  filterBy: 'hot' | 'new' | 'all';
   createdBy: mongoose.Types.ObjectId;
   postId?: mongoose.Types.ObjectId;
 }
@@ -157,7 +157,11 @@ postSchema.static(
       },
       new: {
         match: {},
-        sort: { followExists: -1, createdAt: -1 },
+        sort: { followExists: -1, createdAt: 1 },
+      },
+      all: {
+        match: {},
+        sort: { likes: -1, createdAt: -1 },
       },
     };
     const matchQuery = query[filterBy].match;
