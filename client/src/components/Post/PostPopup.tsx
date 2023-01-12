@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 import useFollowUser from '../../hooks/useFollowUser';
 import { ICreatedBy } from '../../types/Post.types';
@@ -8,11 +9,18 @@ interface PostPopupProps {
   postId: string;
   createdBy: ICreatedBy;
   followExists: boolean;
+  closeMenu: () => void;
 }
 
-const PostPopup = ({ postId, createdBy, followExists }: PostPopupProps) => {
+const PostPopup = ({
+  postId,
+  createdBy,
+  followExists,
+  closeMenu,
+}: PostPopupProps) => {
   const { authFetch, user } = useAppContext();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const deletePostHandler = async (id: string) => {
     return await authFetch.delete(`/posts/${id}`);
@@ -21,7 +29,9 @@ const PostPopup = ({ postId, createdBy, followExists }: PostPopupProps) => {
     onSuccess(data, variables, context) {
       queryClient.removeQueries(['post', postId]);
       queryClient.invalidateQueries(['feed']);
-      console.log(data.data);
+      queryClient.invalidateQueries(['bookmarks']);
+      // TODO: add navigation to feed or user posts if full post was opened
+      // navigate('/');
     },
   });
 
@@ -30,7 +40,12 @@ const PostPopup = ({ postId, createdBy, followExists }: PostPopupProps) => {
   return (
     <div className="flex flex-col">
       {createdBy._id === user?._id && (
-        <PostPopupItem onClick={() => deletePost(postId)}>
+        <PostPopupItem
+          onClick={() => {
+            deletePost(postId);
+            closeMenu();
+          }}
+        >
           <span>Delete</span>
         </PostPopupItem>
       )}
@@ -49,6 +64,7 @@ const PostPopup = ({ postId, createdBy, followExists }: PostPopupProps) => {
                 },
               }
             );
+            closeMenu();
           }}
         >
           <span>
@@ -56,7 +72,11 @@ const PostPopup = ({ postId, createdBy, followExists }: PostPopupProps) => {
           </span>
         </PostPopupItem>
       )}
-      <PostPopupItem onClick={() => {}}>
+      <PostPopupItem
+        onClick={() => {
+          closeMenu();
+        }}
+      >
         <span>Report</span>
       </PostPopupItem>
     </div>
