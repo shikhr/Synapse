@@ -75,6 +75,7 @@ const PostCard = ({ id }: PostCardProps) => {
               createdBy={post.createdBy}
               postId={post._id}
               followExists={post.followExists}
+              closeMenu={undefined as never}
             />
           </KebabMenu>
         </div>
