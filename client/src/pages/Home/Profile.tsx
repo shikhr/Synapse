@@ -86,6 +86,7 @@ const Profile = () => {
                   },
                   {
                     onSettled(data, error, variables, context) {
+                      queryClient.invalidateQueries(['follow-suggestions']);
                       queryClient.invalidateQueries(['profile', userId]);
                     },
                   }

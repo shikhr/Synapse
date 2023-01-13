@@ -12,8 +12,10 @@ import { useAppContext } from '../../context/AppContext';
 import { ICommentData } from '../../types/Comment.types';
 import { numberFormatCompact } from '../../utils/numbers';
 import Avatar from '../Avatar/Avatar';
+import ErrorWithRefetch from '../Errrors/ErrorWithRefetch';
 import KebabMenu from '../Post/KebabMenu';
 import PostIiconContainer from '../Post/PostIconContainer';
+import CommentLoadingSkeleton from '../Skeletons/CommentLoadingSkeleton';
 
 interface CommentCardProps {
   id: string;
@@ -35,6 +37,7 @@ const CommentCard = ({ id }: CommentCardProps) => {
     data: comment,
     isLoading,
     isError,
+    refetch
   } = useQuery(['comment', id], fetchComment, {
     refetchOnWindowFocus: false,
   });
@@ -71,10 +74,10 @@ const CommentCard = ({ id }: CommentCardProps) => {
   });
 
   if (isLoading) {
-    return <div>loading</div>;
+    return <CommentLoadingSkeleton/>;
   }
   if (isError) {
-    return <div>error</div>;
+    return <div className="border-b border-text-secondary-dark px-2 py-4"><ErrorWithRefetch refetch={refetch}/></div>;
   }
   return (
     <div className="grid grid-rows-auto grid-cols-[auto_1fr] place-items-center w-full text-text-primary-dark gap-x-4 gap-y-3 px-4 py-4 border-b border-text-secondary-dark">
@@ -102,7 +105,7 @@ const CommentCard = ({ id }: CommentCardProps) => {
         </span>
       </div>
 
-      <div className="text-text-secondary-dark py-2">
+      <div className="text-text-secondary-dark py-2 ">
         <IconContext.Provider
           value={{
             style: {
