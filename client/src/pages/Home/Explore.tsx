@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 import FeedLoadingError from '../../components/Errrors/FeedLoadingError';
 import PostCard from '../../components/Post/PostCard';
@@ -48,7 +49,13 @@ const Explore = () => {
     },
   });
 
-  console.log(data);
+  const content = useMemo(
+    () =>
+      data?.pages.flatMap((page: feedPage) =>
+        page.data.map((id: string) => <PostCard key={id} id={id} />)
+      ),
+    [data]
+  );
 
   if (isLoadingError) {
     return <FeedLoadingError refetch={refetch} />;
@@ -77,13 +84,7 @@ const Explore = () => {
           <PostLoadingSkeleton />
         </>
       )}
-      <div className="flex flex-col">
-        {data &&
-          data.pages &&
-          data.pages.map((page: feedPage) => {
-            return page.data.map((id: string) => <PostCard key={id} id={id} />);
-          })}
-      </div>
+      <div className="flex flex-col">{data && data.pages && content}</div>
       {isError && !isFetchingNextPage && (
         <FeedLoadingError refetch={fetchNextPage} />
       )}
@@ -91,7 +92,7 @@ const Explore = () => {
         {isFetchingNextPage && hasNextPage && <PostLoadingSkeleton />}
       </div>
       <div>
-        {!isFetchingNextPage && !hasNextPage && (
+        {content?.length !== 0 && !isFetchingNextPage && !hasNextPage && (
           <div className="w-full text-center px-2 py-8 text-text-secondary-dark">
             You have reached the end
           </div>

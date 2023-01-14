@@ -1,4 +1,5 @@
 import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
 import FeedLoadingError from '../Errrors/FeedLoadingError';
@@ -55,7 +56,13 @@ const CommentList = ({ id }: CommentListProps) => {
     },
   });
 
-  console.log(commentList);
+  const content = useMemo(
+    () =>
+      commentList?.pages.map((page) => {
+        return page.data.map((id: string) => <CommentCard key={id} id={id} />);
+      }),
+    [commentList]
+  );
 
   if (isLoadingError) {
     return <FeedLoadingError refetch={refetch} />;
@@ -72,13 +79,7 @@ const CommentList = ({ id }: CommentListProps) => {
         </>
       )}
       <div className="flex flex-col">
-        {commentList &&
-          commentList.pages &&
-          commentList.pages.map((page) => {
-            return page.data.map((id: string) => (
-              <CommentCard key={id} id={id} />
-            ));
-          })}
+        {commentList && commentList.pages && content}
       </div>
       {isError && !isFetchingNextPage && (
         <FeedLoadingError refetch={fetchNextPage} />

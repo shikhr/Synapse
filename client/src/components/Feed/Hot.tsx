@@ -3,6 +3,9 @@ import FeedLoadingError from '../Errrors/FeedLoadingError';
 import PostCard from '../Post/PostCard';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import Button from '../UI/Button';
 
 interface feedPage {
   data: string[];
@@ -47,7 +50,13 @@ const Hot = () => {
     },
   });
 
-  console.log(data);
+  const content = useMemo(
+    () =>
+      data?.pages.flatMap((page: feedPage) =>
+        page.data.map((id: string) => <PostCard key={id} id={id} />)
+      ),
+    [data]
+  );
 
   if (isLoadingError) {
     return <FeedLoadingError refetch={refetch} />;
@@ -63,13 +72,20 @@ const Hot = () => {
           <PostLoadingSkeleton />
         </>
       )}
-      <div className="flex flex-col">
-        {data &&
-          data.pages &&
-          data.pages.map((page: feedPage) => {
-            return page.data.map((id: string) => <PostCard key={id} id={id} />);
-          })}
-      </div>
+      <div className="flex flex-col">{data && data.pages && content}</div>
+      {content?.length === 0 && !hasNextPage && (
+        <div className="px-4 py-8 flex flex-col justify-center items-center text-center gap-6 text-text-secondary-dark">
+          <div>
+            <h4 className="text-lg">Nothing to see</h4>
+            <p>Follow more people to get recommendations</p>
+          </div>
+          <div className="w-40">
+            <Link to="/explore">
+              <Button variant="standard">Explore</Button>
+            </Link>
+          </div>
+        </div>
+      )}
       {isError && !isFetchingNextPage && (
         <FeedLoadingError refetch={fetchNextPage} />
       )}
@@ -77,7 +93,7 @@ const Hot = () => {
         {isFetchingNextPage && hasNextPage && <PostLoadingSkeleton />}
       </div>
       <div>
-        {!isFetchingNextPage && !hasNextPage && (
+        {content?.length !== 0 && !isFetchingNextPage && !hasNextPage && (
           <div className="w-full text-center px-2 py-8 text-text-secondary-dark">
             You have reached the end
           </div>

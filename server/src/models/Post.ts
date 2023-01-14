@@ -148,10 +148,13 @@ postSchema.static(
   'getFeed',
   async function ({ page, filterBy = 'hot', createdBy }: queryOptions, user) {
     const size = 5;
+    const period = Date.now();
     const query: any = {
       hot: {
         match: {
-          createdAt: { $gt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
+          createdAt: {
+            $gt: new Date(Date.now() - period * 24 * 60 * 60 * 1000),
+          },
         },
         sort: { followExists: -1, likes: -1, createdAt: -1 },
       },
