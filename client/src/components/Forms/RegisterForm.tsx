@@ -26,14 +26,14 @@ const validationSignUp = {
 };
 
 const loginUser = async (bodyData: { identity: string; password: string }) => {
-  return axios.post('http://localhost:5000/api/v1/auth/signin', bodyData);
+  return axios.post('/api/v1/auth/signin', bodyData);
 };
 const signUpUser = async (bodyData: {
   username: string;
   email: string;
   password: string;
 }) => {
-  return axios.post('http://localhost:5000/api/v1/auth/signup', bodyData);
+  return axios.post('/api/v1/auth/signup', bodyData);
 };
 
 const RegisterForm = () => {
