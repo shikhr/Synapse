@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {
+        primary: {    
           100: '#1D88D5',
-          200: '#14639C',
+          200: '#14639C', 
         },
         'background-dark': '#10181F',
         'background-overlay-dark': '#1B2730',
@@ -36,6 +36,11 @@ module.exports = {
       animation: {
         slidefromleft: 'slidefromleft 200ms linear',
       },
+    },
+    fontFamily: {
+      'sans': [
+        ...defaultTheme.fontFamily.sans
+      ]
     },
     screens: {
       xs: '576px',
