@@ -14,4 +14,10 @@
   .btn-float.error ~ label {
     @apply text-error;
   }
+  .hyphens-auto {
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+  }
 }
