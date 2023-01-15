@@ -80,7 +80,7 @@ const PostCard = ({ id }: PostCardProps) => {
           </KebabMenu>
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <p className="text-base break-words">{post.description}</p>
           {post.media.length > 0 && <PostImages media={post.media} />}
         </div>

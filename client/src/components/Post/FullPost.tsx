@@ -69,8 +69,8 @@ const FullPost = () => {
               </div>
             </div>
 
-            <div className="flex flex-col">
-              <p className="text-2xl">{post.description}</p>
+            <div className="flex flex-col w-full">
+              <p className="text-base break-words">{post.description}</p>
               {post.media.length > 0 && <PostImages media={post.media} />}
             </div>
 
