@@ -25,7 +25,7 @@ function App() {
   const background = location.state;
 
   return (
-    <div className="bg-background-dark w-full h-screen">
+    <div className="bg-background-dark w-full h-full">
       <AppProvider>
         <SkeletonTheme baseColor="#1B2730" highlightColor="#23323c">
           <Routes location={background || location}>

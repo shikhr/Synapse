@@ -14,7 +14,7 @@ const MobileBar = ({ closeMobileBar }: MobileBarProps) => {
   const { user, logoutUser } = useAppContext();
 
   return (
-    <div className="fixed top-0 animate-slidefromleft overflow-auto text-text-primary-dark transition-all left-0 w-full max-w-xs z-50 flex flex-col bg-background-dark h-screen ">
+    <div className="fixed top-0 animate-slidefromleft overflow-auto text-text-primary-dark transition-all left-0 w-full max-w-xs z-50 flex flex-col h-full max-h-full bg-background-dark">
       <div className="flex justify-between items-center px-4 py-2">
         <div className="font-semibold">Account Info</div>
         <div

@@ -9,7 +9,7 @@
     "install-server": "cd server && npm install --production=false",
     "build-client": "cd client && npm run build && rm -rf node_modules",
     "build-server": "cd server && npm run build && npm prune",
-    "client": "npm run dev --prefix client",
+    "client": "npm run dev --prefix client -- --host ",
     "server": "npm run server --prefix server",
     "compile-server": "npm run dev --prefix server",
     "dev": "concurrently --kill-others-on-fail \"npm run compile-server\" \"npm run server\" \"npm run client \" ",
