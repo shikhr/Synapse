@@ -44,7 +44,7 @@ const Sidebar = () => {
           onClick={() => setIsComponentVisible(!isComponentVisible)}
           className="p-1 aspect-square lx:aspect-auto lx:py-2 lx:px-3 rounded-full duration-300 hover:bg-background-overlay-dark flex items-center gap-2 justify-center"
         >
-          <div className="flex w-full items-center gap-4 overflow-hidden">
+          <div className="flex w-full items-center justify-center lx:justify-start gap-4 overflow-hidden">
             <div className="w-8 lx:w-11 shrink-0 aspect-square text-4xl">
               <Avatar sourceId={user?.avatarId} />
             </div>
