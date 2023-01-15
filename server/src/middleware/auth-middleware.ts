@@ -52,7 +52,7 @@ const OAUTHGoogleStrategy = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID as string,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    callbackURL: '/api/v1/auth/google/redirect',
+    callbackURL: `${process.env.BASE_URL}/api/v1/auth/google/redirect`,
   },
   async (
     accessToken: string,
