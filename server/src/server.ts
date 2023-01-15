@@ -49,7 +49,7 @@ passport.deserializeUser(function (obj: any, done) {
 
 // HOME ROUTER
 app.get('/api/v1', (req, res) => {
-  res.send('MERNLY API');
+  res.send('MERNLY API!!!');
 });
 
 // AUTH ROUTER
