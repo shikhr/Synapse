@@ -63,7 +63,7 @@ const EditProfileForm = ({
   const submitHandler: SubmitHandler<IEditFormFields> = (data) => {
     const touchedFields = Object.keys(dirtyFields);
     if (touchedFields.length === 0) {
-      navigate('/profile/me');
+      closeHandler();
       return;
     }
     const formData = new FormData();

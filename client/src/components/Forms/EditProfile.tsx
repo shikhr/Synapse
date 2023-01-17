@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Modal from '../UI/Modal';
 import Overlay from '../UI/Overlay';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
@@ -9,6 +9,13 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { getProfile, user, authFetch, updateUser } = useAppContext();
+  const location = useLocation();
+
+  const prevPage = location.state?.pathname || '/';
+
+  const closeFormHandler = () => {
+    navigate(prevPage, { replace: true });
+  };
 
   const updateProfileHandler = async (formData: FormData) => {
     return authFetch.patch('/users/profile', formData);
@@ -18,7 +25,7 @@ const EditProfile = () => {
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
       updateUser(data.data);
-      navigate('/profile/me', { replace: true });
+      closeFormHandler();
     },
   });
 
@@ -31,10 +38,6 @@ const EditProfile = () => {
     refetchOnWindowFocus: false,
     retry: false,
   });
-
-  const closeFormHandler = () => {
-    navigate(-1);
-  };
 
   return (
     <div>
