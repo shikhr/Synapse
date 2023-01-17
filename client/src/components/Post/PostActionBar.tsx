@@ -78,7 +78,6 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
       value={{
         style: {
           verticalAlign: 'bottom',
-          marginTop: 3,
         },
       }}
     >

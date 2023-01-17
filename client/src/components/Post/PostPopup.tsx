@@ -50,27 +50,36 @@ const PostPopup = ({
         </PostPopupItem>
       )}
       {createdBy._id !== user?._id && (
-        <PostPopupItem
-          onClick={() => {
-            if (isFollowLoading) return;
-            followAction(
-              {
-                id: createdBy._id,
-                action: followExists ? 'unfollow' : 'follow',
-              },
-              {
-                onSettled(data, error, variables, context) {
-                  queryClient.invalidateQueries(['post', postId]);
+        <>
+          <PostPopupItem
+            onClick={() => {
+              if (isFollowLoading) return;
+              followAction(
+                {
+                  id: createdBy._id,
+                  action: followExists ? 'unfollow' : 'follow',
                 },
-              }
-            );
-            closeMenu();
-          }}
-        >
-          <span>
-            {followExists ? 'Unfollow' : 'Follow'} @{createdBy.username}
-          </span>
-        </PostPopupItem>
+                {
+                  onSettled(data, error, variables, context) {
+                    queryClient.invalidateQueries(['post', postId]);
+                  },
+                }
+              );
+              closeMenu();
+            }}
+          >
+            <span>
+              {followExists ? 'Unfollow' : 'Follow'} @{createdBy.username}
+            </span>
+          </PostPopupItem>
+          <PostPopupItem
+            onClick={() => {
+              closeMenu();
+            }}
+          >
+            <span>Block @{createdBy.username}</span>
+          </PostPopupItem>
+        </>
       )}
       <PostPopupItem
         onClick={() => {

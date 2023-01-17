@@ -47,7 +47,7 @@ const PostCard = ({ id }: PostCardProps) => {
         <Avatar sourceId={post.createdBy.avatarId} />
       </Link>
 
-      <div className="basis-full flex flex-col text-text-primary-dark overflow-auto">
+      <div className="basis-full flex flex-col text-text-primary-dark min-w-0">
         <div className="flex items-center justify-between w-full">
           <div
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -60,7 +60,7 @@ const PostCard = ({ id }: PostCardProps) => {
               <span className="font-bold overflow-hidden overflow-ellipsis">
                 {post.createdBy.displayName}
               </span>
-              <span className="text-text-secondary-dark text-sm font-semibold">
+              <span className="text-text-secondary-dark text-sm font-semibold overflow-hidden overflow-ellipsis">
                 @{post.createdBy.username}
               </span>
             </Link>
