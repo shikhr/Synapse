@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {    
+        primary: {
           100: '#1D88D5',
-          200: '#14639C', 
+          200: '#14639C',
         },
         'background-dark': '#10181F',
         'background-overlay-dark': '#1B2730',
@@ -21,8 +21,9 @@ module.exports = {
         element: '10',
         dropdown: '20',
         sticky: '30',
-        overlay: '40',
-        modal: '50',
+        fixed: '40',
+        overlay: '50',
+        modal: '60',
         popover: '70',
         tooltip: '80',
         sudo: '999',
@@ -38,9 +39,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      'sans': [
-        ...defaultTheme.fontFamily.sans
-      ]
+      sans: [...defaultTheme.fontFamily.sans],
     },
     screens: {
       xs: '576px',

@@ -20,7 +20,7 @@ const Layout = () => {
           </div>
         </div>
       </div>
-      <div className="z-50 fixed bottom-0 left-0 right-0 border-t border-text-secondary-dark bg-background-dark block xs:hidden">
+      <div className="z-fixed fixed bottom-0 left-0 right-0 border-t border-text-secondary-dark bg-background-dark block xs:hidden">
         <BottomBar />
       </div>
     </div>

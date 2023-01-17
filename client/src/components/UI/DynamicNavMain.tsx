@@ -7,6 +7,7 @@ import MobileBar from '../Navigation/MobileBar';
 import CustomModal from './CustomModal';
 import Modal from './Modal';
 import Overlay from './Overlay';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const DynamicNavMain = ({ title }: { title: string }) => {
   const navigate = useNavigate();
@@ -24,19 +25,30 @@ const DynamicNavMain = ({ title }: { title: string }) => {
         <Avatar sourceId={user?.avatarId} />
       </div>
       <h2 className="mx-auto text-2xl font-semibold capitalize">{title}</h2>
-      {isComponentVisible && (
-        <div>
-          <Overlay
-            className="block xs:hidden"
-            closeModal={() => setIsComponentVisible(false)}
-          />
-          <CustomModal>
-            <div ref={innerRef} className="block xs:hidden">
-              <MobileBar closeMobileBar={() => setIsComponentVisible(false)} />
-            </div>
-          </CustomModal>
-        </div>
-      )}
+      <AnimatePresence>
+        {isComponentVisible && (
+          <div>
+            <Overlay
+              className="block xs:hidden"
+              closeModal={() => setIsComponentVisible(false)}
+            />
+            <CustomModal>
+              <motion.div
+                animate={{ x: 0 }}
+                initial={{ x: -320 }}
+                exit={{ x: -320 }}
+                transition={{ duration: 0.3, type: 'tween' }}
+                ref={innerRef}
+                className="fixed top-0 left-0 z-modal w-full max-w-xs h-full"
+              >
+                <MobileBar
+                  closeMobileBar={() => setIsComponentVisible(false)}
+                />
+              </motion.div>
+            </CustomModal>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
