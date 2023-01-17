@@ -36,7 +36,7 @@ const Explore = () => {
     refetch,
     observerElem,
   } = useInfiniteQueryScroll<feedPage>({
-    queryKey: ['feed', 'hot'],
+    queryKey: ['explore-all'],
     queryFn: fetchFeed,
     options: {
       retry: 2,
