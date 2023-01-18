@@ -37,9 +37,10 @@ const CommentCard = ({ id }: CommentCardProps) => {
     data: comment,
     isLoading,
     isError,
-    refetch
+    refetch,
   } = useQuery(['comment', id], fetchComment, {
     refetchOnWindowFocus: false,
+    staleTime: 300000,
   });
 
   const likeCommentHandler = async (data: {
@@ -74,10 +75,14 @@ const CommentCard = ({ id }: CommentCardProps) => {
   });
 
   if (isLoading) {
-    return <CommentLoadingSkeleton/>;
+    return <CommentLoadingSkeleton />;
   }
   if (isError) {
-    return <div className="border-b border-text-secondary-dark px-2 py-4"><ErrorWithRefetch refetch={refetch}/></div>;
+    return (
+      <div className="border-b border-text-secondary-dark px-2 py-4">
+        <ErrorWithRefetch refetch={refetch} />
+      </div>
+    );
   }
   return (
     <div className="grid grid-rows-auto grid-cols-[auto_1fr] place-items-center w-full text-text-primary-dark gap-x-4 gap-y-3 px-4 py-4 border-b border-text-secondary-dark">

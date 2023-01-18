@@ -15,6 +15,7 @@ import ProfileLoadingSkeleton from '../../components/Skeletons/ProfileLoadingSke
 import useFollowUser from '../../hooks/useFollowUser';
 import DisplayError from '../../components/Errrors/DisplayError';
 import { motion } from 'framer-motion';
+import useFetchProfile from '../../hooks/useFetchProfile';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Profile = () => {
     data: profile,
     error: profileError,
     refetch,
-  } = useQuery(['profile', userId], getProfile);
+  } = useFetchProfile(userId as string);
 
   const { followAction, isFollowError, isFollowLoading } = useFollowUser();
 

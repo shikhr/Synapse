@@ -42,6 +42,7 @@ const Hot = () => {
     options: {
       retry: 2,
       refetchOnWindowFocus: false,
+      staleTime: 300000,
     },
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.meta) return undefined;

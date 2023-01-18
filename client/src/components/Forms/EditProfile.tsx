@@ -4,6 +4,7 @@ import Overlay from '../UI/Overlay';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
 import EditProfileForm from './EditProfileForm';
+import useFetchProfile from '../../hooks/useFetchProfile';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -29,15 +30,7 @@ const EditProfile = () => {
     },
   });
 
-  const {
-    data: profile,
-    isLoading,
-    isError,
-    error,
-  } = useQuery(['profile', 'me'], getProfile, {
-    refetchOnWindowFocus: false,
-    retry: false,
-  });
+  const { data: profile, isLoading, isError, error } = useFetchProfile('me');
 
   return (
     <div>
