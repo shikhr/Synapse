@@ -5,6 +5,7 @@ import Avatar from '../Avatar/Avatar';
 import { BsThreeDots } from 'react-icons/bs';
 import Button from '../UI/Button';
 import useOuterClick from '../../hooks/useOuterClick';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Sidebar = () => {
   const { user, logoutUser } = useAppContext();
@@ -61,16 +62,24 @@ const Sidebar = () => {
             <BsThreeDots />
           </div>
         </div>
-        {isComponentVisible && (
-          <div ref={innerRef}>
-            <div className="absolute px-6 z-40 w-64 lx:w-auto lx:right-2 flex justify-center items-center py-6 left-0 -top-28 cursor-pointer rounded-lg border  border-text-secondary-dark bg-background-dark shadow-text-gray">
-              <Button variant="primary" onClick={logoutUser}>
-                Logout
-              </Button>
-              <div className="absolute left-4 lx:left-1/2 lx:-translate-x-1/2 z-50 -bottom-0 translate-y-[.525rem] origin-center w-4 h-4 rotate-45 bg-background-dark border-text-secondary-dark border-r border-b "></div>
-            </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {isComponentVisible && (
+            <motion.div
+              animate={{ opacity: 1 }}
+              initial={{ opacity: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ type: 'tween', duration: 0.3 }}
+              ref={innerRef}
+            >
+              <div className="absolute px-6 z-40 w-64 lx:w-auto lx:right-2 flex justify-center items-center py-6 left-0 -top-28 cursor-pointer rounded-lg border  border-text-secondary-dark bg-background-dark shadow-text-gray">
+                <Button variant="primary" onClick={logoutUser}>
+                  Logout
+                </Button>
+                <div className="absolute left-4 lx:left-1/2 lx:-translate-x-1/2 z-50 -bottom-0 translate-y-[.525rem] origin-center w-4 h-4 rotate-45 bg-background-dark border-text-secondary-dark border-r border-b "></div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

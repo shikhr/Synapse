@@ -14,6 +14,7 @@ import {
 import ProfileLoadingSkeleton from '../../components/Skeletons/ProfileLoadingSkeleton';
 import useFollowUser from '../../hooks/useFollowUser';
 import DisplayError from '../../components/Errrors/DisplayError';
+import { motion } from 'framer-motion';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -53,7 +54,11 @@ const Profile = () => {
   }
 
   return (
-    <div>
+    <motion.div
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      transition={{ type: 'tween', duration: 0.3 }}
+    >
       <DynamicNavTitle title="Profile" />
       <div className="relative w-full h-40">
         <Banner sourceId={profile.avatarId}>
@@ -161,7 +166,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 export default Profile;
