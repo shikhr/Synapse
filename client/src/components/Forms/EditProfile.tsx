@@ -25,6 +25,7 @@ const EditProfile = () => {
   const { mutate: updateProfile } = useMutation(updateProfileHandler, {
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
+      queryClient.invalidateQueries(['post']);
       updateUser(data.data);
       closeFormHandler();
     },
