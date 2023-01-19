@@ -19,10 +19,9 @@ import useFetchProfile from '../../hooks/useFetchProfile';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const location = useLocation();
   const { userId } = useParams();
-  const { user, getProfile } = useAppContext();
+  const { user } = useAppContext();
 
   const {
     isLoading: isProfileLoading,

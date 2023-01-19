@@ -1,10 +1,13 @@
-import { createContext, useContext, useReducer, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useReducer,
+  ReactNode,
+  useRef,
+} from 'react';
 import reducer from './reducer';
 import { ActionKind } from './actions';
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
-import { QueryFunctionContext } from '@tanstack/react-query';
-import defaultUserProfile from '../utils/defaultUserProfile';
-import { IUserProfile } from '../types/Register.types';
 
 const user = localStorage.getItem('user');
 let accessToken = localStorage.getItem('accessToken');
@@ -31,11 +34,10 @@ interface ILocalStorageData {
 interface IAppContext {
   user: IUser | null;
   isLoggedIn: boolean;
-  authFetch: any;
+  authFetch?: any;
   registerUserSuccess: (data: ILocalStorageData) => void;
   updateUser: (data: IUser | null) => void;
   logoutUser: () => void;
-  getProfile: ({ queryKey }: QueryFunctionContext) => Promise<IUserProfile>;
 }
 
 const initialAppState: IAppContext = {
@@ -44,22 +46,22 @@ const initialAppState: IAppContext = {
   registerUserSuccess: () => {},
   updateUser: () => {},
   logoutUser: () => {},
-  authFetch: undefined,
-  getProfile: () => Promise.resolve(defaultUserProfile),
 };
 
 const AppContext = createContext<IAppContext>({
   ...initialAppState,
 });
 
-const authFetch = axios.create({
-  baseURL: '/api/v1',
-});
-
 const AppProvider = ({ children }: AppProviderProps) => {
   const [state, dispatch] = useReducer(reducer, initialAppState);
 
-  authFetch.interceptors.request.use(
+  const authFetchRef = useRef(
+    axios.create({
+      baseURL: '/api/v1',
+    })
+  );
+
+  authFetchRef.current.interceptors.request.use(
     (config: AxiosRequestConfig): AxiosRequestConfig => {
       if (!config.headers) config.headers = {};
       config.headers.authorization = `Bearer ${accessToken}`;
@@ -67,7 +69,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
     }
   );
 
-  authFetch.interceptors.response.use(
+  authFetchRef.current.interceptors.response.use(
     (response) => response,
     async (error) => {
       const status = error?.response?.status;
@@ -158,19 +160,11 @@ const AppProvider = ({ children }: AppProviderProps) => {
     }
   };
 
-  const getProfile = async ({
-    queryKey,
-  }: QueryFunctionContext): Promise<IUserProfile> => {
-    const { data } = await authFetch.get(`/users/profile/${queryKey[1]}`);
-    return data;
-  };
-
   return (
     <AppContext.Provider
       value={{
         ...state,
-        authFetch,
-        getProfile,
+        authFetch: authFetchRef.current,
         registerUserSuccess,
         updateUser,
         logoutUser,

@@ -9,7 +9,7 @@ import useFetchProfile from '../../hooks/useFetchProfile';
 const EditProfile = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { getProfile, user, authFetch, updateUser } = useAppContext();
+  const { user, authFetch, updateUser } = useAppContext();
   const location = useLocation();
 
   const prevPage = location.state?.pathname || '/';

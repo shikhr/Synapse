@@ -1,8 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
+import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
 import { useAppContext } from '../context/AppContext';
+import { IUserProfile } from '../types/Register.types';
 
 const useFetchProfile = (id: string) => {
-  const { getProfile } = useAppContext();
+  const { authFetch } = useAppContext();
+
+  const getProfile = async ({
+    queryKey,
+  }: QueryFunctionContext): Promise<IUserProfile> => {
+    const { data } = await authFetch.get(`/users/profile/${queryKey[1]}`);
+    return data;
+  };
 
   const data = useQuery(['profile', id], getProfile, {
     refetchOnWindowFocus: false,
