@@ -1,8 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppContext } from '../context/AppContext';
 
 const useFollowUser = () => {
-  const { authFetch } = useAppContext();
+  const { authFetch, user } = useAppContext();
+  const queryClient = useQueryClient();
 
   const followHandler = async ({
     id,
@@ -18,7 +19,13 @@ const useFollowUser = () => {
     mutate: followAction,
     isLoading: isFollowLoading,
     isError: isFollowError,
-  } = useMutation(followHandler);
+  } = useMutation(followHandler, {
+    onSettled(data, error, variables, context) {
+      queryClient.invalidateQueries(['follow-suggestions']);
+      queryClient.invalidateQueries(['profile', variables.id]);
+      queryClient.invalidateQueries(['profile', 'me']);
+    },
+  });
 
   return { followAction, isFollowError, isFollowLoading };
 };

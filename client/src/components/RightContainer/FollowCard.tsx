@@ -38,18 +38,10 @@ const FollowCard = ({
           onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             if (isFollowLoading) return;
-            followAction(
-              {
-                id: _id,
-                action: followExists ? 'unfollow' : 'follow',
-              },
-              {
-                onSettled(data, error, variables, context) {
-                  queryClient.invalidateQueries(['follow-suggestions']);
-                  queryClient.invalidateQueries(['profile', _id]);
-                },
-              }
-            );
+            followAction({
+              id: _id,
+              action: followExists ? 'unfollow' : 'follow',
+            });
           }}
           variant="standard"
         >

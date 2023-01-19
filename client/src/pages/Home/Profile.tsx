@@ -85,18 +85,10 @@ const Profile = () => {
           {user?._id !== profile._id && (
             <Button
               onClick={() => {
-                followAction(
-                  {
-                    id: profile._id,
-                    action: !profile.isFollowing ? 'follow' : 'unfollow',
-                  },
-                  {
-                    onSettled(data, error, variables, context) {
-                      queryClient.invalidateQueries(['follow-suggestions']);
-                      queryClient.invalidateQueries(['profile', userId]);
-                    },
-                  }
-                );
+                followAction({
+                  id: profile._id,
+                  action: !profile.isFollowing ? 'follow' : 'unfollow',
+                });
               }}
               variant="standard"
               disabled={isFollowLoading}
