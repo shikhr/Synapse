@@ -1,4 +1,5 @@
-import mongoose, { Schema, model, Model } from 'mongoose';
+import { NextFunction } from 'express';
+import mongoose, { Schema, model, Model, CallbackError } from 'mongoose';
 import Bookmark from './Bookmark.js';
 import Comment from './Comments.js';
 import User, { UserModel } from './User.js';
@@ -54,6 +55,20 @@ const postSchema = new Schema<IPost, PostModel>(
     timestamps: true,
   }
 );
+
+postSchema.pre('deleteMany', async function (next) {
+  try {
+    let deletedData = await Post.find((this as any)._conditions).lean();
+    await Promise.all(
+      deletedData.flatMap(async (post) => [
+        await Comment.deleteMany({ postId: post._id }),
+        await Bookmark.deleteMany({ postId: post._id }),
+      ])
+    );
+  } catch (error: any) {
+    return next(error);
+  }
+});
 
 const userAggregatePipeline = [
   {

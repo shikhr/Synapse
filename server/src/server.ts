@@ -15,6 +15,7 @@ import PostRouter from './routes/postRoutes.js';
 import UserRouter from './routes/userRoutes.js';
 import CommentRouter from './routes/commentRoutes.js';
 import BookmarkRouter from './routes/bookmarkRoutes.js';
+import SettingsRouter from './routes/settingsRoute.js';
 
 import {
   AuthenticateJwtStrategy,
@@ -80,6 +81,12 @@ app.use(
   '/api/v1/bookmarks',
   passport.authenticate('authenticate_jwt', { session: false }),
   BookmarkRouter
+);
+
+app.use(
+  '/api/v1/settings',
+  passport.authenticate('authenticate_jwt', { session: false }),
+  SettingsRouter
 );
 
 app.get('*', (req: Request, res: Response) => {
