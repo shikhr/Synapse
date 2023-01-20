@@ -17,7 +17,7 @@ const Sidebar = () => {
       <div className="flex flex-col gap-0">
         {SidebarLinks.map((link, i) => (
           <NavLink
-            end={true}
+            end={link.end === false ? false : true}
             key={i}
             to={link.path}
             children={({ isActive }) => (

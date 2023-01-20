@@ -8,7 +8,7 @@ const BottomBar = () => {
         <NavLink
           key={i}
           to={link.path}
-          end={true}
+          end={link.end === false ? false : true}
           className="w-full h-full group"
           children={({ isActive }) => (
             <div className="text-2xl py-2 flex  justify-center items-center">

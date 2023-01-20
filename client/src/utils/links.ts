@@ -19,6 +19,7 @@ interface Link {
   icon: IconType;
   iconActive: IconType;
   path: string;
+  end?: boolean;
 }
 
 const AllLinks: Record<string, Link> = {
@@ -39,6 +40,7 @@ const AllLinks: Record<string, Link> = {
     icon: HiOutlineUserCircle,
     iconActive: HiUserCircle,
     path: '/profile/me',
+    end: false,
   },
   bookmarks: {
     title: 'Bookmarks',
@@ -51,6 +53,7 @@ const AllLinks: Record<string, Link> = {
     icon: IoSettingsOutline,
     iconActive: IoSettings,
     path: '/settings',
+    end: false,
   },
 };
 
