@@ -27,32 +27,32 @@ const AllLinks: Record<string, Link> = {
     title: 'Home',
     icon: BsHouse,
     iconActive: BsHouseFill,
-    path: '/',
+    path: '',
   },
   explore: {
     title: 'Explore',
     icon: RiSearchLine,
     iconActive: RiSearchFill,
-    path: '/explore',
+    path: 'explore',
   },
   profile: {
     title: 'Profile',
     icon: HiOutlineUserCircle,
     iconActive: HiUserCircle,
-    path: '/profile/me',
+    path: 'profile/me',
     end: false,
   },
   bookmarks: {
     title: 'Bookmarks',
     icon: BsBookmarkStar,
     iconActive: BsBookmarkStarFill,
-    path: '/bookmarks',
+    path: 'bookmarks',
   },
   settings: {
     title: 'Settings',
     icon: IoSettingsOutline,
     iconActive: IoSettings,
-    path: '/settings',
+    path: 'settings',
     end: false,
   },
 };
@@ -71,6 +71,19 @@ const BottomBarLinks: Link[] = [
   AllLinks.bookmarks,
 ];
 
+interface IProfileLink {
+  title: string;
+  path: string;
+  end?: boolean;
+}
+
+const ProfileLinks: IProfileLink[] = [
+  { title: 'Posts', path: '' },
+  { title: 'Comments', path: 'comments' },
+  { title: 'Followers', path: 'followers' },
+  { title: 'Following', path: 'following' },
+];
+
 const MobileBarLinks: Link[] = [AllLinks.settings];
 
-export { AllLinks, SidebarLinks, BottomBarLinks, MobileBarLinks };
+export { AllLinks, SidebarLinks, BottomBarLinks, MobileBarLinks, ProfileLinks };

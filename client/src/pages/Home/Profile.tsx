@@ -1,5 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import Avatar from '../../components/Avatar/Avatar';
 import Banner from '../../components/Avatar/Banner';
 import Button from '../../components/UI/Button';
@@ -16,6 +23,7 @@ import useFollowUser from '../../hooks/useFollowUser';
 import DisplayError from '../../components/Errrors/DisplayError';
 import { motion } from 'framer-motion';
 import useFetchProfile from '../../hooks/useFetchProfile';
+import { ProfileLinks } from '../../utils/links';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -157,6 +165,29 @@ const Profile = () => {
             </span>
           </div>
         </div>
+      </div>
+      <div className="w-full flex flex-col text-teal-50">
+        <div className="flex border-b pt-2 border-text-secondary-dark flex-1 items-center justify-around text-xl text-text-primary-dark">
+          {ProfileLinks.map((link, i) => (
+            <NavLink
+              to={link.path}
+              end={link.end === false ? false : true}
+              key={i}
+              className="py-4 hover:bg-background-overlay-dark w-full text-center"
+            >
+              {({ isActive }) => (
+                <div
+                  className={`text-text-secondary-dark w-full ${
+                    isActive && 'text-text-primary-dark font-bold'
+                  }`}
+                >
+                  {link.title}
+                </div>
+              )}
+            </NavLink>
+          ))}
+        </div>
+        <Outlet />
       </div>
     </motion.div>
   );

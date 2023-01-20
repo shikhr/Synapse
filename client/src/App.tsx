@@ -5,6 +5,9 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import EditProfile from './components/Forms/EditProfile';
 import FullPost from './components/Post/FullPost';
 import Account from './components/Settings/Account';
+import UserComments from './components/UserProfile/UserComments';
+import UserFollowList from './components/UserProfile/UserFollowList';
+import UserPosts from './components/UserProfile/UserPosts';
 import AppProvider from './context/AppContext';
 
 import {
@@ -39,7 +42,18 @@ function App() {
             >
               <Route index element={<Home />} />
               <Route path="post/:postId" element={<FullPost />} />
-              <Route path="profile/:userId" element={<Profile />} />
+              <Route path="profile/:userId" element={<Profile />}>
+                <Route index element={<UserPosts />} />
+                <Route path="comments" element={<UserComments />} />
+                <Route
+                  path="followers"
+                  element={<UserFollowList type="followers" />}
+                />
+                <Route
+                  path="following"
+                  element={<UserFollowList type="following" />}
+                />
+              </Route>
               <Route path="bookmarks" element={<Bookmarks />} />
               <Route path="explore" element={<Explore />} />
               <Route path="settings" element={<Settings />}>
