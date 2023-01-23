@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
 import FeedLoadingError from '../Errrors/FeedLoadingError';
+import InfiniteScrollList from '../InfiniteScrollList/InfiniteScrollList';
 import CommentLoadingSkeleton from '../Skeletons/CommentLoadingSkeleton';
 import CommentCard from './CommentCard';
 
@@ -56,38 +57,23 @@ const CommentList = ({ id }: CommentListProps) => {
     },
   });
 
-  const content = useMemo(
-    () =>
-      commentList?.pages.map((page) => {
-        return page.data.map((id: string) => <CommentCard key={id} id={id} />);
-      }),
-    [commentList]
-  );
-
-  if (isLoadingError) {
-    return <FeedLoadingError refetch={refetch} />;
-  }
-
   return (
-    <div className="w-full pb-16">
-      {isLoading && (
-        <>
-          <CommentLoadingSkeleton />
-          <CommentLoadingSkeleton />
-          <CommentLoadingSkeleton />
-          <CommentLoadingSkeleton />
-        </>
-      )}
-      <div className="flex flex-col">
-        {commentList && commentList.pages && content}
-      </div>
-      {isError && !isFetchingNextPage && (
-        <FeedLoadingError refetch={fetchNextPage} />
-      )}
-      <div ref={observerElem}>
-        {isFetchingNextPage && hasNextPage && <CommentLoadingSkeleton />}
-      </div>
-    </div>
+    <InfiniteScrollList
+      data={commentList}
+      isLoading={isLoading}
+      isError={isError}
+      LoadingSkeleton={<CommentLoadingSkeleton />}
+      FeedErrorComponent={<FeedLoadingError refetch={fetchNextPage} />}
+      ListItemComponent={CommentCard}
+      hasNextPage={hasNextPage}
+      LoadingErrorComponent={<FeedLoadingError refetch={refetch} />}
+      isFetchingNextPage={isFetchingNextPage}
+      isLoadingError={isLoadingError}
+      NoContentElement={
+        <div>There are no comments yet! Want to say something?</div>
+      }
+      ref={observerElem}
+    />
   );
 };
 export default CommentList;
