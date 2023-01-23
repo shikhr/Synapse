@@ -22,7 +22,7 @@ const Hot = () => {
 
   const fetchFeed = async ({ pageParam = 1 }) => {
     const { data } = await authFetch.get('/posts/feed', {
-      params: { page: pageParam },
+      params: { page: pageParam, filterBy: 'popular' },
     });
     return data;
   };

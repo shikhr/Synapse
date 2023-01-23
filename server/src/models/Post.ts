@@ -13,7 +13,7 @@ interface IPost {
 
 interface queryOptions {
   page: number;
-  filterBy: 'hot' | 'new' | 'all';
+  filterBy: 'hot' | 'new' | 'all' | 'popular';
   createdBy: mongoose.Types.ObjectId;
   postId?: mongoose.Types.ObjectId;
 }
@@ -163,14 +163,22 @@ postSchema.static(
   'getFeed',
   async function ({ page, filterBy = 'hot', createdBy }: queryOptions, user) {
     const size = 5;
-    const period = 7;
     const query: any = {
       hot: {
         match: {
-          createdAt: {
-            $gt: new Date(Date.now() - period * 24 * 60 * 60 * 1000),
-          },
+          $and: [
+            {
+              createdAt: {
+                $gt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+              },
+            },
+            user ? { $expr: { $in: ['$createdBy', user.following] } } : {},
+          ],
         },
+        sort: { followExists: -1, likes: -1, createdAt: -1 },
+      },
+      popular: {
+        match: user ? { $expr: { $in: ['$createdBy', user.following] } } : {},
         sort: { followExists: -1, likes: -1, createdAt: -1 },
       },
       new: {
