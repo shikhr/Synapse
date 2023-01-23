@@ -61,7 +61,14 @@ const InfiniteScrollList = forwardRef(
 
     return (
       <div className="text-text-primary-dark">
-        {isLoading && <>{LoadingSkeleton}</>}
+        {isLoading && (
+          <>
+            {LoadingSkeleton}
+            {LoadingSkeleton}
+            {LoadingSkeleton}
+            {LoadingSkeleton}
+          </>
+        )}
         <div className="flex flex-col">{data && data.pages && content}</div>
         {content?.length === 0 && !hasNextPage && NoContentElement && (
           <div className="px-4 py-8 flex flex-col justify-center items-center text-center gap-6 text-text-secondary-dark">

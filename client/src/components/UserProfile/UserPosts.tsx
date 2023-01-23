@@ -30,7 +30,7 @@ const UserPosts = () => {
     pageParam = 1,
   }: QueryFunctionContext) => {
     const { data } = await authFetch.get(`/posts/user/${queryKey[1]}`, {
-      params: { page: pageParam },
+      params: { page: pageParam, filterBy: 'new' },
     });
     return data;
   };

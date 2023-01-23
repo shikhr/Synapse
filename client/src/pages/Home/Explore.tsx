@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 import FeedLoadingError from '../../components/Errrors/FeedLoadingError';
+import InfiniteScrollList from '../../components/InfiniteScrollList/InfiniteScrollList';
 import PostCard from '../../components/Post/PostCard';
 import PostLoadingSkeleton from '../../components/Skeletons/PostLoadingSkeleton';
 import { useAppContext } from '../../context/AppContext';
@@ -49,18 +50,6 @@ const Explore = () => {
     },
   });
 
-  const content = useMemo(
-    () =>
-      data?.pages.flatMap((page: feedPage) =>
-        page.data.map((id: string) => <PostCard key={id} id={id} />)
-      ),
-    [data]
-  );
-
-  if (isLoadingError) {
-    return <FeedLoadingError refetch={refetch} />;
-  }
-
   return (
     <div className="text-white">
       <div className="sticky top-0 z-sticky px-4 py-2 bg-opacity-50 bg-background-dark backdrop-blur-md ">
@@ -76,28 +65,19 @@ const Explore = () => {
           />
         </div>
       </div>
-      {isLoading && (
-        <>
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-        </>
-      )}
-      <div className="flex flex-col">{data && data.pages && content}</div>
-      {isError && !isFetchingNextPage && (
-        <FeedLoadingError refetch={fetchNextPage} />
-      )}
-      <div ref={observerElem}>
-        {isFetchingNextPage && hasNextPage && <PostLoadingSkeleton />}
-      </div>
-      <div>
-        {content?.length !== 0 && !isFetchingNextPage && !hasNextPage && (
-          <div className="w-full text-center px-2 py-8 text-text-secondary-dark">
-            You have reached the end
-          </div>
-        )}
-      </div>
+      <InfiniteScrollList
+        data={data}
+        isLoading={isLoading}
+        isError={isError}
+        LoadingSkeleton={<PostLoadingSkeleton />}
+        FeedErrorComponent={<FeedLoadingError refetch={fetchNextPage} />}
+        ListItemComponent={PostCard}
+        hasNextPage={hasNextPage}
+        LoadingErrorComponent={<FeedLoadingError refetch={refetch} />}
+        isFetchingNextPage={isFetchingNextPage}
+        isLoadingError={isLoadingError}
+        ref={observerElem}
+      />
     </div>
   );
 };

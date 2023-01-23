@@ -163,7 +163,7 @@ postSchema.static(
   'getFeed',
   async function ({ page, filterBy = 'hot', createdBy }: queryOptions, user) {
     const size = 5;
-    const period = Date.now();
+    const period = 7;
     const query: any = {
       hot: {
         match: {
@@ -175,7 +175,7 @@ postSchema.static(
       },
       new: {
         match: {},
-        sort: { followExists: -1, createdAt: 1 },
+        sort: { followExists: -1, createdAt: -1 },
       },
       all: {
         match: {},

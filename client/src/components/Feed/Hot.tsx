@@ -6,6 +6,7 @@ import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../UI/Button';
+import InfiniteScrollList from '../InfiniteScrollList/InfiniteScrollList';
 
 interface feedPage {
   data: string[];
@@ -51,31 +52,20 @@ const Hot = () => {
     },
   });
 
-  const content = useMemo(
-    () =>
-      data?.pages.flatMap((page: feedPage) =>
-        page.data.map((id: string) => <PostCard key={id} id={id} />)
-      ),
-    [data]
-  );
-
-  if (isLoadingError) {
-    return <FeedLoadingError refetch={refetch} />;
-  }
-
   return (
-    <div className="text-white">
-      {isLoading && (
+    <InfiniteScrollList
+      data={data}
+      isLoading={isLoading}
+      isError={isError}
+      LoadingSkeleton={<PostLoadingSkeleton />}
+      FeedErrorComponent={<FeedLoadingError refetch={fetchNextPage} />}
+      ListItemComponent={PostCard}
+      hasNextPage={hasNextPage}
+      LoadingErrorComponent={<FeedLoadingError refetch={refetch} />}
+      isFetchingNextPage={isFetchingNextPage}
+      isLoadingError={isLoadingError}
+      NoContentElement={
         <>
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-        </>
-      )}
-      <div className="flex flex-col">{data && data.pages && content}</div>
-      {content?.length === 0 && !hasNextPage && (
-        <div className="px-4 py-8 flex flex-col justify-center items-center text-center gap-6 text-text-secondary-dark">
           <div>
             <h4 className="text-lg">Nothing to see</h4>
             <p>Follow more people to get recommendations</p>
@@ -85,22 +75,10 @@ const Hot = () => {
               <Button variant="standard">Explore</Button>
             </Link>
           </div>
-        </div>
-      )}
-      {isError && !isFetchingNextPage && (
-        <FeedLoadingError refetch={fetchNextPage} />
-      )}
-      <div ref={observerElem}>
-        {isFetchingNextPage && hasNextPage && <PostLoadingSkeleton />}
-      </div>
-      <div>
-        {content?.length !== 0 && !isFetchingNextPage && !hasNextPage && (
-          <div className="w-full text-center px-2 py-8 text-text-secondary-dark">
-            You have reached the end
-          </div>
-        )}
-      </div>
-    </div>
+        </>
+      }
+      ref={observerElem}
+    />
   );
 };
 export default Hot;
