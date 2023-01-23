@@ -5,16 +5,18 @@ const DynamicNavTitle = ({ title }: { title: string }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex text-text-primary-dark items-center py-2 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
+    <div className="flex text-text-primary-dark items-center h-14 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
       <div
         onClick={() => {
           navigate(-1);
         }}
-        className="text-xl font-light cursor-pointer flex justify-center items-center w-10 h-10 rounded-full hover:bg-gray-800 transition-colors"
+        className="text-xl font-light cursor-pointer flex justify-center items-center w-10 aspect-square rounded-full hover:bg-gray-800 transition-colors"
       >
         <FaArrowLeft />
       </div>
-      <h2 className="mx-auto text-2xl font-semibold capitalize">{title}</h2>
+      <h2 className="mx-auto text-2xl  absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold capitalize">
+        {title}
+      </h2>
     </div>
   );
 };

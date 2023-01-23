@@ -17,14 +17,16 @@ const DynamicNavMain = ({ title }: { title: string }) => {
     useOuterClick<HTMLDivElement>();
 
   return (
-    <div className="flex text-text-primary-dark items-center py-2 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
+    <div className="flex text-text-primary-dark items-center h-14 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
       <div
         onClick={() => setIsComponentVisible(true)}
-        className="cursor-pointer xs:hidden text-2xl flex justify-center items-center w-8 aspect-square rounded-full hover:bg-gray-800 transition-colors"
+        className="cursor-pointer xs:hidden text-2xl flex justify-center items-center w-7 aspect-square rounded-full hover:bg-gray-800 transition-colors"
       >
         <Avatar sourceId={user?.avatarId} />
       </div>
-      <h2 className="mx-auto text-2xl font-semibold capitalize">{title}</h2>
+      <h2 className="mx-auto text-2xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold capitalize">
+        {title}
+      </h2>
       <AnimatePresence>
         {isComponentVisible && (
           <div>
