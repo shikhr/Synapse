@@ -171,15 +171,18 @@ const Profile = () => {
                 to={link.path}
                 end={link.end === false ? false : true}
                 key={i}
-                className="py-4 hover:bg-background-overlay-dark w-full text-center"
+                className="py-4 hover:bg-background-overlay-dark w-full text-center duration-300"
               >
                 {({ isActive }) => (
                   <div
-                    className={`text-text-secondary-dark w-full ${
-                      isActive && 'text-text-primary-dark font-bold'
+                    className={` w-full ${
+                      isActive
+                        ? 'text-text-primary-dark font-bold'
+                        : 'text-text-secondary-dark'
                     }`}
                   >
                     {link.title}
+                    {isActive && 'ac'}
                   </div>
                 )}
               </NavLink>
