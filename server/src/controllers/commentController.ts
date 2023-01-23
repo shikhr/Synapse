@@ -49,7 +49,7 @@ const getCommentList = async (req: any, res: Response) => {
 };
 
 const getUserComments = async (req: any, res: Response) => {
-  let { userId } = req.params;
+  let userId = req.params.userId === 'me' ? req.user._id : req.params.userId;
   if (!mongoose.isValidObjectId(userId)) {
     throw new BadRequestError('user id invalid');
   } else {

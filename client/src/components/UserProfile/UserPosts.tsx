@@ -17,10 +17,6 @@ interface feedPage {
   };
 }
 
-interface UserPostsProps {
-  id: string;
-}
-
 const UserPosts = () => {
   const { authFetch, user } = useAppContext();
   const { userId } = useParams();
