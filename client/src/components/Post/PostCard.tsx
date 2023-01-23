@@ -10,6 +10,7 @@ import PostActionBar from './PostActionBar';
 import PostPopup from './PostPopup';
 import DisplayError from '../Errrors/DisplayError';
 import { motion } from 'framer-motion';
+import FadeInView from '../MotionWrapper/FadeInView';
 
 interface PostCardProps {
   id: string;
@@ -36,10 +37,7 @@ const PostCard = ({ id }: PostCardProps) => {
   }
 
   return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      initial={{ opacity: 0 }}
-      transition={{ type: 'tween', duration: 0.3 }}
+    <FadeInView
       onClick={() => openFullPost(post._id)}
       className="flex items-start gap-3 px-3 py-4 hover:bg-opacity-20 duration-300 hover:bg-background-overlay-dark border-b border-text-secondary-dark cursor-pointer transition-colors"
     >
@@ -93,7 +91,7 @@ const PostCard = ({ id }: PostCardProps) => {
           <PostActionBar post={post} />
         </div>
       </div>
-    </motion.div>
+    </FadeInView>
   );
 };
 export default PostCard;

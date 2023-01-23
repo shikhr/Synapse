@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 import FeedLoadingError from '../../components/Errrors/FeedLoadingError';
 import InfiniteScrollList from '../../components/InfiniteScrollList/InfiniteScrollList';
+import FadeInView from '../../components/MotionWrapper/FadeInView';
 import PostCard from '../../components/Post/PostCard';
 import PostLoadingSkeleton from '../../components/Skeletons/PostLoadingSkeleton';
 import { useAppContext } from '../../context/AppContext';
@@ -65,19 +66,21 @@ const Explore = () => {
           />
         </div>
       </div>
-      <InfiniteScrollList
-        data={data}
-        isLoading={isLoading}
-        isError={isError}
-        LoadingSkeleton={<PostLoadingSkeleton />}
-        FeedErrorComponent={<FeedLoadingError refetch={fetchNextPage} />}
-        ListItemComponent={PostCard}
-        hasNextPage={hasNextPage}
-        LoadingErrorComponent={<FeedLoadingError refetch={refetch} />}
-        isFetchingNextPage={isFetchingNextPage}
-        isLoadingError={isLoadingError}
-        ref={observerElem}
-      />
+      <FadeInView>
+        <InfiniteScrollList
+          data={data}
+          isLoading={isLoading}
+          isError={isError}
+          LoadingSkeleton={<PostLoadingSkeleton />}
+          FeedErrorComponent={<FeedLoadingError refetch={fetchNextPage} />}
+          ListItemComponent={PostCard}
+          hasNextPage={hasNextPage}
+          LoadingErrorComponent={<FeedLoadingError refetch={refetch} />}
+          isFetchingNextPage={isFetchingNextPage}
+          isLoadingError={isLoadingError}
+          ref={observerElem}
+        />
+      </FadeInView>
     </div>
   );
 };

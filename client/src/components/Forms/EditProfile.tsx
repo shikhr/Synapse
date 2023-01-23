@@ -5,6 +5,7 @@ import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
 import EditProfileForm from './EditProfileForm';
 import useFetchProfile from '../../hooks/useFetchProfile';
+import FadeInView from '../MotionWrapper/FadeInView';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const EditProfile = () => {
     <div>
       <Overlay closeModal={closeFormHandler} />
       <Modal>
-        <>
+        <FadeInView>
           {!profile && (
             <div className="h-[80vh] flex justify-center items-center text-text-primary-dark">
               {isLoading && <div>loading</div>}
@@ -51,7 +52,7 @@ const EditProfile = () => {
               updateProfile={updateProfile}
             />
           )}
-        </>
+        </FadeInView>
       </Modal>
     </div>
   );

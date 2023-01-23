@@ -1,10 +1,11 @@
 import { Outlet } from 'react-router-dom';
+import FadeInView from '../components/MotionWrapper/FadeInView';
 
 const Settings = () => {
   return (
-    <div>
+    <FadeInView>
       <Outlet />
-    </div>
+    </FadeInView>
   );
 };
 export default Settings;

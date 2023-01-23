@@ -2,6 +2,7 @@ import { QueryFunctionContext } from '@tanstack/react-query';
 import { useAppContext } from '../../context/AppContext';
 import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
 import FeedLoadingError from '../Errrors/FeedLoadingError';
+import InfiniteScrollList from '../InfiniteScrollList/InfiniteScrollList';
 import PostCard from '../Post/PostCard';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 
@@ -48,41 +49,23 @@ const BookmarkList = () => {
     },
   });
 
-  if (isLoadingError) {
-    return <FeedLoadingError refetch={refetch} />;
-  }
-  console.log(bookmarkList);
   return (
-    <div>
-      {isLoading && (
-        <>
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-          <PostLoadingSkeleton />
-        </>
-      )}
-      <div className="flex flex-col">
-        {bookmarkList &&
-          bookmarkList.pages &&
-          bookmarkList.pages.map((page: bookmarksListPage) => {
-            return page.data.map((id: string) => <PostCard key={id} id={id} />);
-          })}
-      </div>
-      {isError && !isFetchingNextPage && (
-        <FeedLoadingError refetch={fetchNextPage} />
-      )}
-      <div ref={observerElem}>
-        {isFetchingNextPage && hasNextPage && <PostLoadingSkeleton />}
-      </div>
-      <div>
-        {!isFetchingNextPage && !hasNextPage && (
-          <div className="w-full text-center px-2 py-8 text-text-secondary-dark">
-            You have reached the end
-          </div>
-        )}
-      </div>
-    </div>
+    <InfiniteScrollList
+      data={bookmarkList}
+      isLoading={isLoading}
+      isError={isError}
+      LoadingSkeleton={<PostLoadingSkeleton />}
+      FeedErrorComponent={<FeedLoadingError refetch={fetchNextPage} />}
+      ListItemComponent={PostCard}
+      hasNextPage={hasNextPage}
+      LoadingErrorComponent={<FeedLoadingError refetch={refetch} />}
+      isFetchingNextPage={isFetchingNextPage}
+      isLoadingError={isLoadingError}
+      NoContentElement={
+        <div>There are no bookmarks yet! Save some posts to see them here.</div>
+      }
+      ref={observerElem}
+    />
   );
 };
 export default BookmarkList;

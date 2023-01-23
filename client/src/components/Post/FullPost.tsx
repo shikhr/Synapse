@@ -6,6 +6,7 @@ import Avatar from '../Avatar/Avatar';
 import CommentList from '../Comment/CommentList';
 import DisplayError from '../Errrors/DisplayError';
 import AddCommentForm from '../Forms/AddCommentForm';
+import FadeInView from '../MotionWrapper/FadeInView';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import DynamicNavTitle from '../UI/DynamicNavTitle';
 import KebabMenu from './KebabMenu';
@@ -37,7 +38,7 @@ const FullPost = () => {
         </div>
       )}
       {post && (
-        <div>
+        <FadeInView>
           <div className="flex flex-col items-start gap-3 px-4 py-4 text-text-primary-dark">
             <div className="w-full flex items-center gap-4 justify-between">
               <Link
@@ -88,7 +89,7 @@ const FullPost = () => {
           </div>
           <AddCommentForm id={post._id} />
           <CommentList id={post._id} />
-        </div>
+        </FadeInView>
       )}
     </div>
   );
