@@ -8,10 +8,10 @@
   <title>Synapse</title>
 </head>
 
-<body class="bg-background-dark">
-  <div id="root"></div>
-  <div id="overlay-root"></div>
-  <div id="modal-root"></div>
+<body class="bg-background-dark relative">
+  <div id="root" class="isolate"></div>
+  <div id="overlay-root" class="z-overlay isolate"></div>
+  <div id="modal-root" class="z-modal isolate"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

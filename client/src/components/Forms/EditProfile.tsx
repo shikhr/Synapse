@@ -38,7 +38,7 @@ const EditProfile = () => {
     <div>
       <Overlay closeModal={closeFormHandler} />
       <Modal>
-        <FadeInView>
+        <FadeInView className="h-full overflow-auto">
           {!profile && (
             <div className="h-[80vh] flex justify-center items-center text-text-primary-dark">
               {isLoading && <div>loading</div>}
@@ -46,11 +46,13 @@ const EditProfile = () => {
             </div>
           )}
           {profile && (
-            <EditProfileForm
-              profile={profile}
-              closeHandler={closeFormHandler}
-              updateProfile={updateProfile}
-            />
+            <div className="overflow-auto h-full">
+              <EditProfileForm
+                profile={profile}
+                closeHandler={closeFormHandler}
+                updateProfile={updateProfile}
+              />
+            </div>
           )}
         </FadeInView>
       </Modal>

@@ -75,13 +75,12 @@ interface IProfileLink {
   title: string;
   path: string;
   end?: boolean;
+  mobileHidden?: boolean;
 }
 
 const ProfileLinks: IProfileLink[] = [
   { title: 'Posts', path: '' },
   { title: 'Comments', path: 'comments' },
-  { title: 'Followers', path: 'followers' },
-  { title: 'Following', path: 'following' },
 ];
 
 const MobileBarLinks: Link[] = [AllLinks.settings];

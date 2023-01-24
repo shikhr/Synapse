@@ -1,4 +1,5 @@
 import {
+  Link,
   NavLink,
   Outlet,
   useLocation,
@@ -148,30 +149,30 @@ const Profile = () => {
             )}
           </div>
           <div className="flex gap-6 text-text-primary-dark text-md py-2 font-bold">
-            <div onClick={() => {}} className="cursor-pointer hover:underline">
+            <Link to="following" className="cursor-pointer hover:underline">
               {profile.following}
               <span className="text-text-secondary-dark font-normal">
                 {' '}
                 Following
               </span>
-            </div>
-            <div onClick={() => {}} className="cursor-pointer hover:underline">
+            </Link>
+            <Link to="followers" className="cursor-pointer hover:underline">
               {profile.followers}
               <span className="text-text-secondary-dark font-normal">
                 {' '}
                 Followers
               </span>
-            </div>
+            </Link>
           </div>
         </div>
-        <div className="w-full flex flex-col text-teal-50">
-          <div className="flex border-b pt-2 border-text-secondary-dark flex-1 items-center justify-around text-xl text-text-primary-dark">
+        <div className="w-full flex flex-col">
+          <div className="flex flex-wrap border-b pt-2 border-text-secondary-dark flex-1 items-center justify-around text-lg text-text-primary-dark">
             {ProfileLinks.map((link, i) => (
               <NavLink
                 to={link.path}
                 end={link.end === false ? false : true}
                 key={i}
-                className="py-4 hover:bg-background-overlay-dark w-full text-center duration-300"
+                className={`py-4 hover:bg-background-overlay-dark w-auto flex-1 px-2 text-center duration-300 `}
               >
                 {({ isActive }) => (
                   <div
@@ -182,7 +183,6 @@ const Profile = () => {
                     }`}
                   >
                     {link.title}
-                    {isActive && 'ac'}
                   </div>
                 )}
               </NavLink>

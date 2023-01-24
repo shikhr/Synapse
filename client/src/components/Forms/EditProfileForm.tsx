@@ -84,7 +84,7 @@ const EditProfileForm = ({
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
-      className="px-4 relative isolate sm:px-16 pb-4"
+      className="px-4 relative isolate sm:px-16 pb-4 h-full overflow-auto"
     >
       <div className="pt-4 text-text-primary-dark  pb-2 sticky z-20 top-0 left-0 flex justify-start items-center bg-opacity-90 bg-background-dark backdrop-blur-md">
         <button onClick={closeHandler} className="text-white text-xl">
