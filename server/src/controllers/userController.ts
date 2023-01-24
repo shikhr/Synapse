@@ -120,6 +120,65 @@ const getFollowSuggestions = async (req: any, res: Response) => {
   res.send(followList);
 };
 
+const getFollowers = async (req: any, res: Response) => {
+  let id = req.params.id === 'me' ? req.user._id : req.params.id;
+
+  if (!mongoose.isValidObjectId(id)) {
+    throw new NotFoundError('No user found');
+  } else {
+    id = new mongoose.Types.ObjectId(id);
+  }
+
+  const followers = await User.aggregate([
+    { $match: { $expr: { $in: [id, '$following'] } } },
+    {
+      $set: {
+        followExists: { $in: [req.user._id, '$followers'] },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        username: 1,
+        displayName: 1,
+        avatarId: 1,
+        followExists: 1,
+      },
+    },
+  ]);
+
+  res.send(followers);
+};
+
+const getFollowing = async (req: any, res: Response) => {
+  let id = req.params.id === 'me' ? req.user._id : req.params.id;
+
+  if (!mongoose.isValidObjectId(id)) {
+    throw new NotFoundError('No user found');
+  } else {
+    id = new mongoose.Types.ObjectId(id);
+  }
+  const following = await User.aggregate([
+    { $match: { $expr: { $in: [id, '$followers'] } } },
+    {
+      $set: {
+        followExists: { $in: [req.user._id, '$followers'] },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        username: 1,
+        displayName: 1,
+        avatarId: 1,
+        followExists: 1,
+      },
+    },
+  ]);
+
+  res.send(following);
+};
+
 const getAvatar = async (req: any, res: Response) => {
   const { avatarId } = req.params;
   const avatar = await Avatar.findById(avatarId);
@@ -159,6 +218,8 @@ export {
   updateProfile,
   getAvatar,
   postAvatar,
+  getFollowers,
+  getFollowing,
   deleteAvatar,
   getFollowSuggestions,
 };

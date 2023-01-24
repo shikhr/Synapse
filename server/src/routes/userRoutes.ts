@@ -3,6 +3,8 @@ import multer, { memoryStorage } from 'multer';
 import {
   deleteAvatar,
   followUser,
+  getFollowers,
+  getFollowing,
   getFollowSuggestions,
   getProfile,
   postAvatar,
@@ -17,6 +19,9 @@ router.route('/follow/:followId').put(followUser);
 router.route('/unfollow/:unfollowId').put(unfollowUser);
 
 router.route('/followsuggest').get(getFollowSuggestions);
+
+router.route('/followers/:id').get(getFollowers);
+router.route('/following/:id').get(getFollowing);
 
 const upload = multer({
   limits: {
