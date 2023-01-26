@@ -21,7 +21,7 @@ const Account = () => {
         <SettingsItem to="" Icon={IoLogOutOutline}>
           <h4>Log out of all devices</h4>
         </SettingsItem>
-        <SettingsItem to="delete" Icon={RiDeleteBinLine}>
+        <SettingsItem to="delete-account" Icon={RiDeleteBinLine}>
           <h4>Delete your account</h4>
         </SettingsItem>
       </div>

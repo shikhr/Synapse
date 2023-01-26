@@ -5,7 +5,7 @@ const DynamicNavTitle = ({ title }: { title: string }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex text-text-primary-dark items-center h-14 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
+    <div className="flex text-center text-text-primary-dark items-center h-14 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
       <div
         onClick={() => {
           navigate(-1);
@@ -14,7 +14,7 @@ const DynamicNavTitle = ({ title }: { title: string }) => {
       >
         <FaArrowLeft />
       </div>
-      <h2 className="mx-auto text-2xl  absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold capitalize">
+      <h2 className="mx-auto text-2xl whitespace-nowrap absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold capitalize">
         {title}
       </h2>
     </div>
