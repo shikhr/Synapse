@@ -16,8 +16,8 @@ const UserFollowList = ({ type }: UserFollowList) => {
       <Overlay closeModal={() => navigate(-1)} />
       <Modal>
         <>
-          <DynamicNavTitle title={type} />
-          <FadeInView>
+          <FadeInView className="md:rounded-lg md:overflow-auto">
+            <DynamicNavTitle title={type} />
             <div className="max-h-full">{type}</div>
             <div className="max-h-full">{userId}</div>
           </FadeInView>
