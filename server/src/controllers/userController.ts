@@ -107,6 +107,7 @@ const getFollowSuggestions = async (req: any, res: Response) => {
     },
     { $match: { followExists: false, _id: { $ne: req.user._id } } },
     { $sort: { followers: -1 } },
+    { $limit: 6 },
     {
       $project: {
         username: 1,
@@ -122,14 +123,15 @@ const getFollowSuggestions = async (req: any, res: Response) => {
 
 const getFollowers = async (req: any, res: Response) => {
   let id = req.params.id === 'me' ? req.user._id : req.params.id;
-
+  const { page = 1 } = req.query;
+  const size = 10;
   if (!mongoose.isValidObjectId(id)) {
     throw new NotFoundError('No user found');
   } else {
     id = new mongoose.Types.ObjectId(id);
   }
 
-  const followers = await User.aggregate([
+  const [followers] = await User.aggregate([
     { $match: { $expr: { $in: [id, '$following'] } } },
     {
       $set: {
@@ -145,6 +147,35 @@ const getFollowers = async (req: any, res: Response) => {
         followExists: 1,
       },
     },
+    {
+      $facet: {
+        data: [{ $skip: (page - 1) * size }, { $limit: size }],
+        meta: [
+          {
+            $count: 'count',
+          },
+          {
+            $addFields: {
+              currentPage: Number(page),
+              hasMorePages: { $gt: ['$count', Number(page) * size] },
+              totalPages: { $ceil: { $divide: ['$count', size] } },
+            },
+          },
+          {
+            $project: {
+              currentPage: 1,
+              hasMorePages: 1,
+              totalPages: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $set: {
+        meta: { $first: '$meta' },
+      },
+    },
   ]);
 
   res.send(followers);
@@ -152,13 +183,15 @@ const getFollowers = async (req: any, res: Response) => {
 
 const getFollowing = async (req: any, res: Response) => {
   let id = req.params.id === 'me' ? req.user._id : req.params.id;
+  const { page = 1 } = req.query;
+  const size = 10;
 
   if (!mongoose.isValidObjectId(id)) {
     throw new NotFoundError('No user found');
   } else {
     id = new mongoose.Types.ObjectId(id);
   }
-  const following = await User.aggregate([
+  const [following] = await User.aggregate([
     { $match: { $expr: { $in: [id, '$followers'] } } },
     {
       $set: {
@@ -172,6 +205,35 @@ const getFollowing = async (req: any, res: Response) => {
         displayName: 1,
         avatarId: 1,
         followExists: 1,
+      },
+    },
+    {
+      $facet: {
+        data: [{ $skip: (page - 1) * size }, { $limit: size }],
+        meta: [
+          {
+            $count: 'count',
+          },
+          {
+            $addFields: {
+              currentPage: Number(page),
+              hasMorePages: { $gt: ['$count', Number(page) * size] },
+              totalPages: { $ceil: { $divide: ['$count', size] } },
+            },
+          },
+          {
+            $project: {
+              currentPage: 1,
+              hasMorePages: 1,
+              totalPages: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $set: {
+        meta: { $first: '$meta' },
       },
     },
   ]);
