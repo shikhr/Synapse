@@ -24,6 +24,7 @@ const useFollowUser = () => {
       queryClient.invalidateQueries(['follow-suggestions']);
       queryClient.invalidateQueries(['profile', variables.id]);
       queryClient.invalidateQueries(['profile', 'me']);
+      queryClient.invalidateQueries(['userFollowType']);
     },
   });
 

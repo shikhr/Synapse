@@ -20,7 +20,7 @@ const FollowCard = ({
   return (
     <div
       onClick={() => navigate(`/profile/${_id}`)}
-      className="flex gap-4 text-text-primary-dark cursor-pointer"
+      className="flex gap-4 text-text-primary-dark cursor-pointer items-center"
     >
       <div className="w-14 aspect-square shrink-0 text-3xl">
         <Avatar sourceId={avatarId} />
