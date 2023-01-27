@@ -9,7 +9,7 @@ import AddCommentForm from '../Forms/AddCommentForm';
 import FadeInView from '../MotionWrapper/FadeInView';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import DynamicNavTitle from '../UI/DynamicNavTitle';
-import KebabMenu from './KebabMenu';
+import KebabMenu from '../KebabMenu/KebabMenu';
 import PostActionBar from './PostActionBar';
 import PostImages from './PostImages';
 import PostPopup from './PostPopup';

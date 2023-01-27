@@ -1,11 +1,11 @@
 import { ReactElement } from 'react';
 
-interface PostPopupItemProps {
+interface PopupItemProps {
   children: ReactElement;
   onClick: () => any;
 }
 
-const PostPopupItem = ({ children, onClick }: PostPopupItemProps) => {
+const PopupItem = ({ children, onClick }: PopupItemProps) => {
   return (
     <div
       className="px-2 py-1 hover:bg-background-overlay-dark duration-300"
@@ -15,4 +15,4 @@ const PostPopupItem = ({ children, onClick }: PostPopupItemProps) => {
     </div>
   );
 };
-export default PostPopupItem;
+export default PopupItem;

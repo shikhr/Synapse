@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Avatar from '../Avatar/Avatar';
 import { formatDistanceToNowStrict } from 'date-fns';
 import PostImages from './PostImages';
-import KebabMenu from './KebabMenu';
+import KebabMenu from '../KebabMenu/KebabMenu';
 import React from 'react';
 import PostLoadingSkeleton from '../Skeletons/PostLoadingSkeleton';
 import useFetchPost from '../../hooks/useFetchPost';

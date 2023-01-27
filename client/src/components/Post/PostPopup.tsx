@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 import useFollowUser from '../../hooks/useFollowUser';
 import { ICreatedBy } from '../../types/Post.types';
-import PostPopupItem from './PostPopupItem';
+import PopupItem from '../KebabMenu/PopupItem';
 
 interface PostPopupProps {
   postId: string;
@@ -29,6 +29,7 @@ const PostPopup = ({
     onSuccess(data, variables, context) {
       queryClient.removeQueries(['post', postId]);
       queryClient.invalidateQueries(['feed']);
+      queryClient.invalidateQueries(['explore']);
       queryClient.invalidateQueries(['bookmarks']);
       // TODO: add navigation to feed or user posts if full post was opened
       // navigate('/');
@@ -40,18 +41,18 @@ const PostPopup = ({
   return (
     <div className="flex flex-col">
       {createdBy._id === user?._id && (
-        <PostPopupItem
+        <PopupItem
           onClick={() => {
             deletePost(postId);
             closeMenu();
           }}
         >
           <span>Delete</span>
-        </PostPopupItem>
+        </PopupItem>
       )}
       {createdBy._id !== user?._id && (
         <>
-          <PostPopupItem
+          <PopupItem
             onClick={() => {
               if (isFollowLoading) return;
               followAction(
@@ -71,23 +72,23 @@ const PostPopup = ({
             <span>
               {followExists ? 'Unfollow' : 'Follow'} @{createdBy.username}
             </span>
-          </PostPopupItem>
-          <PostPopupItem
+          </PopupItem>
+          <PopupItem
             onClick={() => {
               closeMenu();
             }}
           >
             <span>Block @{createdBy.username}</span>
-          </PostPopupItem>
+          </PopupItem>
         </>
       )}
-      <PostPopupItem
+      <PopupItem
         onClick={() => {
           closeMenu();
         }}
       >
         <span>Report</span>
-      </PostPopupItem>
+      </PopupItem>
     </div>
   );
 };
