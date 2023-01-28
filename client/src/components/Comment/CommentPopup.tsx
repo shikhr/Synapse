@@ -6,6 +6,7 @@ import PopupItem from '../KebabMenu/PopupItem';
 
 interface CommentPopupProps {
   commentId: string;
+  postId: string;
   createdBy: ICreatedBy;
   closeMenu: () => void;
 }
@@ -13,18 +14,19 @@ interface CommentPopupProps {
 const CommentPopup = ({
   commentId,
   createdBy,
+  postId,
   closeMenu,
 }: CommentPopupProps) => {
   const { authFetch, user } = useAppContext();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const deleteCommentHandler = async (id: string) => {
-    return await authFetch.delete(`/posts/${id}`);
+    return await authFetch.delete(`/comments/${id}`);
   };
   const { mutate: deleteComment } = useMutation(deleteCommentHandler, {
     onSuccess(data, variables, context) {
       queryClient.removeQueries(['comment', commentId]);
+      queryClient.invalidateQueries(['commentList', postId]);
     },
   });
 

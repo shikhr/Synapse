@@ -65,6 +65,7 @@ const CommentList = ({ id }: CommentListProps) => {
       LoadingSkeleton={<CommentLoadingSkeleton />}
       FeedErrorComponent={<FeedLoadingError refetch={fetchNextPage} />}
       ListItemComponent={CommentCard}
+      ListItemProps={{ postId: id }}
       hasNextPage={hasNextPage}
       LoadingErrorComponent={<FeedLoadingError refetch={refetch} />}
       isFetchingNextPage={isFetchingNextPage}

@@ -17,6 +17,7 @@ interface InfiniteScrollListProps {
   data: any;
   hasNextPage: boolean | undefined;
   ListItemComponent: any;
+  ListItemProps?: any;
   NoContentElement?: ReactNode;
   isFetchingNextPage: boolean;
   isError: boolean;
@@ -42,6 +43,7 @@ const InfiniteScrollList = forwardRef(
       hasNextPage,
       ListItemComponent,
       NoContentElement,
+      ListItemProps,
       isError,
       isFetchingNextPage,
     }: InfiniteScrollListProps,
@@ -54,7 +56,9 @@ const InfiniteScrollList = forwardRef(
     const content = useMemo(
       () =>
         data?.pages.flatMap((page: feedPage) =>
-          page.data.map((id: string) => <ListItemComponent key={id} id={id} />)
+          page.data.map((id: string) => (
+            <ListItemComponent key={id} id={id} {...ListItemProps} />
+          ))
         ),
       [data]
     );

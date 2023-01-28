@@ -22,9 +22,10 @@ import CommentPopup from './CommentPopup';
 
 interface CommentCardProps {
   id: string;
+  postId: string;
 }
 
-const CommentCard = ({ id }: CommentCardProps) => {
+const CommentCard = ({ id, postId }: CommentCardProps) => {
   const { authFetch } = useAppContext();
   const queryClient = useQueryClient();
 
@@ -118,6 +119,7 @@ const CommentCard = ({ id }: CommentCardProps) => {
             commentId={comment._id}
             createdBy={comment.createdBy}
             closeMenu={undefined as never}
+            postId={postId}
           />
         </KebabMenu>
       </div>
