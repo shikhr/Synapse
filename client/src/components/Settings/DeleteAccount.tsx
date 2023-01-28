@@ -23,32 +23,30 @@ const DeleteAccount = () => {
           </Button>
         </div>
       </div>
-      <AnimatePresence>
-        {delConfirm && (
-          <CustomModal>
-            <>
-              <Overlay closeModal={() => setDelConfirm(false)} />
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  console.log('delte');
-                  setDelConfirm(false);
-                }}
-                className="absolute position-center bg-background-dark rounded-lg py-8 gap-12  w-full max-w-lg flex flex-col justify-center items-center"
-              >
-                <p className="text-xl text-text-primary-dark">
-                  Are you sure you want to delete your account?
-                </p>
-                <div className="w-44">
-                  <Button type="submit" variant="danger">
-                    CONFIRM
-                  </Button>
-                </div>
-              </form>
-            </>
-          </CustomModal>
-        )}
-      </AnimatePresence>
+      {delConfirm && (
+        <CustomModal>
+          <>
+            <Overlay closeModal={() => setDelConfirm(false)} />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log('delte');
+                setDelConfirm(false);
+              }}
+              className="absolute position-center bg-background-dark rounded-lg py-8 gap-12  w-full max-w-lg flex flex-col justify-center items-center"
+            >
+              <p className="text-xl text-text-primary-dark">
+                Are you sure you want to delete your account?
+              </p>
+              <div className="w-44">
+                <Button type="submit" variant="danger">
+                  CONFIRM
+                </Button>
+              </div>
+            </form>
+          </>
+        </CustomModal>
+      )}
     </div>
   );
 };
