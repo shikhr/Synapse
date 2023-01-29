@@ -1,5 +1,7 @@
+import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { useAppContext } from '../../context/AppContext';
 import Button from '../UI/Button';
 import CustomModal from '../UI/CustomModal';
 import DynamicNavTitle from '../UI/DynamicNavTitle';
@@ -8,6 +10,22 @@ import Overlay from '../UI/Overlay';
 
 const DeleteAccount = () => {
   const [delConfirm, setDelConfirm] = useState(false);
+
+  const { authFetch, logoutUser } = useAppContext();
+
+  const deleteAccountHandler = async () => {
+    await authFetch.delete('settings/delete-account');
+  };
+
+  const { mutate: deleteAccount, isLoading } = useMutation(
+    deleteAccountHandler,
+    {
+      onSuccess(data, variables, context) {
+        setDelConfirm(false);
+        logoutUser();
+      },
+    }
+  );
 
   return (
     <div>
@@ -31,7 +49,7 @@ const DeleteAccount = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 console.log('delte');
-                setDelConfirm(false);
+                deleteAccount();
               }}
               className="absolute position-center bg-background-dark rounded-lg py-8 gap-12  w-full max-w-lg flex flex-col justify-center items-center"
             >
@@ -39,7 +57,7 @@ const DeleteAccount = () => {
                 Are you sure you want to delete your account?
               </p>
               <div className="w-44">
-                <Button type="submit" variant="danger">
+                <Button disabled={isLoading} type="submit" variant="danger">
                   CONFIRM
                 </Button>
               </div>
