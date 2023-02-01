@@ -7,30 +7,30 @@ import Avatar from '../models/Avatar.js';
 import { BadRequestError } from '../errors/errors.js';
 
 const changePassword = async (req: any, res: Response) => {
-  const { old_password, new_password } = req.body;
+  const { oldPassword, newPassword } = req.body;
   if (!req.user.password) {
     throw new BadRequestError('you have logged in with email', [
-      'old_password',
-      'new_password',
+      'oldPassword',
+      'newPassword',
     ]);
   }
-  if (!old_password || !new_password) {
+  if (!oldPassword || !newPassword) {
     throw new BadRequestError('please provide valid passwords', [
-      'old_password',
-      'new_password',
+      'oldPassword',
+      'newPassword',
     ]);
   }
-  if (!(await req.user.comparePassword(old_password))) {
+  if (!(await req.user.comparePassword(oldPassword))) {
     throw new BadRequestError('please provide correct password', [
-      'old_password',
+      'oldPassword',
     ]);
   }
-  if (old_password === new_password) {
+  if (oldPassword === newPassword) {
     throw new BadRequestError('you cannot use the same password', [
-      'new_password',
+      'newPassword',
     ]);
   }
-  req.user.password = new_password;
+  req.user.password = newPassword;
   await req.user.save();
   res.send('password changed successfully');
 };

@@ -21,11 +21,11 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
   const queryClient = useQueryClient();
 
   const likePostHandler = async (data: { postId: string; key: string }) => {
-    return await authFetch.put('/posts/like', data);
+    return authFetch.put('/posts/like', data);
   };
 
   const bookmarkPostHandler = async ({ postId }: { postId: string }) => {
-    return await authFetch.post(`/bookmarks/${postId}`);
+    return authFetch.post(`/bookmarks/${postId}`);
   };
 
   const { mutate: likePost } = useMutation(likePostHandler, {

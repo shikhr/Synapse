@@ -5,6 +5,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import EditProfile from './components/Forms/EditProfile';
 import FullPost from './components/Post/FullPost';
 import Account from './components/Settings/Account';
+import ChangePassword from './components/Settings/ChangePassword';
 import DeleteAccount from './components/Settings/DeleteAccount';
 import UserComments from './components/UserProfile/UserComments';
 import UserFollowList from './components/UserProfile/UserFollowList';
@@ -60,6 +61,7 @@ function App() {
               <Route path="settings" element={<Settings />}>
                 <Route index element={<Account />} />
                 <Route path="delete-account" element={<DeleteAccount />} />
+                <Route path="password" element={<ChangePassword />} />
                 <Route path="profile" element={<EditProfile />} />
               </Route>
             </Route>

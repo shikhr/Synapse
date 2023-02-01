@@ -15,7 +15,7 @@ const Account = () => {
         <SettingsItem to="" Icon={RiUserLine}>
           <h4>Change your username</h4>
         </SettingsItem>
-        <SettingsItem to="" Icon={BsKey}>
+        <SettingsItem to="password" Icon={BsKey}>
           <h4>Change your password</h4>
         </SettingsItem>
         <SettingsItem to="" Icon={IoLogOutOutline}>
