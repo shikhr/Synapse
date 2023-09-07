@@ -20,19 +20,19 @@ const Banner = ({
   };
 
   return (
-    <div className="w-full h-full overflow-hidden flex justify-center items-center">
+    <div className="w-full h-full flex items-center">
       {defaultBanner && (
         <div className="absolute w-full h-full bg-gray-800"></div>
       )}
       {!defaultBanner && (
         <img
           onError={errorHandler}
-          className="absolute inset-0 w-full h-full object-cover select-none"
+          className="w-full h-40 object-cover"
           src={`/api/v1/users/avatar/${sourceId}`}
           alt=""
         />
       )}
-      <div className="absolute backdrop-blur-2xl inset-0"></div>
+      <div className="absolute backdrop-filter backdrop-blur-xl backdrop-brightness-125 h-36 w-full"></div>
       {children}
     </div>
   );
