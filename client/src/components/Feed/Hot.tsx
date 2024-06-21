@@ -7,6 +7,11 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../UI/Button';
 import InfiniteScrollList from '../InfiniteScrollList/InfiniteScrollList';
+import {
+  QueryFunction,
+  QueryFunctionContext,
+  QueryKey,
+} from '@tanstack/react-query';
 
 interface feedPage {
   data: string[];
@@ -20,7 +25,7 @@ interface feedPage {
 const Hot = () => {
   const { authFetch } = useAppContext();
 
-  const fetchFeed = async ({ pageParam = 1 }) => {
+  const fetchFeed = async ({ pageParam }: QueryFunctionContext) => {
     const { data } = await authFetch.get('/posts/feed', {
       params: { page: pageParam, filterBy: 'popular' },
     });
@@ -40,15 +45,13 @@ const Hot = () => {
   } = useInfiniteQueryScroll<feedPage>({
     queryKey: ['feed', 'hot'],
     queryFn: fetchFeed,
-    options: {
-      retry: 2,
-      refetchOnWindowFocus: false,
-      staleTime: 300000,
-    },
+    refetchOnWindowFocus: false,
+    staleTime: 300000,
+    initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
-      if (!lastPage.meta) return undefined;
+      if (!lastPage.meta) return null;
       const { hasMorePages, currentPage } = lastPage.meta;
-      return hasMorePages ? currentPage + 1 : undefined;
+      return hasMorePages ? currentPage + 1 : null;
     },
   });
 

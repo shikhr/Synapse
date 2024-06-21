@@ -22,7 +22,7 @@ const FullPost = () => {
 
   const {
     data: post,
-    isLoading,
+    isPending,
     isError,
     error,
     refetch,
@@ -31,7 +31,7 @@ const FullPost = () => {
   return (
     <div>
       <DynamicNavTitle title="Post" />
-      {isLoading && <PostLoadingSkeleton />}
+      {isPending && <PostLoadingSkeleton />}
       {isError && (
         <div className="w-full flex h-52 justify-center items-center ">
           <DisplayError refetch={refetch} error={error} />

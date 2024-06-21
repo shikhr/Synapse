@@ -55,10 +55,8 @@ const UserFollowList = ({ type }: UserFollowList) => {
   } = useInfiniteQueryScroll<followTypePage>({
     queryKey: ['userFollowType', type, userId as string],
     queryFn: fetchUserFollowType,
-    options: {
-      retry: 2,
-      refetchOnWindowFocus: false,
-    },
+    refetchOnWindowFocus: false,
+    initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.meta) return undefined;
       const { hasMorePages, currentPage } = lastPage.meta;

@@ -17,15 +17,9 @@ const DeleteAccount = () => {
     await authFetch.delete('settings/delete-account');
   };
 
-  const { mutate: deleteAccount, isLoading } = useMutation(
-    deleteAccountHandler,
-    {
-      onSuccess(data, variables, context) {
-        setDelConfirm(false);
-        logoutUser();
-      },
-    }
-  );
+  const { mutate: deleteAccount, isPending } = useMutation({
+    mutationFn: deleteAccountHandler,
+  });
 
   return (
     <div>
@@ -57,7 +51,7 @@ const DeleteAccount = () => {
                 Are you sure you want to delete your account?
               </p>
               <div className="w-44">
-                <Button disabled={isLoading} type="submit" variant="danger">
+                <Button disabled={isPending} type="submit" variant="danger">
                   CONFIRM
                 </Button>
               </div>

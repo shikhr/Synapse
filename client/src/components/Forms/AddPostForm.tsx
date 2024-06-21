@@ -7,10 +7,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FaTimes } from 'react-icons/fa';
 import { useAppContext } from '../../context/AppContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Maybe } from 'yup';
 
 interface IAddPostFormFields {
   description: string;
-  media?: FileList | undefined;
+  media?: Maybe<any | undefined>;
 }
 
 const validationAddPostSchema = yup.object().shape({
@@ -19,7 +20,8 @@ const validationAddPostSchema = yup.object().shape({
     .mixed()
     .notRequired()
     .test('fileListLength', 'number of images exceeds 3', (value) => {
-      return !value || value.length <= 3;
+      const fileList = value as FileList | undefined;
+      return !fileList || fileList.length <= 3;
     }),
 });
 
@@ -46,10 +48,11 @@ const AddPostForm = () => {
     return authFetch.post('/posts', formdata);
   };
 
-  const { mutate: addPost, isLoading } = useMutation(addPostHandler, {
+  const { mutate: addPost, isPending } = useMutation({
+    mutationFn: addPostHandler,
     onSuccess() {
       reset();
-      queryClient.invalidateQueries(['feed']);
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
     },
   });
 
@@ -72,7 +75,7 @@ const AddPostForm = () => {
         onSubmit={handleSubmit(submitHandler)}
       >
         <div>
-          <fieldset disabled={isLoading}>
+          <fieldset disabled={isPending}>
             <FloatTextarea
               register={register}
               label="What's happening?"
@@ -84,7 +87,7 @@ const AddPostForm = () => {
 
         <div className="relative max-h-80 w-full flex pt-4">
           {watch('media') &&
-            (watch('media') as FileList).length > 0 &&
+            (watch('media') as FileList)?.length > 0 &&
             Array.from(watch('media') as FileList).map((file, index) => (
               <div
                 key={index}
@@ -110,7 +113,9 @@ const AddPostForm = () => {
 
         <div className="text-error text-xs ml-auto">
           {errors['media'] && errors['media']?.message && (
-            <span className="lowercase">{errors['media'].message}</span>
+            <span className="lowercase">
+              {errors['media'].message.toString()}
+            </span>
           )}
         </div>
 
@@ -118,7 +123,7 @@ const AddPostForm = () => {
           <label
             htmlFor="attachment"
             className={`flex text-primary-200 cursor-pointer hover:text-primary-100 ${
-              isLoading && 'pointer-events-none'
+              isPending && 'pointer-events-none'
             } text-sm duration-300 items-center gap-2`}
           >
             <BsImageFill className="text-2xl" />
@@ -130,13 +135,13 @@ const AddPostForm = () => {
             type="file"
             accept="image/png, image/jpeg,"
             multiple
-            disabled={isLoading}
+            disabled={isPending}
             {...register('media')}
           />
         </div>
 
         <div className="ml-auto w-28">
-          <Button disabled={isLoading} type="submit" variant="primary">
+          <Button disabled={isPending} type="submit" variant="primary">
             Post
           </Button>
         </div>

@@ -12,10 +12,10 @@ const FollowSuggestions = () => {
     return data;
   };
 
-  const { data, isLoading } = useQuery(
-    ['follow-suggestions'],
-    getFollowSuggestion
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ['follow-suggestions'],
+    queryFn: getFollowSuggestion
+  });
   return (
     <div className="">
       {isLoading && <LoadingSpinner />}

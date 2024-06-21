@@ -135,7 +135,7 @@ const RegisterForm = () => {
             errors={errors}
           />
         </div>
-        <Button type="submit" variant="primary" onClick={() => {}}>
+        <Button type="submit" variant="primary">
           {isLogin ? 'LOGIN' : 'SIGN UP'}
         </Button>
 

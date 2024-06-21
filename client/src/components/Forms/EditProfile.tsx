@@ -23,13 +23,17 @@ const EditProfile = () => {
     return authFetch.patch('/users/profile', formData);
   };
 
-  const { mutate: updateProfile } = useMutation(updateProfileHandler, {
+  const { mutate: updateProfile } = useMutation({
+    mutationFn: updateProfileHandler,
+
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
-      queryClient.invalidateQueries(['post']);
+      queryClient.invalidateQueries({
+        queryKey: ['post']
+      });
       updateUser(data.data);
       closeFormHandler();
-    },
+    }
   });
 
   const { data: profile, isLoading, isError, error } = useFetchProfile('me');

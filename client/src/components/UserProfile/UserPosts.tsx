@@ -23,7 +23,7 @@ const UserPosts = () => {
 
   const getUserPosts = async ({
     queryKey,
-    pageParam = 1,
+    pageParam,
   }: QueryFunctionContext) => {
     const { data } = await authFetch.get(`/posts/user/${queryKey[1]}`, {
       params: { page: pageParam, filterBy: 'new' },
@@ -44,11 +44,9 @@ const UserPosts = () => {
   } = useInfiniteQueryScroll<feedPage>({
     queryKey: ['posts', userId as string],
     queryFn: getUserPosts,
-    options: {
-      retry: 2,
-      refetchOnWindowFocus: false,
-      staleTime: 300000,
-    },
+    refetchOnWindowFocus: false,
+    staleTime: 300000,
+    initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.meta) return undefined;
       const { hasMorePages, currentPage } = lastPage.meta;

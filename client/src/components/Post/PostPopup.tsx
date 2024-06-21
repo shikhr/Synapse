@@ -25,15 +25,8 @@ const PostPopup = ({
   const deletePostHandler = async (id: string) => {
     return await authFetch.delete(`/posts/${id}`);
   };
-  const { mutate: deletePost } = useMutation(deletePostHandler, {
-    onSuccess(data, variables, context) {
-      queryClient.removeQueries(['post', postId]);
-      queryClient.invalidateQueries(['feed']);
-      queryClient.invalidateQueries(['explore']);
-      queryClient.invalidateQueries(['bookmarks']);
-      // TODO: add navigation to feed or user posts if full post was opened
-      // navigate('/');
-    },
+  const { mutate: deletePost } = useMutation({
+    mutationFn: deletePostHandler,
   });
 
   const { followAction, isFollowError, isFollowLoading } = useFollowUser();
@@ -62,7 +55,9 @@ const PostPopup = ({
                 },
                 {
                   onSettled(data, error, variables, context) {
-                    queryClient.invalidateQueries(['post', postId]);
+                    queryClient.invalidateQueries({
+                      queryKey: ['post', postId],
+                    });
                   },
                 }
               );

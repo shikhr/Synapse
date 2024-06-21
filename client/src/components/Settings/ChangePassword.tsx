@@ -32,23 +32,16 @@ const ChangePassword = () => {
     return authFetch.patch('/settings/change-password', data);
   };
 
-  const { mutate: changePassword, isLoading } = useMutation(
-    passwordChangeHandler,
-    {
-      onError: (error: AxiosError, variables, context) => {
-        const data: any = error.response!.data;
-        data.fields.forEach((field: any) => {
-          setError(field, { type: 'server', message: data.msg });
-        });
-      },
-      onSuccess(data, variables, context) {
-        reset({
-          oldPassword: '',
-          newPassword: '',
-        });
-      },
-    }
-  );
+  const { mutate: changePassword, isPending } = useMutation({
+    mutationFn: passwordChangeHandler,
+
+    onError: (error: AxiosError, variables, context) => {
+      const data: any = error.response!.data;
+      data.fields.forEach((field: any) => {
+        setError(field, { type: 'server', message: data.msg });
+      });
+    },
+  });
 
   const submitHandler: SubmitHandler<IEditPassword> = (data) => {
     console.log(data);
@@ -75,7 +68,7 @@ const ChangePassword = () => {
             type="password"
           />
         </div>
-        <Button disabled={isLoading} type="submit" variant="primary">
+        <Button disabled={isPending} type="submit" variant="primary">
           Save
         </Button>
       </form>
@@ -84,7 +77,7 @@ const ChangePassword = () => {
         <div className="text-text-secondary-dark text-center">
           If you don't remember your password or logged in using google
         </div>
-        <Button disabled={isLoading} type="submit" variant="standard">
+        <Button disabled={isPending} type="submit" variant="standard">
           Reset Password
         </Button>
       </div>

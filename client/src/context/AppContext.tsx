@@ -7,7 +7,11 @@ import {
 } from 'react';
 import reducer from './reducer';
 import { ActionKind } from './actions';
-import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosRequestHeaders,
+  RawAxiosRequestHeaders,
+} from 'axios';
 
 const user = localStorage.getItem('user');
 let accessToken = localStorage.getItem('accessToken');
@@ -61,13 +65,11 @@ const AppProvider = ({ children }: AppProviderProps) => {
     })
   );
 
-  authFetchRef.current.interceptors.request.use(
-    (config: AxiosRequestConfig): AxiosRequestConfig => {
-      if (!config.headers) config.headers = {};
-      config.headers.authorization = `Bearer ${accessToken}`;
-      return config;
-    }
-  );
+  authFetchRef.current.interceptors.request.use((config) => {
+    if (!config.headers) config.headers = {} as AxiosRequestHeaders;
+    config.headers.authorization = `Bearer ${accessToken}`;
+    return config;
+  });
 
   authFetchRef.current.interceptors.response.use(
     (response) => response,

@@ -12,10 +12,12 @@ const useFetchProfile = (id: string) => {
     return data;
   };
 
-  const data = useQuery(['profile', id], getProfile, {
+  const data = useQuery({
+    queryKey: ['profile', id],
+    queryFn: getProfile,
     refetchOnWindowFocus: false,
     staleTime: 300000,
-    retry: false,
+    retry: false
   });
 
   return data;

@@ -38,10 +38,11 @@ const AddCommentForm = ({ id }: AddCommentFormProps) => {
     return authFetch.post(`/comments/post/${id}`, data);
   };
 
-  const { mutate: addComment, isLoading } = useMutation(addCommentHandler, {
+  const { mutate: addComment, isPending } = useMutation({
+    mutationFn: addCommentHandler,
     onSuccess() {
       reset();
-      queryClient.invalidateQueries(['commentList', id]);
+      queryClient.invalidateQueries({ queryKey: ['commentList', id] });
     },
   });
 
@@ -67,7 +68,7 @@ const AddCommentForm = ({ id }: AddCommentFormProps) => {
             />
           </fieldset>
           <div className="w-24 xs:w-28 ml-4 group-focus-within:row-start-2 group-focus-within:ml-auto">
-            <Button type="submit" variant="primary">
+            <Button disabled={isPending} type="submit" variant="primary">
               Post
             </Button>
           </div>

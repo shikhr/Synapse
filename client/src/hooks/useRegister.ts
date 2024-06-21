@@ -6,7 +6,8 @@ import { Tcallback, TsetError } from '../types/Register.types';
 const useRegister = <T>(callback: Tcallback<T>, setError: TsetError) => {
   const { registerUserSuccess } = useAppContext();
 
-  return useMutation(callback, {
+  return useMutation({
+    mutationFn: callback,
     onError: (error: AxiosError, variables, context) => {
       const data: any = error.response!.data;
       data.fields.forEach((field: any) => {

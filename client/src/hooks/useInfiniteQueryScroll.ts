@@ -8,14 +8,11 @@ import { useCallback, useEffect, useRef } from 'react';
 
 interface useInfiniteQueryScrollParams<T> {
   queryKey: string[];
-  queryFn: QueryFunction<T, QueryKey>;
-  options?:
-    | Omit<
-        UseInfiniteQueryOptions<unknown, unknown, unknown, unknown, string[]>,
-        'queryKey' | 'queryFn'
-      >
-    | undefined;
-  getNextPageParam: (lastPage: T, allPages: T[]) => unknown | undefined;
+  queryFn: QueryFunction<T, QueryKey, number>;
+  refetchOnWindowFocus: boolean;
+  staleTime?: number;
+  initialPageParam: number;
+  getNextPageParam: (lastPage: T, allPages: T[]) => any;
 }
 
 const useInfiniteQueryScroll = <T>(

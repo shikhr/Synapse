@@ -31,7 +31,7 @@ const Profile = () => {
   const { user } = useAppContext();
 
   const {
-    isLoading: isProfileLoading,
+    isPending: isProfileLoading,
     isError: isProfileError,
     data: profile,
     error: profileError,

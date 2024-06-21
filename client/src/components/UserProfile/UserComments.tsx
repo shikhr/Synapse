@@ -44,10 +44,8 @@ const UserComments = () => {
   } = useInfiniteQueryScroll<commentsListPage>({
     queryKey: ['userCommentList', userId as string],
     queryFn: fetchCommentList,
-    options: {
-      retry: 2,
-      refetchOnWindowFocus: false,
-    },
+    refetchOnWindowFocus: false,
+    initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.meta) return undefined;
       const { hasMorePages, currentPage } = lastPage.meta;

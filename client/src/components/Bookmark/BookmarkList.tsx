@@ -38,11 +38,12 @@ const BookmarkList = () => {
   } = useInfiniteQueryScroll<bookmarksListPage>({
     queryKey: ['bookmarks'],
     queryFn: fetchBookmarkList,
-    options: {
-      retry: 2,
-      refetchOnWindowFocus: false,
-    },
-    getNextPageParam: (lastPage, pages) => {
+    refetchOnWindowFocus: false,
+    initialPageParam: 1,
+    getNextPageParam: (
+      lastPage: bookmarksListPage,
+      pages: bookmarksListPage[]
+    ) => {
       if (!lastPage.meta) return undefined;
       const { hasMorePages, currentPage } = lastPage.meta;
       return hasMorePages ? currentPage + 1 : undefined;

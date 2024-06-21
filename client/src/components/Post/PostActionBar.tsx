@@ -28,9 +28,13 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
     return authFetch.post(`/bookmarks/${postId}`);
   };
 
-  const { mutate: likePost } = useMutation(likePostHandler, {
+  const { mutate: likePost } = useMutation({
+    mutationFn: likePostHandler,
+
     onMutate: async ({ key, postId }) => {
-      await queryClient.cancelQueries(['post', postId]);
+      await queryClient.cancelQueries({
+        queryKey: ['post', postId],
+      });
       const prevPostData = queryClient.getQueryData(['post', postId]);
       queryClient.setQueryData(['post', postId], (oldQueryData: any) => {
         return {
@@ -44,17 +48,25 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
       });
       return { prevPostData };
     },
+
     onError: (error, { key, postId }, context) => {
       queryClient.setQueryData(['post', postId], context?.prevPostData);
     },
+
     onSettled: (data, error, { key, postId }, context) => {
-      queryClient.invalidateQueries(['post', postId]);
+      queryClient.invalidateQueries({
+        queryKey: ['post', postId],
+      });
     },
   });
 
-  const { mutate: bookmarkPost } = useMutation(bookmarkPostHandler, {
+  const { mutate: bookmarkPost } = useMutation({
+    mutationFn: bookmarkPostHandler,
+
     onMutate: async ({ postId }) => {
-      await queryClient.cancelQueries(['post', postId]);
+      await queryClient.cancelQueries({
+        queryKey: ['post', postId],
+      });
       const prevPostData = queryClient.getQueryData(['post', postId]);
       queryClient.setQueryData(['post', postId], (oldQueryData: any) => {
         return {
@@ -64,12 +76,18 @@ const PostActionBar = ({ post }: PostActionBarProps) => {
       });
       return { prevPostData };
     },
+
     onError: (error, { postId }, context) => {
       queryClient.setQueryData(['post', postId], context?.prevPostData);
     },
+
     onSettled: (data, error, { postId }, context) => {
-      queryClient.invalidateQueries(['post', postId]);
-      queryClient.invalidateQueries(['bookmarks']);
+      queryClient.invalidateQueries({
+        queryKey: ['post', postId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['bookmarks'],
+      });
     },
   });
 

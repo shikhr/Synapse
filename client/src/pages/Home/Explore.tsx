@@ -7,6 +7,7 @@ import PostCard from '../../components/Post/PostCard';
 import PostLoadingSkeleton from '../../components/Skeletons/PostLoadingSkeleton';
 import { useAppContext } from '../../context/AppContext';
 import useInfiniteQueryScroll from '../../hooks/useInfiniteQueryScroll';
+import { QueryFunctionContext } from '@tanstack/react-query';
 
 interface feedPage {
   data: string[];
@@ -20,7 +21,7 @@ interface feedPage {
 const Explore = () => {
   const { authFetch } = useAppContext();
 
-  const fetchFeed = async ({ pageParam = 1 }) => {
+  const fetchFeed = async ({ pageParam }: QueryFunctionContext) => {
     const { data } = await authFetch.get('/posts/explore', {
       params: { page: pageParam },
     });
@@ -40,10 +41,8 @@ const Explore = () => {
   } = useInfiniteQueryScroll<feedPage>({
     queryKey: ['explore-all'],
     queryFn: fetchFeed,
-    options: {
-      retry: 2,
-      refetchOnWindowFocus: false,
-    },
+    refetchOnWindowFocus: false,
+    initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.meta) return undefined;
       const { hasMorePages, currentPage } = lastPage.meta;

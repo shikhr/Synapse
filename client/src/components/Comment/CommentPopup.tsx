@@ -23,11 +23,8 @@ const CommentPopup = ({
   const deleteCommentHandler = async (id: string) => {
     return await authFetch.delete(`/comments/${id}`);
   };
-  const { mutate: deleteComment } = useMutation(deleteCommentHandler, {
-    onSuccess(data, variables, context) {
-      queryClient.removeQueries(['comment', commentId]);
-      queryClient.invalidateQueries(['commentList', postId]);
-    },
+  const { mutate: deleteComment } = useMutation({
+    mutationFn: deleteCommentHandler,
   });
 
   return (

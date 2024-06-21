@@ -19,13 +19,13 @@ interface PostCardProps {
 const PostCard = ({ id }: PostCardProps) => {
   const navigate = useNavigate();
 
-  const { data: post, isLoading, isError, error, refetch } = useFetchPost(id);
+  const { data: post, isPending, isError, error, refetch } = useFetchPost(id);
 
   const openFullPost = (id: string) => {
     navigate(`/post/${id}`);
   };
 
-  if (isLoading) {
+  if (isPending) {
     return <PostLoadingSkeleton />;
   }
   if (isError) {

@@ -39,10 +39,12 @@ const CommentCard = ({ id, postId }: CommentCardProps) => {
 
   const {
     data: comment,
-    isLoading,
+    isPending,
     isError,
     refetch,
-  } = useQuery(['comment', id], fetchComment, {
+  } = useQuery({
+    queryKey: ['comment', id],
+    queryFn: fetchComment,
     refetchOnWindowFocus: false,
     staleTime: 300000,
   });
@@ -54,9 +56,13 @@ const CommentCard = ({ id, postId }: CommentCardProps) => {
     return await authFetch.put('/comments/like', data);
   };
 
-  const { mutate: likeComment } = useMutation(likeCommentHandler, {
+  const { mutate: likeComment } = useMutation({
+    mutationFn: likeCommentHandler,
+
     onMutate: async ({ key, commentId }) => {
-      await queryClient.cancelQueries(['comment', commentId]);
+      await queryClient.cancelQueries({
+        queryKey: ['comment', commentId],
+      });
       const prevPostData = queryClient.getQueryData(['comment', commentId]);
       queryClient.setQueryData(['comment', commentId], (oldQueryData: any) => {
         return {
@@ -70,15 +76,19 @@ const CommentCard = ({ id, postId }: CommentCardProps) => {
       });
       return { prevPostData };
     },
+
     onError: (error, { key, commentId }, context) => {
       queryClient.setQueryData(['comment', commentId], context?.prevPostData);
     },
+
     onSettled: (data, error, { key, commentId }, context) => {
-      queryClient.invalidateQueries(['comment', commentId]);
+      queryClient.invalidateQueries({
+        queryKey: ['comment', commentId],
+      });
     },
   });
 
-  if (isLoading) {
+  if (isPending) {
     return <CommentLoadingSkeleton />;
   }
   if (isError) {

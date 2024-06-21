@@ -17,14 +17,15 @@ const useFollowUser = () => {
 
   const {
     mutate: followAction,
-    isLoading: isFollowLoading,
+    isPending: isFollowLoading,
     isError: isFollowError,
-  } = useMutation(followHandler, {
+  } = useMutation({
+    mutationFn: followHandler,
     onSettled(data, error, variables, context) {
-      queryClient.invalidateQueries(['follow-suggestions']);
-      queryClient.invalidateQueries(['profile', variables.id]);
-      queryClient.invalidateQueries(['profile', 'me']);
-      queryClient.invalidateQueries(['userFollowType']);
+      queryClient.invalidateQueries({ queryKey: ['follow-suggestions'] });
+      queryClient.invalidateQueries({ queryKey: ['profile', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
+      queryClient.invalidateQueries({ queryKey: ['userFollowType'] });
     },
   });
 

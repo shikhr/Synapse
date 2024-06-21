@@ -15,7 +15,9 @@ const useFetchPost = (id: string) => {
     return data;
   };
 
-  const queryData = useQuery(['post', id], fetchPost, {
+  const queryData = useQuery({
+    queryKey: ['post', id],
+    queryFn: fetchPost,
     refetchOnWindowFocus: false,
     staleTime: 300000,
   });
