@@ -9,12 +9,12 @@ interface IRegisterFields {
 }
 
 interface IEditFormFields {
-  avatar: FileList | undefined;
+  bio?: string | undefined;
+  avatar?: any | undefined;
+  location?: string | undefined;
+  birthDate?: string | null | undefined;
+  website?: string | undefined;
   displayName: string;
-  bio: string;
-  location: string;
-  website: string;
-  birthDate: string | Date | null;
 }
 
 interface IUserProfile {
@@ -45,8 +45,8 @@ type TsetError = UseFormSetError<IRegisterFields>;
 export type {
   Tcallback,
   TsetError,
-  IRegisterFields,
   IEditFormFields,
+  IRegisterFields,
   IUserProfile,
   IUserBasic,
 };

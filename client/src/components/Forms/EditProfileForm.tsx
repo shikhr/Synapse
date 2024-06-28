@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { UseMutateFunction } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 
 interface EditProfileFormProps {
   profile: IUserProfile;
@@ -20,11 +20,12 @@ interface EditProfileFormProps {
 
 const validationProfileSchema = yup.object().shape({
   bio: yup.string().max(150),
-  avatar: yup
-    .mixed()
-    .test('is-big-file', 'file is too big', (files?: FileList) => {
-      return !files || files.length === 0 || files[0].size < 1048576;
-    }),
+  avatar: yup.mixed().test('is-big-file', 'file is too big', function (value) {
+    if (!value || !(value instanceof FileList)) {
+      return true;
+    }
+    return value.length === 0 || value[0].size < 1048576;
+  }),
   displayName: yup.string().max(30).required(),
   location: yup.string().max(30),
   birthDate: yup.string().nullable().typeError('Invalid Date'),
@@ -129,7 +130,9 @@ const EditProfileForm = ({
           )}
           <div className="text-error text-xs py-1">
             {errors['avatar'] && errors['avatar']?.message && (
-              <span className="lowercase">{errors['avatar'].message}</span>
+              <span className="lowercase">
+                {String(errors['avatar'].message)}
+              </span>
             )}
           </div>
         </div>

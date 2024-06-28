@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Button from '../UI/Button';
@@ -43,11 +43,15 @@ const RegisterForm = () => {
 
   const [isLogin, setIsLogin] = useState<Boolean>(true);
 
-  const validationScema = useMemo(
+  const validationSchema = useMemo(
     () =>
       isLogin
-        ? yup.object().shape(validationLogin)
-        : yup.object().shape(validationSignUp),
+        ? (yup
+            .object()
+            .shape(validationLogin) as yup.ObjectSchema<IRegisterFields>)
+        : (yup
+            .object()
+            .shape(validationSignUp) as yup.ObjectSchema<IRegisterFields>),
     [isLogin]
   );
 
@@ -58,7 +62,7 @@ const RegisterForm = () => {
     reset,
     formState: { errors },
   } = useForm<IRegisterFields>({
-    resolver: yupResolver(validationScema),
+    resolver: yupResolver(validationSchema),
   });
 
   const { mutate: login } = useRegister(loginUser, setError);
