@@ -49,7 +49,7 @@ const userSchema = new Schema<IUser, UserModel>({
     unique: true,
     trim: true,
     validate: {
-      validator: validator.isEmail,
+      validator: (str: string) => validator.isEmail(str),
       message: 'Please provide a valid email',
     },
   },
@@ -86,7 +86,8 @@ const userSchema = new Schema<IUser, UserModel>({
     required: false,
     trim: true,
     validate: {
-      validator: validator.isURL,
+      validator: (str: string) => validator.isURL(str),
+      message: 'Please provide a valid URL',
     },
     maxlength: [60, 'Website should be less than 60 characters'],
   },

@@ -11,11 +11,11 @@ dotenv.config();
 
 const authenticate_options: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.ACCESS_TOKEN_SECRET,
+  secretOrKey: process.env.ACCESS_TOKEN_SECRET || '',
 };
 const refresh_options: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.REFRESH_TOKEN_SECRET,
+  secretOrKey: process.env.REFRESH_TOKEN_SECRET || '',
 };
 
 const AuthenticateJwtStrategy = new JwtStrategy(
