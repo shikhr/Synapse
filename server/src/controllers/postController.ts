@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from '../errors/errors.js';
 import Bookmark from '../models/Bookmark.js';
 import Comment from '../models/Comments.js';
 import Post from '../models/Post.js';
-import { filestackFetch } from '../utils/filestackFetch.js';
+import { cloudinaryUpload } from '../utils/cloudinaryUpload.js';
 
 const addPost = async (req: any, res: Response) => {
   const postParams: any = {};
@@ -16,8 +16,8 @@ const addPost = async (req: any, res: Response) => {
   postParams.createdBy = user._id;
   postParams.description = description;
   if (req.files) {
-    const data = await filestackFetch(req.files);
-    postParams.media = data.map((item) => item.data.url);
+    const data = await cloudinaryUpload(req.files);
+    postParams.media = data.map((item) => item.secure_url);
   }
   const post = await Post.create(postParams);
   const [postInfo] = await Post.getPostInfo(post._id, user);
