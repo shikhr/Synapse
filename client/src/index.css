@@ -1,11 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@config "../tailwind.config.cjs";
 
 @layer components {
   .btn-float:focus-within ~ label,
   .btn-float:not(:placeholder-shown) ~ label {
-    @apply transform scale-75 -translate-y-6;
+    @apply transform scale-75 -translate-y-[6px];
   }
 
   .btn-float:focus-within ~ label {
