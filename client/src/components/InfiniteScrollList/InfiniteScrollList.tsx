@@ -1,12 +1,4 @@
-import {
-  ReactNode,
-  MutableRefObject,
-  useMemo,
-  forwardRef,
-  ForwardedRef,
-} from 'react';
-import { Link } from 'react-router-dom';
-import Button from '../UI/Button';
+import { ReactNode, useMemo, forwardRef, ForwardedRef, JSX } from 'react';
 
 interface InfiniteScrollListProps {
   isLoadingError: boolean;

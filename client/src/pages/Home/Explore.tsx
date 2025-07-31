@@ -52,7 +52,7 @@ const Explore = () => {
 
   return (
     <div className="text-white">
-      <div className="sticky top-0 z-sticky px-4 py-2 bg-opacity-50 bg-background-dark backdrop-blur-md ">
+      <div className="sticky top-0 z-sticky px-4 py-2 bg-background-dark/50 backdrop-blur-md ">
         <div className="w-full group flex rounded-full px-6 py-1 justify-start items-center bg-background-overlay-dark ">
           <RiSearchLine
             className="text-text-secondary-dark group-focus-within:text-primary-100"

@@ -12,7 +12,7 @@ const Overlay = ({ closeModal, className }: OverlayProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, type: 'tween' }}
       onClick={closeModal}
-      className={`fixed z-overlay top-0 left-0 bottom-0 right-0 bg-white bg-opacity-20 ${className}`}
+      className={`fixed z-overlay top-0 left-0 bottom-0 right-0 bg-white/20 ${className}`}
     ></motion.div>,
     document.getElementById('overlay-root') as HTMLDivElement
   );

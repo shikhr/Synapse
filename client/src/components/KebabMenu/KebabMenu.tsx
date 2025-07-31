@@ -4,7 +4,7 @@ import useOuterClick from '../../hooks/useOuterClick';
 import { motion, AnimatePresence } from 'framer-motion';
 import Overlay from '../UI/Overlay';
 interface KebabMenuProps {
-  children: ReactElement;
+  children: ReactElement<{ closeMenu: () => void }>;
 }
 
 const KebabMenu = ({ children }: KebabMenuProps) => {

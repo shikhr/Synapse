@@ -9,7 +9,7 @@ const Layout = () => {
     <div className="bg-background-dark min-h-screen h-full xs:pb-0 pb-16">
       <div className="isolate mx-auto flex flex-col h-full w-full">
         <div className="flex relative flex-row w-full xs:px-2 md:px-4">
-          <div className="hidden z-sticky ml-auto xs:block sticky top-0 h-[100dvh] max-h-full">
+          <div className="hidden z-sticky ml-auto xs:block sticky top-0 h-dvh max-h-full">
             <Sidebar />
           </div>
           <div className="max-w-2xl max-ml:mr-auto min-w-0 w-full max-h-full flex-1 xs:border-r xs:border-l border-text-secondary-dark">

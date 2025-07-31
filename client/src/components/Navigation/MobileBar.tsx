@@ -35,7 +35,7 @@ const MobileBar = ({ closeMobileBar }: MobileBarProps) => {
             <Avatar sourceId={user?.avatarId} />
           </div>
           <div className="flex-col flex overflow-hidden">
-            <span className="font-semibold text-lg overflow-hidden overflow-ellipsis">
+            <span className="font-semibold text-lg overflow-hidden text-ellipsis">
               {user?.displayName}
             </span>
             <span className="text-text-secondary-dark text-sm">

@@ -148,11 +148,11 @@ const RegisterForm = () => {
         </button>
 
         <div className="relative w-full flex py-2 items-center">
-          <div className="flex-grow border-t border-text-secondary-dark"></div>
-          <span className="flex-shrink px-2 leading-none pb-1 text-xl text-text-secondary-dark">
+          <div className="grow border-t border-text-secondary-dark"></div>
+          <span className="shrink px-2 leading-none pb-1 text-xl text-text-secondary-dark">
             or
           </span>
-          <div className="flex-grow border-t border-text-secondary-dark"></div>
+          <div className="grow border-t border-text-secondary-dark"></div>
         </div>
 
         <OAuthButton />

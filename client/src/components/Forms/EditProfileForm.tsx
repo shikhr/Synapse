@@ -18,19 +18,23 @@ interface EditProfileFormProps {
   updateProfile: UseMutateFunction<any, unknown, FormData, unknown>;
 }
 
-const validationProfileSchema = yup.object().shape({
-  bio: yup.string().max(150),
-  avatar: yup.mixed().test('is-big-file', 'file is too big', function (value) {
-    if (!value || !(value instanceof FileList)) {
-      return true;
-    }
-    return value.length === 0 || value[0].size < 1048576;
-  }),
-  displayName: yup.string().max(30).required(),
-  location: yup.string().max(30),
-  birthDate: yup.string().nullable().typeError('Invalid Date'),
-  website: yup.string().max(60),
-});
+const validationProfileSchema: yup.ObjectSchema<IEditFormFields> = yup
+  .object()
+  .shape({
+    bio: yup.string().max(150),
+    avatar: yup
+      .mixed()
+      .test('is-big-file', 'file is too big', function (value) {
+        if (!value || !(value instanceof FileList)) {
+          return true;
+        }
+        return value.length === 0 || value[0].size < 1048576;
+      }),
+    displayName: yup.string().max(30).required(),
+    location: yup.string().max(30),
+    birthDate: yup.string().nullable().typeError('Invalid Date'),
+    website: yup.string().max(60),
+  });
 
 const EditProfileForm = ({
   profile,
@@ -87,7 +91,7 @@ const EditProfileForm = ({
       onSubmit={handleSubmit(submitHandler)}
       className="px-4 relative isolate sm:px-16 pb-4 h-full overflow-auto"
     >
-      <div className="pt-4 text-text-primary-dark  pb-2 sticky z-20 top-0 left-0 flex justify-start items-center bg-opacity-90 bg-background-dark backdrop-blur-md">
+      <div className="pt-4 text-text-primary-dark  pb-2 sticky z-20 top-0 left-0 flex justify-start items-center bg-background-dark/90 backdrop-blur-md">
         <button onClick={closeHandler} className="text-white text-xl">
           <FaTimes />
         </button>

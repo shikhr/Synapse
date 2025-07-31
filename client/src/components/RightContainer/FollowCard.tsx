@@ -26,10 +26,10 @@ const FollowCard = ({
         <Avatar sourceId={avatarId} />
       </div>
       <div className="flex flex-col overflow-hidden whitespace-nowrap">
-        <span className="font-semibold text-md overflow-hidden overflow-ellipsis ">
+        <span className="font-semibold text-md overflow-hidden text-ellipsis ">
           {displayName}
         </span>
-        <span className="text-text-secondary-dark text-sm overflow-hidden overflow-ellipsis">
+        <span className="text-text-secondary-dark text-sm overflow-hidden text-ellipsis">
           @{username}
         </span>
       </div>

@@ -39,7 +39,7 @@ const PostCard = ({ id }: PostCardProps) => {
   return (
     <FadeInView
       onClick={() => openFullPost(post._id)}
-      className="flex items-start gap-3 px-3 py-4 hover:bg-opacity-20 duration-300 hover:bg-background-overlay-dark border-b border-text-secondary-dark cursor-pointer transition-colors"
+      className="flex items-start gap-3 px-3 py-4 duration-300 hover:bg-background-overlay-dark/30 border-b border-text-secondary-dark cursor-pointer transition-colors"
     >
       <Link
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -59,10 +59,10 @@ const PostCard = ({ id }: PostCardProps) => {
               to={`/profile/${post.createdBy._id}`}
               className="flex w-full gap-2 items-center justify-start"
             >
-              <span className="font-bold overflow-hidden overflow-ellipsis">
+              <span className="font-bold overflow-hidden text-ellipsis">
                 {post.createdBy.displayName}
               </span>
-              <span className="text-text-secondary-dark text-sm font-semibold overflow-hidden overflow-ellipsis">
+              <span className="text-text-secondary-dark text-sm font-semibold overflow-hidden text-ellipsis">
                 @{post.createdBy.username}
               </span>
             </Link>

@@ -17,7 +17,7 @@ const DynamicNavMain = ({ title }: { title: string }) => {
     useOuterClick<HTMLDivElement>();
 
   return (
-    <div className="flex text-center text-text-primary-dark items-center h-14 px-4 w-full sticky z-sticky top-0 justify-between bg-opacity-50 bg-background-dark backdrop-blur-md ">
+    <div className="flex text-center text-text-primary-dark items-center h-14 px-4 w-full sticky z-sticky top-0 justify-between bg-background-dark/70 backdrop-blur-md">
       <div
         onClick={() => setIsComponentVisible(true)}
         className="cursor-pointer xs:hidden text-2xl flex justify-center items-center w-7 aspect-square rounded-full hover:bg-gray-800 transition-colors"

@@ -51,7 +51,7 @@ const FullPost = () => {
                 to={`/profile/${post.createdBy._id}`}
                 className="flex flex-col justify-center overflow-hidden"
               >
-                <span className="font-semibold text-xl overflow-hidden overflow-ellipsis">
+                <span className="font-semibold text-xl overflow-hidden text-ellipsis">
                   {post.createdBy.displayName}
                 </span>
                 <span className="text-text-secondary-dark text-sm font-semibold">

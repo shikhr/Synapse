@@ -29,11 +29,11 @@ const EditProfile = () => {
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
       queryClient.invalidateQueries({
-        queryKey: ['post']
+        queryKey: ['post'],
       });
       updateUser(data.data);
       closeFormHandler();
-    }
+    },
   });
 
   const { data: profile, isLoading, isError, error } = useFetchProfile('me');

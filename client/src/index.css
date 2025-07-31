@@ -1,12 +1,57 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@config "../tailwind.config.cjs";
+@import 'tailwindcss';
+
+@theme {
+  --color-primary-100: #1d88d5;
+  --color-primary-200: #14639c;
+  --color-background-dark: #10181f;
+  --color-background-overlay-dark: #1b2730;
+  --color-text-primary-dark: #ecf4f7;
+  --color-text-secondary-dark: #6a7986;
+  --color-error: #ec5990;
+
+  --font-family-sans: 'Inter', theme(fontFamily.sans);
+
+  --breakpoint-xs: 576px;
+  --breakpoint-ml: 990px;
+  --breakpoint-lx: 1200px;
+
+  --z-index--1: -1;
+  --z-index-element: 10;
+  --z-index-dropdown: 20;
+  --z-index-sticky: 30;
+  --z-index-fixed: 40;
+  --z-index-overlay: 50;
+  --z-index-modal: 60;
+  --z-index-popover: 70;
+  --z-index-tooltip: 80;
+  --z-index-sudo: 999;
+
+  @keyframes slidefromleft {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  --animation-slidefromleft: slidefromleft 200ms linear;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
 
 @layer components {
   .btn-float:focus-within ~ label,
   .btn-float:not(:placeholder-shown) ~ label {
-    @apply transform scale-75 -translate-y-[6px];
+    @apply transform scale-75 -translate-y-8;
   }
 
   .btn-float:focus-within ~ label {
@@ -22,18 +67,6 @@
     hyphens: auto;
   }
   .position-center {
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-}
-
-@layer base {
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-  body {
-    min-height: 100vh;
-    min-height: 100dvh;
+    @apply inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2;
   }
 }

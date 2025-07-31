@@ -14,16 +14,18 @@ interface IAddPostFormFields {
   media?: Maybe<any | undefined>;
 }
 
-const validationAddPostSchema = yup.object().shape({
-  description: yup.string().required().max(1000),
-  media: yup
-    .mixed()
-    .notRequired()
-    .test('fileListLength', 'number of images exceeds 3', (value) => {
-      const fileList = value as FileList | undefined;
-      return !fileList || fileList.length <= 3;
-    }),
-});
+const validationAddPostSchema: yup.ObjectSchema<IAddPostFormFields> =
+  yup.object({
+    description: yup.string().required().max(1000),
+    media: yup
+      .mixed()
+      .nullable()
+      .optional()
+      .test('fileListLength', 'number of images exceeds 3', (value) => {
+        const fileList = value as FileList | undefined;
+        return !fileList || fileList.length <= 3;
+      }),
+  });
 
 const AddPostForm = () => {
   const { authFetch } = useAppContext();
