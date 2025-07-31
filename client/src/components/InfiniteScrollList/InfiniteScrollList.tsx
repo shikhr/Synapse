@@ -15,7 +15,7 @@ interface InfiniteScrollListProps {
   isError: boolean;
 }
 interface feedPage {
-  data: string[];
+  data: any[];
   meta: {
     currentPage: number;
     hasMorePages: boolean;
@@ -48,11 +48,18 @@ const InfiniteScrollList = forwardRef(
     const content = useMemo(
       () =>
         data?.pages.flatMap((page: feedPage) =>
-          page.data.map((id: string) => (
-            <ListItemComponent key={id} id={id} {...ListItemProps} />
-          ))
+          page.data.map((item: any) => {
+            if (typeof item === 'string') {
+              return (
+                <ListItemComponent key={item} id={item} {...ListItemProps} />
+              );
+            }
+            return (
+              <ListItemComponent key={item._id} {...item} {...ListItemProps} />
+            );
+          })
         ),
-      [data]
+      [data, ListItemComponent, ListItemProps]
     );
 
     return (

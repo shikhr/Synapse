@@ -13,6 +13,7 @@ interface useInfiniteQueryScrollParams<T> {
   staleTime?: number;
   initialPageParam: number;
   getNextPageParam: (lastPage: T, allPages: T[]) => any;
+  enabled?: boolean;
 }
 
 const useInfiniteQueryScroll = <T>(

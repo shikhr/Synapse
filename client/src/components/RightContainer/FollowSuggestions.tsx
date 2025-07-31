@@ -14,7 +14,7 @@ const FollowSuggestions = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ['follow-suggestions'],
-    queryFn: getFollowSuggestion
+    queryFn: getFollowSuggestion,
   });
   return (
     <div className="">

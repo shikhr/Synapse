@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import useFollowUser from '../../hooks/useFollowUser';
 import { IUserBasic } from '../../types/Register.types';
@@ -13,14 +12,13 @@ const FollowCard = ({
   followExists,
 }: IUserBasic) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const { followAction, isFollowError, isFollowLoading } = useFollowUser();
 
   return (
     <div
       onClick={() => navigate(`/profile/${_id}`)}
-      className="flex gap-4 text-text-primary-dark cursor-pointer items-center"
+      className="flex px-4 sm:px-12 py-2 hover:bg-background-overlay-dark gap-4 text-text-primary-dark cursor-pointer items-center"
     >
       <div className="w-14 aspect-square shrink-0 text-3xl">
         <Avatar sourceId={avatarId} />

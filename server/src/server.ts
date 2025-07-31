@@ -16,6 +16,7 @@ import UserRouter from './routes/userRoutes.js';
 import CommentRouter from './routes/commentRoutes.js';
 import BookmarkRouter from './routes/bookmarkRoutes.js';
 import SettingsRouter from './routes/settingsRoute.js';
+import SearchRouter from './routes/searchRoutes.js';
 
 import {
   AuthenticateJwtStrategy,
@@ -87,6 +88,12 @@ app.use(
   '/api/v1/settings',
   passport.authenticate('authenticate_jwt', { session: false }),
   SettingsRouter
+);
+
+app.use(
+  '/api/v1/search',
+  passport.authenticate('authenticate_jwt', { session: false }),
+  SearchRouter
 );
 
 app.get('*', (req: Request, res: Response) => {

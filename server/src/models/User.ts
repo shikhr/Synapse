@@ -33,6 +33,11 @@ interface UserModel extends Model<UserInterface> {
     matchId: mongoose.Types.ObjectId,
     userId: mongoose.Types.ObjectId
   ) => Promise<any>;
+  searchUsers(
+    query: string,
+    page: number,
+    userId: mongoose.Types.ObjectId
+  ): Promise<any>;
 }
 
 const userSchema = new Schema<IUser, UserModel>({
@@ -184,6 +189,61 @@ userSchema.static(
         },
       },
     ]);
+  }
+);
+
+userSchema.static(
+  'searchUsers',
+  async function (
+    query: string,
+    page: number = 1,
+    userId: mongoose.Types.ObjectId
+  ) {
+    const size = 10;
+    const searchRegex = new RegExp(query, 'i');
+    const [result] = await this.aggregate([
+      {
+        $match: {
+          $or: [{ username: searchRegex }, { displayName: searchRegex }],
+          _id: { $ne: userId },
+        },
+      },
+      {
+        $addFields: {
+          followExists: { $in: [userId, '$followers'] },
+        },
+      },
+      {
+        $project: {
+          username: 1,
+          displayName: 1,
+          avatarId: 1,
+          followExists: 1,
+        },
+      },
+      {
+        $facet: {
+          data: [{ $skip: (page - 1) * size }, { $limit: size }],
+          meta: [
+            { $count: 'count' },
+            {
+              $addFields: {
+                currentPage: Number(page),
+                hasMorePages: { $gt: ['$count', Number(page) * size] },
+                totalPages: { $ceil: { $divide: ['$count', size] } },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $set: {
+          data: '$data',
+          meta: { $first: '$meta' },
+        },
+      },
+    ]);
+    return result;
   }
 );
 

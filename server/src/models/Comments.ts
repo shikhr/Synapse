@@ -23,6 +23,7 @@ interface CommentModel extends Model<CommentInterface> {
     user: UserModel
   ): Promise<any>;
   getCommentList(options: queryOptions): Promise<any>;
+  searchComments(query: string, page: number, user: UserModel): Promise<any>;
 }
 
 const commentSchema = new Schema<IComment, CommentModel>(
@@ -160,6 +161,49 @@ commentSchema.static(
         },
       },
     ]);
+  }
+);
+
+commentSchema.static(
+  'searchComments',
+  async function (query: string, page: number = 1, user: UserModel) {
+    const size = 10;
+    const searchRegex = new RegExp(query, 'i');
+    const [result] = await this.aggregate([
+      {
+        $match: {
+          content: searchRegex,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $project: {
+          _id: 1,
+        },
+      },
+      {
+        $facet: {
+          data: [{ $skip: (page - 1) * size }, { $limit: size }],
+          meta: [
+            { $count: 'count' },
+            {
+              $addFields: {
+                currentPage: Number(page),
+                hasMorePages: { $gt: ['$count', Number(page) * size] },
+                totalPages: { $ceil: { $divide: ['$count', size] } },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $set: {
+          data: '$data._id',
+          meta: { $first: '$meta' },
+        },
+      },
+    ]);
+    return result;
   }
 );
 

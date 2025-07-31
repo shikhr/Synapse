@@ -23,6 +23,7 @@ interface PostInterface extends IPost {}
 interface PostModel extends Model<PostInterface> {
   getPostInfo(postId: mongoose.Types.ObjectId, user: UserModel): Promise<any>;
   getFeed(options: queryOptions, user?: UserModel): Promise<any>;
+  searchPosts(query: string, page: number, user: UserModel): Promise<any>;
 }
 
 const postSchema = new Schema<IPost, PostModel>(
@@ -249,6 +250,49 @@ postSchema.static(
         },
       },
     ]);
+  }
+);
+
+postSchema.static(
+  'searchPosts',
+  async function (query: string, page: number = 1, user: UserModel) {
+    const size = 10;
+    const searchRegex = new RegExp(query, 'i');
+    const [result] = await this.aggregate([
+      {
+        $match: {
+          description: searchRegex,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $project: {
+          _id: 1,
+        },
+      },
+      {
+        $facet: {
+          data: [{ $skip: (page - 1) * size }, { $limit: size }],
+          meta: [
+            { $count: 'count' },
+            {
+              $addFields: {
+                currentPage: Number(page),
+                hasMorePages: { $gt: ['$count', Number(page) * size] },
+                totalPages: { $ceil: { $divide: ['$count', size] } },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $set: {
+          data: '$data._id',
+          meta: { $first: '$meta' },
+        },
+      },
+    ]);
+    return result;
   }
 );
 
