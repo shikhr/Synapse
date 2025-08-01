@@ -76,7 +76,7 @@ const UserFollowList = ({ type }: UserFollowList) => {
     () =>
       data?.pages.flatMap((page: followTypePage) =>
         page.data.map((user: IUserBasic) => (
-          <FollowCard key={user._id} {...user} />
+          <FollowCard key={user._id} {...user} className="px-4 sm:px-12 py-4" />
         ))
       ),
     [data]

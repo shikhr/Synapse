@@ -66,6 +66,7 @@ const SearchUsers = () => {
       isLoadingError={isLoadingError}
       NoContentElement={<div>No users found.</div>}
       ref={observerElem}
+      ListItemProps={{ className: 'px-4 sm:px-12 py-4' }}
     />
   );
 };
