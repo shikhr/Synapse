@@ -8,6 +8,7 @@ import Explore from './Home/Explore';
 import Layout from './Home/Layout';
 import Settings from './Settings';
 import OAuthParams from './OAuthParams';
+import Notifications from './Home/Notifications';
 export {
   NotFound,
   ProtectedRoute,
@@ -19,4 +20,5 @@ export {
   Layout,
   Settings,
   OAuthParams,
+  Notifications,
 };

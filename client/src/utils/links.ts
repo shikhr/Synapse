@@ -10,6 +10,8 @@ import {
   IoSearch,
   IoSettings,
   IoSettingsOutline,
+  IoNotificationsOutline,
+  IoNotifications,
 } from 'react-icons/io5';
 import { HiOutlineUserCircle, HiUserCircle } from 'react-icons/hi';
 import { RiSearchLine, RiSearchFill } from 'react-icons/ri';
@@ -34,6 +36,12 @@ const AllLinks: Record<string, Link> = {
     icon: RiSearchLine,
     iconActive: RiSearchFill,
     path: 'explore',
+  },
+  notifications: {
+    title: 'Notifications',
+    icon: IoNotificationsOutline,
+    iconActive: IoNotifications,
+    path: 'notifications',
   },
   profile: {
     title: 'Profile',
@@ -60,6 +68,7 @@ const AllLinks: Record<string, Link> = {
 const SidebarLinks: Link[] = [
   AllLinks.home,
   AllLinks.explore,
+  AllLinks.notifications,
   AllLinks.profile,
   AllLinks.bookmarks,
   AllLinks.settings,
@@ -67,6 +76,7 @@ const SidebarLinks: Link[] = [
 const BottomBarLinks: Link[] = [
   AllLinks.home,
   AllLinks.explore,
+  AllLinks.notifications,
   AllLinks.profile,
   AllLinks.bookmarks,
 ];
@@ -83,6 +93,6 @@ const ProfileLinks: IProfileLink[] = [
   { title: 'Comments', path: 'comments' },
 ];
 
-const MobileBarLinks: Link[] = [AllLinks.settings];
+const MobileBarLinks: Link[] = [AllLinks.settings, AllLinks.notifications];
 
 export { AllLinks, SidebarLinks, BottomBarLinks, MobileBarLinks, ProfileLinks };

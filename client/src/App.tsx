@@ -23,6 +23,7 @@ import {
   Register,
   OAuthParams,
   Settings,
+  Notifications,
 } from './pages';
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
                 />
               </Route>
               <Route path="bookmarks" element={<Bookmarks />} />
+              <Route path="notifications" element={<Notifications />} />
               <Route path="explore" element={<Explore />} />
               <Route path="settings" element={<Settings />}>
                 <Route index element={<Account />} />
