@@ -1,0 +1,21 @@
+{
+  "name": "@synapse/models",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "devDependencies": {
+    "@synapse/typescript-config": "workspace:*",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.14.7",
+    "@types/validator": "^13.15.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.3",
+    "typescript": "^5.5.2",
+    "validator": "^13.12.0"
+  }
+}

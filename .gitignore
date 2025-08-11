@@ -12,3 +12,7 @@ node_modules
 *.sw?
 todoNext.md
 *.env
+.turbo
+bak.txt
+
+**/dist

@@ -1,29 +1,30 @@
 {
   "name": "synapse",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
   "type": "module",
-  "main": "server/dist/server.js",
+  "workspaces": [
+    "packages/*",
+    "apps/server",
+    "apps/worker",
+    "apps/client"
+  ],
   "scripts": {
-    "client:install": "cd client && npm install --production=false",
-    "server:install": "cd server && npm install --production=false",
-    "client:build": "cd client && npm run build && rm -rf node_modules",
-    "server:build": "cd server && npm run build && npm prune",
-    "client": "npm run dev --prefix client -- --host ",
-    "server": "npm run server --prefix server",
-    "server:compile": "npm run dev --prefix server",
-    "dev": "concurrently --kill-others-on-fail \"npm run server:compile\" \"npm run server\" \"npm run client\" ",
-    "build": "npm run server:build && npm run client:build",
-    "postinstall": "npm run server:install && npm run client:install",
-    "start": "npm start --prefix server",
-    "worker:install": "cd worker && npm install",
-    "worker:build": "cd worker && npm run build",
-    "worker:start": "cd worker && npm start"
+    "build": "turbo run build",
+    "dev": "dotenv -- turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2"
-  }
+    "concurrently": "^8.2.2",
+    "dotenv-cli": "^10.0.0",
+    "prettier": "^3.6.2",
+    "turbo": "latest",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  },
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
