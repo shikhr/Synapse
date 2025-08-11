@@ -17,6 +17,7 @@ import CommentRouter from './routes/commentRoutes.js';
 import BookmarkRouter from './routes/bookmarkRoutes.js';
 import SettingsRouter from './routes/settingsRoute.js';
 import SearchRouter from './routes/searchRoutes.js';
+import NotificationRouter from './routes/notificationRoutes.js';
 
 import {
   AuthenticateJwtStrategy,
@@ -26,6 +27,7 @@ import {
 import passport from 'passport';
 import { getAvatar } from './controllers/userController.js';
 import { fileURLToPath } from 'url';
+import { publishEvent } from './utils/rabbitmq.js';
 
 const app = express();
 
@@ -51,7 +53,15 @@ passport.deserializeUser(function (obj: any, done) {
 
 // HOME ROUTER
 app.get('/api/v1', (req, res) => {
-  res.send('Synapse API!!!');
+  publishEvent({
+    type: 'test.queue',
+    data: {
+      test: 'data',
+    },
+  }).catch(() => {});
+  return res
+    .status(200)
+    .json({ message: 'Test queue event published successfully' });
 });
 
 // AUTH ROUTER
@@ -96,6 +106,12 @@ app.use(
   SearchRouter
 );
 
+app.use(
+  '/api/v1/notifications',
+  passport.authenticate('authenticate_jwt', { session: false }),
+  NotificationRouter
+);
+
 app.get('*', (req: Request, res: Response) => {
   res.sendFile('index.html', { root: path.join(__dirname, './client/dist') });
 });
@@ -110,6 +126,12 @@ const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
     console.log('Connected to Database');
+
+    // Warm up RabbitMQ connection (non-blocking)
+    publishEvent({ type: 'app.start', data: { ts: Date.now() } }).catch(
+      () => {}
+    );
+
     app.listen(PORT, () => {
       console.log(`listening on port:${PORT}`);
     });

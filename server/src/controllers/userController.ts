@@ -5,6 +5,7 @@ import sharp from 'sharp';
 import { BadRequestError, NotFoundError } from '../errors/errors.js';
 import Avatar from '../models/Avatar.js';
 import User from '../models/User.js';
+import { publishEvent } from '../utils/rabbitmq.js';
 
 const getProfile = async (req: any, res: Response) => {
   let id = req.params.id === 'me' ? req.user._id : req.params.id;
@@ -73,6 +74,15 @@ const followUser = async (req: any, res: Response) => {
   if (!followedUser) {
     throw new BadRequestError('User not found');
   }
+
+  publishEvent({
+    type: 'user.follow',
+    data: {
+      followerId: user._id.toString(),
+      followedId: followId,
+    },
+  }).catch(() => {});
+
   res.status(200).send('User followed');
 };
 
@@ -95,6 +105,15 @@ const unfollowUser = async (req: any, res: Response) => {
   if (!unfollowedUser) {
     throw new BadRequestError('User not found');
   }
+
+  publishEvent({
+    type: 'user.unfollow',
+    data: {
+      followerId: user._id.toString(),
+      unfollowedId: unfollowId,
+    },
+  }).catch(() => {});
+
   res.status(200).send('User unfollowed');
 };
 
