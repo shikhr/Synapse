@@ -28,7 +28,7 @@ const Banner = ({
         <img
           onError={errorHandler}
           className="w-full h-40 object-cover"
-          src={`/api/v1/users/avatar/${sourceId}`}
+          src={`${import.meta.env.VITE_APP_API_URL}/api/v1/users/avatar/${sourceId}`}
           alt=""
         />
       )}

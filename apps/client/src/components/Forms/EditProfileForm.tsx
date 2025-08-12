@@ -119,7 +119,7 @@ const EditProfileForm = ({
               src={
                 (watch('avatar')?.[0] &&
                   URL.createObjectURL((watch('avatar') as FileList)[0])) ||
-                `/api/v1/users/avatar/${profile?.avatarId}`
+                `${import.meta.env.VITE_APP_API_URL}/api/v1/users/avatar/${profile?.avatarId}`
               }
               alt=""
             />

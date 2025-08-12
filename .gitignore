@@ -14,5 +14,6 @@ todoNext.md
 *.env
 .turbo
 bak.txt
-
+*.env.local
+*.env.bak
 **/dist

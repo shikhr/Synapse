@@ -24,7 +24,7 @@ const OAuthButton = () => {
         variant="standard"
         onClick={() => {
           window.open(
-            '/api/v1/auth/google',
+            `${import.meta.env.VITE_APP_API_URL}/api/v1/auth/google`,
             'google',
             'toolbar=no, menubar=no, width=600, height=700, top=50, left=450'
           );
