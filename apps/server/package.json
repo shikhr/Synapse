@@ -2,14 +2,14 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "watch": "tsc --watch",
-    "dev": "pnpx tsx --watch src/server.ts",
-    "server": "nodemon dist/server.js",
+    "dev": "pnpx tsx --watch src/index.ts",
+    "server": "nodemon dist/index.js",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",

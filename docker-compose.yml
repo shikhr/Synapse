@@ -1,52 +1,68 @@
 services:
-  app:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 3s
+      timeout: 2s
+      retries: 10
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+    volumes:
+      - mongodb_data:/data/db
+
+  server:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: apps/server/Dockerfile
     ports:
       - '5000:5000'
     environment:
-      - NODE_ENV=production
       - MONGO_URL=mongodb://mongo:27017/synapse
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
       - RABBITMQ_EXCHANGE_NAME=synapse.events
       - RABBITMQ_EXCHANGE_TYPE=topic
       - RABBITMQ_QUEUE=notifications
     env_file:
-      - .env
+      - apps/server/.env
     depends_on:
-      - mongo
-      - rabbitmq
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongodb_data:/data/db
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    command: ['node', 'apps/server/dist/index.js']
 
   worker:
     build:
-      context: ./worker
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/worker/Dockerfile
     environment:
       - MONGO_URL=mongodb://mongo:27017/synapse
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
       - RABBITMQ_EXCHANGE_NAME=synapse.events
       - RABBITMQ_EXCHANGE_TYPE=topic
       - RABBITMQ_QUEUE=notifications
+    env_file:
+      - apps/worker/.env
     depends_on:
-      - mongo
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    command: ['node', 'apps/worker/dist/index.js']
 
 volumes:
   mongodb_data:
