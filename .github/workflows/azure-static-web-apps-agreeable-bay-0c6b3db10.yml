@@ -14,31 +14,35 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-    permissions:
-       id-token: write
-       contents: read
     steps:
+      # Checkout repo
       - uses: actions/checkout@v3
         with:
           submodules: true
           lfs: false
 
+      # Setup Node.js and enable pnpm cache
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
+      # Install pnpm globally
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: npm install -g pnpm@9
 
+      # Install dependencies (using lockfile for reproducible builds)
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build client
-        run: pnpm --filter client... build
+      # Build only the frontend app using Turborepo filter
+      - name: Build frontend
+        run: pnpm turbo run build --filter=client...
 
-      - name: Deploy to Azure Static Web Apps
+      # Deploy to Azure Static Web Apps
+      - name: Build And Deploy
+        id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AGREEABLE_BAY_0C6B3DB10 }}
@@ -53,6 +57,7 @@ jobs:
     name: Close Pull Request Job
     steps:
       - name: Close Pull Request
+        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: "close"
