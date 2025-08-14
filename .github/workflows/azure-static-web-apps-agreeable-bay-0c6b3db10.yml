@@ -64,6 +64,8 @@ jobs:
           app_location: "./apps/client"
           output_location: "dist"
           github_id_token: ${{ steps.idtoken.outputs.result }}
+          skip_app_build: true
+
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -75,6 +77,7 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: "close"
+
 
 
 
