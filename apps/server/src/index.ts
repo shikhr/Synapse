@@ -31,7 +31,12 @@ import { publishEvent } from './utils/rabbitmq.js';
 const app = express();
 
 // EXPRESS MIDDLEWARE
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -45,6 +50,10 @@ passport.serializeUser(function (user, done) {
 });
 passport.deserializeUser(function (obj: any, done) {
   done(null, obj);
+});
+
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).send({ status: 'ok' });
 });
 
 // HOME ROUTER

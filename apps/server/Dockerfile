@@ -45,5 +45,6 @@ RUN pnpm install --prod --frozen-lockfile --shamefully-hoist
 COPY --from=installer /app/apps/server/dist ./apps/server/dist
 COPY --from=installer /app/packages/models/dist ./packages/models/dist
 
-EXPOSE 8080
+EXPOSE 5000
+
 CMD ["node", "apps/server/dist/index.js"]
